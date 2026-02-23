@@ -451,7 +451,10 @@ function SelectedWorksSection() {
 }
 
 // ─── HERO SECTION ─────────────────────────────────────────
-const HERO_IMAGE =
+// GIF 적용: src/assets/images/hero.gif 파일을 추가하면 자동으로 적용됩니다.
+const gifModules = import.meta.glob("../assets/images/hero.gif", { eager: true, query: "?url", import: "default" }) as Record<string, string>;
+const HERO_IMAGE: string =
+  gifModules["../assets/images/hero.gif"] ||
   "https://images.unsplash.com/photo-1615852993296-b42d4dbb5555?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080";
 
 const bottomCells = [
