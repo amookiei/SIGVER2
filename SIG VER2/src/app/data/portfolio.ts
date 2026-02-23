@@ -87,35 +87,34 @@ export const portfolioItems: PortfolioItem[] = [
     tags: ["브랜드 전략", "아이덴티티 디자인", "모션 가이드라인", "UI 시스템"],
     liveUrl: "https://www.hyundai.com",
 
-    nextProject: "naver-design-system",
+    nextProject: "M3AT",
   },
 
   // ── 2 ───────────────────────────────────────────────────────────────────────
   {
     id: 2,
-    slug: "naver-design-system",
-    title: "NAVER DESIGN SYSTEM",
-    client: "네이버",
-    category: "Web Design",
+    slug: "M3AT",
+    title: "M3AT",
+    client: "밋더한우",
+    category: "Branding",
     year: 2024,
     featured: true,
     order: 2,
 
-    thumbnail: IMG["naver-design-system"].thumbnail,
-    heroImage: IMG["naver-design-system"].heroImage,
-    gallery: IMG["naver-design-system"].gallery,
+    thumbnail: IMG["M3AT"].thumbnail,
+    heroImage: IMG["M3AT"].heroImage,
+    gallery: IMG["M3AT"].gallery,
 
-    tagline: "수백 개 컴포넌트를 하나의 언어로",
+    tagline: "상위0.1% 미식 경험 브랜딩",
     description:
-      "네이버 전사 디자인 시스템 구축 프로젝트. 수백 개의 컴포넌트를 체계화하고 개발팀과 협업하여 일관된 사용자 경험을 만들었습니다. Figma 라이브러리부터 코드 컴포넌트까지 완전한 시스템을 구현했습니다.",
+      "상위 0.1% 한우의 정체성을 로고 시스템·키 메시지·색채·카피 톤 등 브랜드 아이덴티티 전반에 재정의했습니다.",
     challenge:
-      "10개 이상의 서비스 팀이 각자의 방식으로 UI를 구현하면서 브랜드 일관성이 무너지고 있었습니다. 디자인과 개발 간의 핸드오프 비효율도 심각한 문제였습니다.",
+      "미슐랭 파인다이닝의 맛·품격·희소성을 일반 소비자도 '집에서 경험할 수 있는 미식'으로 전달하는 것.",
     solution:
-      "단일 Figma 라이브러리와 React 컴포넌트 패키지를 동기화하는 워크플로우를 구축했습니다. 토큰 기반 디자인 변수 시스템으로 테마 전환이 가능하도록 설계했으며, 자동화된 문서화 파이프라인을 도입해 관리 부담을 줄였습니다.",
-
-    role: "UX Architecture, Component Design, Figma Library, Documentation",
+      "패키지 디자인은 청와대 납품 박스의 톤을 계승한 리넨 텍스처·블랙&골드 포일·리본 스텝 구조 등 고급스러운 선물 경험을 강화하는 방향으로 설계했고, 상세페이지는 기준이 되는 ‘한우의 등급 체계 → 파인다이닝 스토리텔링 → ‘No.9’ 희소성 → 시즈닝 3종의 경험 가치 → 리워드 구성’ 까지 자연스럽게 이어지는 구조로 기획했습니다."
+    role: "Branding, Packaging",
     duration: "2024.03 – 2024.10 (8개월)",
-    tags: ["디자인 시스템", "UI/UX", "Figma", "React", "Design Token"],
+    tags: ["브랜딩", "UI/UX", "Figma", "React", "Design Token"],
 
     nextProject: "samsung-galaxy-campaign",
   },
