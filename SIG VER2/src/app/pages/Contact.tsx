@@ -22,6 +22,8 @@ export function Contact() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedBudget, setSelectedBudget] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", message: "" });
 
   const toggleService = (s: string) => {
@@ -30,9 +32,34 @@ export function Contact() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Formspree 연동: https://formspree.io 에서 무료 계정 생성 후
+      // 아래 URL의 YOUR_FORM_ID 를 발급받은 ID로 교체하세요.
+      const response = await fetch("https://formspree.io/f/xjgepgzn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          ...form,
+          services: selectedServices.join(", "),
+          budget: selectedBudget,
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        setError("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    } catch {
+      setError("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -138,7 +165,7 @@ export function Contact() {
                     color: "#CCCCCC",
                   }}
                 >
-                  +82 02-0000-0000
+                  010-7667-6013
                 </p>
               </div>
               <div>
@@ -162,11 +189,9 @@ export function Contact() {
                     lineHeight: 1.6,
                   }}
                 >
-                  서울특별시 성동구
+                  서울특별시 서대문구
                   <br />
-                  성수이로 7길 000
-                  <br />
-                  SIG 빌딩 4F
+                  홍제천로 6길 40 1층
                 </p>
               </div>
               <div>
@@ -453,8 +478,21 @@ export function Contact() {
                   </div>
 
                   {/* Submit */}
+                  {error && (
+                    <p
+                      style={{
+                        fontFamily: "'Satoshi', sans-serif",
+                        fontSize: "13px",
+                        color: "#FF4D00",
+                        marginTop: "-8px",
+                      }}
+                    >
+                      {error}
+                    </p>
+                  )}
                   <motion.button
                     type="submit"
+                    disabled={isSubmitting}
                     className="flex items-center justify-center gap-3 mt-2"
                     data-cursor="hover-button"
                     style={{
@@ -464,16 +502,18 @@ export function Contact() {
                       color: "#FFFFFF",
                       letterSpacing: "0.05em",
                       padding: "16px 32px",
-                      background: "#FF4D00",
+                      background: isSubmitting ? "#333333" : "#FF4D00",
                       border: "none",
                       borderRadius: "2px",
                       width: "100%",
+                      cursor: isSubmitting ? "not-allowed" : "none",
+                      transition: "background 0.2s",
                     }}
-                    whileHover={{ backgroundColor: "#FF6B2B" }}
+                    whileHover={isSubmitting ? {} : { backgroundColor: "#FF6B2B" }}
                     transition={{ duration: 0.2 }}
                   >
-                    문의 보내기
-                    <ArrowRight size={16} />
+                    {isSubmitting ? "전송 중..." : "문의 보내기"}
+                    {!isSubmitting && <ArrowRight size={16} />}
                   </motion.button>
                 </motion.form>
               )}
