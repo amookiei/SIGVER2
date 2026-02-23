@@ -752,14 +752,14 @@ const services = [
   {
     id: "03",
     title: "MARKETING\nCAMPAIGN",
-    desc: "IMC 캠페인, 콘텐츠 제작, 퍼포먼스 마케팅. 브랜드 메시지를 세상에 효과적으로 전달합니다.",
+    desc: "캠페인, 콘텐츠 제작, 퍼포먼스 마케팅. 브랜드 메시지를 세상에 효과적으로 전달합니다.",
     count: "(15)",
     image: "https://images.unsplash.com/photo-1759308553474-ce2c768a6b7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
   },
   {
     id: "04",
     title: "GOVERNMENT\nSUPPORT",
-    desc: "정부지원사업 기획·신청 대행 및 마케팅 실행. 효율적인 예산 운용으로 최대 성과를 도출합니다.",
+    desc: "정부지원사업 기반 예산 디자인 실행 최적화.",
     count: "(21)",
     image: "https://images.unsplash.com/photo-1758384077411-6a06e201a177?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
   },
@@ -947,7 +947,7 @@ function AboutPreviewSection() {
           </motion.p>
           {[
             "SIG STUDIO는 디자인이 단순한 비주얼이 아닌, 비즈니스 전략이 되는 순간을 만듭니다.",
-            "정부지원사업 전문 마케팅 파트너로서, 효율적인 예산 운용과 최대의 결과를 도출합니다.",
+            "전문 디자인 파트너로서, 효율적인 예산 운용과 최대의 결과를 도출합니다.",
           ].map((line, i) => (
             <motion.p
               key={i}
