@@ -16,7 +16,6 @@ body {
 
 html {
   scroll-behavior: smooth;
-  overflow-x: clip;
 }
 
 /* ✱ cursor spin animation */
