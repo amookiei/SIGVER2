@@ -1,0 +1,56 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* SIG Studio v2 — Editorial Minimal */
+* {
+  cursor: none !important;
+}
+
+body {
+  background-color: #FAFAFA;
+  overscroll-behavior: none;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* ✱ cursor spin animation */
+@keyframes sigSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: #FAFAFA;
+}
+::-webkit-scrollbar-thumb {
+  background: #CCCCCC;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+/* Selection color */
+::selection {
+  background-color: #0D0D0D;
+  color: #FAFAFA;
+}
+
+/* Input placeholder */
+::placeholder {
+  color: #CCCCCC !important;
+}
+
+/* Remove button defaults */
+button {
+  cursor: none !important;
+}
