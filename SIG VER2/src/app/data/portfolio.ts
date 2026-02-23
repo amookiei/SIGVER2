@@ -112,7 +112,7 @@ export const portfolioItems: PortfolioItem[] = [
       "미슐랭 파인다이닝의 맛·품격·희소성을 일반 소비자도 '집에서 경험할 수 있는 미식'으로 전달하는 것.",
     solution:
       "패키지 디자인은 청와대 납품 박스의 톤을 계승한 리넨 텍스처·블랙&골드 포일·리본 스텝 구조 등 고급스러운 선물 경험을 강화하는 방향으로 설계했고, 상세페이지는 기준이 되는 ‘한우의 등급 체계 → 파인다이닝 스토리텔링 → ‘No.9’ 희소성 → 시즈닝 3종의 경험 가치 → 리워드 구성’ 까지 자연스럽게 이어지는 구조로 기획했습니다."
-    role: "Branding, Packaging",
+    role: "Brand Strategy, Packaging",
     duration: "2024.03 – 2024.10 (8개월)",
     tags: ["브랜딩", "UI/UX", "Figma", "React", "Design Token"],
 
