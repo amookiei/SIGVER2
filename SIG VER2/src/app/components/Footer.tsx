@@ -105,12 +105,12 @@ export function Footer() {
             </a>
             <div style={{ marginBottom: "12px" }}>
               <span style={{ fontFamily: F, fontSize: "14px", color: "#555555" }}>
-                +82 02-0000-0000
+                010-7667-6013
               </span>
             </div>
             <div>
               <span style={{ fontFamily: F, fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>
-                서울특별시 성수동<br />성수이로 7길 000
+                서울특별시 서대문구<br />홍제천로 6길 40 1층
               </span>
             </div>
           </div>
