@@ -40,7 +40,7 @@ export function Contact() {
     try {
       // Formspree 연동: https://formspree.io 에서 무료 계정 생성 후
       // 아래 URL의 YOUR_FORM_ID 를 발급받은 ID로 교체하세요.
-      const response = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
+      const response = await fetch("https://formspree.io/f/xjgepgzn", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
