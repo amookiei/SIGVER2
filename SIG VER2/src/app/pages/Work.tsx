@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "motion/react";
 import { Link } from "react-router";
-import { CATEGORIES, getProjectsByCategory } from "../data/portfolio";
+import { useAdmin } from "../context/AdminContext";
 import type { PortfolioItem } from "../data/portfolio";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -131,7 +131,8 @@ function WorkCell({
 export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const filtered = getProjectsByCategory(activeCategory);
+  const { getByCategory, categories: CATEGORIES } = useAdmin();
+  const filtered = getByCategory(activeCategory);
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>

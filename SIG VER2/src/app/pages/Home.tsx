@@ -8,7 +8,7 @@ import {
 } from "motion/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { portfolioItems } from "../data/portfolio";
+import { useAdmin } from "../context/AdminContext";
 import type { PortfolioItem } from "../data/portfolio";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -310,11 +310,12 @@ const WORK_FILTERS = ["All", "Branding", "Web Design", "Campaign", "Government"]
 function SelectedWorksSection() {
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const sectionRef = useRef<HTMLElement>(null);
+  const { items } = useAdmin();
 
   const displayItems =
     activeFilter === "All"
-      ? portfolioItems.slice(0, 5)
-      : portfolioItems.filter((p) => p.category === activeFilter);
+      ? items.slice(0, 5)
+      : items.filter((p) => p.category === activeFilter);
 
   const rows = groupIntoRows(displayItems);
 
