@@ -609,7 +609,7 @@ function EditModal({
 // ─── Main Admin Page ──────────────────────────────────────
 export function Admin() {
   const navigate = useNavigate();
-  const { isAdmin, logout, items, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
+  const { isAdmin, logout, items, loading, dbStatus, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -622,6 +622,12 @@ export function Admin() {
     if (!isAdmin) navigate("/", { replace: true });
   }, [isAdmin, navigate]);
 
+  // Restore cursor on admin page (global CSS hides it)
+  useEffect(() => {
+    document.body.classList.add("sig-admin");
+    return () => document.body.classList.remove("sig-admin");
+  }, []);
+
   if (!isAdmin) return null;
 
   const showToast = (msg: string) => {
@@ -629,29 +635,29 @@ export function Admin() {
     setTimeout(() => setToast(null), 2500);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!editForm) return;
-    updateItem(editForm.id, fromForm(editForm));
+    await updateItem(editForm.id, fromForm(editForm));
     setEditForm(null);
     showToast("저장되었습니다 ✓");
   };
 
-  const handleSaveAdd = () => {
-    addItem(fromForm(addForm));
+  const handleSaveAdd = async () => {
+    await addItem(fromForm(addForm));
     setIsAdding(false);
     setAddForm(blankForm());
     showToast("프로젝트가 추가되었습니다 ✓");
   };
 
-  const handleDelete = (id: number) => {
-    deleteItem(id);
+  const handleDelete = async (id: number) => {
+    await deleteItem(id);
     setDeleteConfirm(null);
     showToast("삭제되었습니다");
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (confirm("모든 수정사항이 사라지고 기본 데이터로 초기화됩니다.\n계속하시겠습니까?")) {
-      resetToDefault();
+      await resetToDefault();
       showToast("기본 데이터로 초기화되었습니다");
     }
   };
@@ -689,6 +695,21 @@ export function Admin() {
           </span>
         </div>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          {loading && (
+            <span style={{ color: TEXT3, fontSize: "11px", letterSpacing: "0.06em" }}>
+              DB 연결중…
+            </span>
+          )}
+          {!loading && dbStatus === "synced" && (
+            <span style={{ color: "#4CAF50", fontSize: "11px", letterSpacing: "0.06em" }}>
+              ● Supabase 연결됨
+            </span>
+          )}
+          {!loading && dbStatus === "error" && (
+            <span style={{ color: "#CC6622", fontSize: "11px", letterSpacing: "0.06em" }}>
+              ⚠ DB 오류 (로컬 저장)
+            </span>
+          )}
           {toast && (
             <span style={{ color: "#4CAF50", fontSize: "12px", letterSpacing: "0.04em" }}>
               {toast}

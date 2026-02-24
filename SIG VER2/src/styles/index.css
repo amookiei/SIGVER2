@@ -10,13 +10,24 @@
 body {
   background-color: #FAFAFA;
   overscroll-behavior: none;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip: 스크롤 컨텍스트 생성 없이 가로 overflow만 숨김 */
   max-width: 100%;
 }
 
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+}
+
+/* Admin 페이지: 커서 복원 */
+body.sig-admin * {
+  cursor: auto !important;
+}
+body.sig-admin button,
+body.sig-admin input,
+body.sig-admin select,
+body.sig-admin textarea {
+  cursor: auto !important;
 }
 
 /* ✱ cursor spin animation */
