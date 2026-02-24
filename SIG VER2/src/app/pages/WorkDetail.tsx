@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from "react-router";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { getProjectBySlug } from "../data/portfolio";
+import { useAdmin } from "../context/AdminContext";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -17,10 +17,11 @@ export function WorkDetail() {
   const heroScale = useTransform(scrollY, [0, 500], [1.06, 1]);
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.5]);
 
-  const item = getProjectBySlug(slug ?? "");
+  const { getBySlug } = useAdmin();
+  const item = getBySlug(slug ?? "");
   if (!item) return <Navigate to="/work" replace />;
 
-  const nextItem = item.nextProject ? getProjectBySlug(item.nextProject) : null;
+  const nextItem = item.nextProject ? getBySlug(item.nextProject) : null;
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
