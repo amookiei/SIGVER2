@@ -420,8 +420,17 @@ function EditModal({
                   <input
                     style={inputStyle}
                     value={form.slug}
-                    onChange={(e) => set("slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))}
-                    placeholder="hyundai-rebrand"
+                    onChange={(e) =>
+                      set(
+                        "slug",
+                        e.target.value
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")
+                          .replace(/[^a-z0-9-]/g, "")  // URL 안전: 영문·숫자·하이픈만
+                          .replace(/-+/g, "-")           // 연속 하이픈 제거
+                      )
+                    }
+                    placeholder="hyundai-rebrand (영문·숫자·하이픈만)"
                   />
                 </Field>
               </div>
