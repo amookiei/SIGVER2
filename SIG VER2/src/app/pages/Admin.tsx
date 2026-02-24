@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { useAdmin } from "../context/AdminContext";
 import type { PortfolioItem } from "../data/portfolio";
+import { supabase } from "../../lib/supabase";
 
 // ─── Design tokens ────────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -131,6 +132,82 @@ function Field({
   );
 }
 
+// ─── Image upload field ───────────────────────────────────
+function ImageUploadField({
+  label,
+  value,
+  uploading,
+  onFile,
+  onChange,
+  previewHeight = 80,
+}: {
+  label: string;
+  value: string;
+  uploading: boolean;
+  onFile: (file: File) => void;
+  onChange: (url: string) => void;
+  previewHeight?: number;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <div style={fieldStyle}>
+      <label style={labelStyle}>{label}</label>
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".jpg,.jpeg"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onFile(file);
+          e.target.value = "";
+        }}
+      />
+      <div style={{ display: "flex", gap: "8px" }}>
+        <button
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          style={{
+            background: "none",
+            border: BORDER2,
+            color: uploading ? TEXT3 : TEXT2,
+            fontFamily: F,
+            fontSize: "11px",
+            padding: "0 14px",
+            cursor: uploading ? "default" : "pointer",
+            letterSpacing: "0.06em",
+            height: "38px",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
+          }}
+        >
+          {uploading ? "업로드 중…" : "JPG 업로드"}
+        </button>
+        <input
+          style={{ ...inputStyle, flex: 1 }}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="또는 URL 직접 입력"
+        />
+      </div>
+      {value && (
+        <img
+          src={value}
+          alt={`${label} preview`}
+          style={{
+            marginTop: "8px",
+            height: `${previewHeight}px`,
+            objectFit: "cover",
+            display: "block",
+            width: "100%",
+          }}
+          onError={(e) => (e.currentTarget.style.display = "none")}
+        />
+      )}
+    </div>
+  );
+}
+
 // ─── Tab bar ─────────────────────────────────────────────
 type Tab = "basic" | "images" | "content" | "settings";
 const TABS: { id: Tab; label: string }[] = [
@@ -157,6 +234,39 @@ function EditModal({
   allItems: PortfolioItem[];
 }) {
   const [tab, setTab] = useState<Tab>("basic");
+  const [uploading, setUploading] = useState<Record<string, boolean>>({});
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  async function handleUpload(file: File, key: string, onSuccess: (url: string) => void) {
+    if (!file.type.match(/jpeg|jpg/)) {
+      setUploadError("JPG 파일만 업로드 가능합니다.");
+      return;
+    }
+    setUploading((p) => ({ ...p, [key]: true }));
+    setUploadError(null);
+
+    if (!supabase) {
+      setUploadError("Supabase가 연결되지 않았습니다. URL을 직접 입력해 주세요.");
+      setUploading((p) => ({ ...p, [key]: false }));
+      return;
+    }
+
+    const slug = form.slug || "unsaved";
+    const path = `${slug}/${key}-${Date.now()}.jpg`;
+    const { error } = await supabase.storage
+      .from("project-images")
+      .upload(path, file, { contentType: "image/jpeg", upsert: true });
+
+    if (error) {
+      setUploadError(`업로드 실패: ${error.message}`);
+      setUploading((p) => ({ ...p, [key]: false }));
+      return;
+    }
+
+    const { data } = supabase.storage.from("project-images").getPublicUrl(path);
+    onSuccess(data.publicUrl);
+    setUploading((p) => ({ ...p, [key]: false }));
+  }
 
   const set = (key: keyof FormState, val: unknown) =>
     setForm({ ...form, [key]: val });
@@ -399,80 +509,136 @@ function EditModal({
           {/* ── Tab 2: 이미지 ── */}
           {tab === "images" && (
             <>
+              {/* Spec guide */}
               <div
                 style={{
                   background: "#0A0A0A",
                   border: BORDER,
-                  padding: "12px 16px",
+                  padding: "14px 16px",
                   marginBottom: "24px",
                 }}
               >
-                <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, lineHeight: 1.8 }}>
-                  💡 이미지는 외부 URL 또는 <code style={{ color: TEXT2 }}>/images/projects/slug/</code> 경로를 입력하세요.
-                  <br />
-                  외부 이미지 호스팅이 필요하면 Cloudinary / imgbb 를 이용할 수 있습니다.
+                <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, lineHeight: 2, margin: 0 }}>
+                  <span style={{ color: TEXT2, letterSpacing: "0.08em", fontSize: "10px" }}>권장 규격 — JPG 형식</span><br />
+                  썸네일 &nbsp;&nbsp;800 × 600 px &nbsp;·&nbsp; 4:3 &nbsp;·&nbsp; 300 KB 이하<br />
+                  히어로 &nbsp;&nbsp;&nbsp;1920 × 1080 px &nbsp;·&nbsp; 16:9 &nbsp;·&nbsp; 800 KB 이하<br />
+                  갤러리 &nbsp;&nbsp;1200 × 800 px &nbsp;·&nbsp; 3:2 &nbsp;·&nbsp; 400 KB 이하
                 </p>
               </div>
 
-              <Field label="썸네일 URL">
-                <input
-                  style={inputStyle}
-                  value={form.thumbnail}
-                  onChange={(e) => set("thumbnail", e.target.value)}
-                  placeholder="/images/projects/slug/thumb.jpg"
-                />
-                {form.thumbnail && (
-                  <img
-                    src={form.thumbnail}
-                    alt="thumbnail preview"
-                    style={{ marginTop: "8px", height: "80px", objectFit: "cover", display: "block" }}
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
-                )}
-              </Field>
+              {/* Upload error */}
+              {uploadError && (
+                <div
+                  style={{
+                    background: "#1A0000",
+                    border: "1px solid #440000",
+                    padding: "10px 14px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <span style={{ fontFamily: F, fontSize: "12px", color: "#FF5555" }}>{uploadError}</span>
+                </div>
+              )}
 
-              <Field label="히어로 이미지 URL">
-                <input
-                  style={inputStyle}
-                  value={form.heroImage}
-                  onChange={(e) => set("heroImage", e.target.value)}
-                  placeholder="/images/projects/slug/hero.jpg"
-                />
-                {form.heroImage && (
-                  <img
-                    src={form.heroImage}
-                    alt="hero preview"
-                    style={{ marginTop: "8px", height: "80px", objectFit: "cover", display: "block", width: "100%" }}
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
-                )}
-              </Field>
+              {/* 썸네일 */}
+              <ImageUploadField
+                label="썸네일 (800 × 600)"
+                value={form.thumbnail}
+                uploading={!!uploading["thumbnail"]}
+                onFile={(file) =>
+                  handleUpload(file, "thumbnail", (url) => set("thumbnail", url))
+                }
+                onChange={(url) => set("thumbnail", url)}
+                previewHeight={70}
+              />
 
-              <Field label="갤러리 이미지 URL">
+              {/* 히어로 */}
+              <ImageUploadField
+                label="히어로 이미지 (1920 × 1080)"
+                value={form.heroImage}
+                uploading={!!uploading["hero"]}
+                onFile={(file) =>
+                  handleUpload(file, "hero", (url) => set("heroImage", url))
+                }
+                onChange={(url) => set("heroImage", url)}
+                previewHeight={90}
+              />
+
+              {/* 갤러리 */}
+              <div style={fieldStyle}>
+                <label style={labelStyle}>갤러리 이미지 (1200 × 800)</label>
                 {form.galleryUrls.map((url, idx) => (
-                  <div key={idx} style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                    <input
-                      style={{ ...inputStyle, flex: 1 }}
-                      value={url}
-                      onChange={(e) => setGallery(idx, e.target.value)}
-                      placeholder={`/images/projects/slug/gallery-${idx + 1}.jpg`}
-                    />
-                    {form.galleryUrls.length > 1 && (
-                      <button
-                        onClick={() => removeGalleryRow(idx)}
+                  <div key={idx} style={{ marginBottom: "12px" }}>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <label
                         style={{
                           background: "none",
                           border: BORDER2,
-                          color: TEXT3,
+                          color: uploading[`gallery-${idx}`] ? TEXT3 : TEXT2,
                           fontFamily: F,
-                          fontSize: "12px",
-                          padding: "0 10px",
-                          cursor: "pointer",
+                          fontSize: "11px",
+                          padding: "0 14px",
+                          cursor: uploading[`gallery-${idx}`] ? "default" : "pointer",
+                          letterSpacing: "0.06em",
+                          height: "38px",
+                          display: "flex",
+                          alignItems: "center",
+                          whiteSpace: "nowrap",
                           flexShrink: 0,
                         }}
                       >
-                        ×
-                      </button>
+                        <input
+                          type="file"
+                          accept=".jpg,.jpeg"
+                          style={{ display: "none" }}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file)
+                              handleUpload(file, `gallery-${idx}`, (uploadedUrl) =>
+                                setGallery(idx, uploadedUrl)
+                              );
+                            e.target.value = "";
+                          }}
+                        />
+                        {uploading[`gallery-${idx}`] ? "업로드 중…" : "JPG 업로드"}
+                      </label>
+                      <input
+                        style={{ ...inputStyle, flex: 1 }}
+                        value={url}
+                        onChange={(e) => setGallery(idx, e.target.value)}
+                        placeholder="또는 URL 직접 입력"
+                      />
+                      {form.galleryUrls.length > 1 && (
+                        <button
+                          onClick={() => removeGalleryRow(idx)}
+                          style={{
+                            background: "none",
+                            border: BORDER2,
+                            color: TEXT3,
+                            fontFamily: F,
+                            fontSize: "12px",
+                            padding: "0 10px",
+                            cursor: "pointer",
+                            flexShrink: 0,
+                          }}
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                    {url && (
+                      <img
+                        src={url}
+                        alt={`gallery-${idx + 1} preview`}
+                        style={{
+                          marginTop: "6px",
+                          height: "60px",
+                          objectFit: "cover",
+                          display: "block",
+                          width: "100%",
+                        }}
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
                     )}
                   </div>
                 ))}
@@ -492,7 +658,7 @@ function EditModal({
                 >
                   + 이미지 추가
                 </button>
-              </Field>
+              </div>
             </>
           )}
 

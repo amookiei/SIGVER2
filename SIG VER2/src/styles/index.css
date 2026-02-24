@@ -10,7 +10,6 @@
 body {
   background-color: #FAFAFA;
   overscroll-behavior: none;
-  overflow-x: clip; /* clip: 스크롤 컨텍스트 생성 없이 가로 overflow만 숨김 */
   max-width: 100%;
 }
 
