@@ -15,7 +15,6 @@ body {
 
 html {
   scroll-behavior: smooth;
-  overflow-x: clip;
 }
 
 /* Admin 페이지: 커서 복원 */
