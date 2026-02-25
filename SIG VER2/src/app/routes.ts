@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router";
+import { createElement } from "react";
 import { Root } from "./pages/Root";
 import { Home } from "./pages/Home";
 import { Work } from "./pages/Work";
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
         path: "work/:slug",
         Component: WorkDetail,
         // 잘못된 slug (URL 디코딩 실패 등)는 Work 목록으로 복구
-        errorElement: <Navigate to="/work" replace />,
+        errorElement: createElement(Navigate, { to: "/work", replace: true }),
       },
       { path: "about", Component: About },
       { path: "contact", Component: Contact },
