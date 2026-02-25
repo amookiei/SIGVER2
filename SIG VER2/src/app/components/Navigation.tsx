@@ -114,7 +114,7 @@ export function Navigation() {
                 whileHover={{ background: "#FAFAFA", color: "#0D0D0D" }}
                 transition={{ duration: 0.25 }}
               >
-                Let's Talk
+                문의하기
               </motion.button>
             </Link>
           </div>
