@@ -885,6 +885,11 @@ export function Admin() {
               ⚠ DB 오류 (로컬 저장)
             </span>
           )}
+          {!loading && dbStatus === "none" && (
+            <span style={{ color: "#CC4444", fontSize: "11px", letterSpacing: "0.06em" }}>
+              ⚠ Supabase 미연결 — 배포 환경변수 확인 필요
+            </span>
+          )}
           {toast && (
             <span style={{ color: "#4CAF50", fontSize: "12px", letterSpacing: "0.04em" }}>
               {toast}
