@@ -34,6 +34,12 @@ interface DBRow {
   next_project: string | null;
 }
 
+// Supabase Storage URL이 /public/ 없이 저장된 경우 자동 보정
+function fixStorageUrl(url: string): string {
+  if (!url) return url;
+  return url.replace(/\/storage\/v1\/object\/(?!public\/)/, "/storage/v1/object/public/");
+}
+
 function fromDB(row: DBRow): PortfolioItem {
   return {
     id: row.id,
@@ -44,9 +50,9 @@ function fromDB(row: DBRow): PortfolioItem {
     year: row.year,
     featured: row.featured,
     order: row.display_order ?? undefined,
-    thumbnail: row.thumbnail,
-    heroImage: row.hero_image,
-    gallery: row.gallery ?? [],
+    thumbnail: fixStorageUrl(row.thumbnail),
+    heroImage: fixStorageUrl(row.hero_image),
+    gallery: (row.gallery ?? []).map(fixStorageUrl),
     tagline: row.tagline,
     description: row.description,
     challenge: row.challenge ?? undefined,
