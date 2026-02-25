@@ -73,6 +73,16 @@ export const IMG: Record<
     ],
   },
 
+  // ─── 2-b. M3AT ───────────────────────────────────────────────────────────
+  "M3AT": {
+    thumbnail: "/images/projects/M3AT/thumb.jpg",
+    heroImage:  "/images/projects/M3AT/hero.jpg",
+    gallery: [
+      "/images/projects/M3AT/gallery-1.jpg",
+      "/images/projects/M3AT/gallery-2.jpg",
+    ],
+  },
+
   // ─── 6. krafton-editorial ────────────────────────────────────────────────
   "krafton-editorial": {
     thumbnail: "/images/projects/krafton-editorial/thumb.jpg",
