@@ -454,8 +454,8 @@ function SelectedWorksSection() {
 // ─── HERO SECTION ─────────────────────────────────────────
 // 히어로 이미지: src/assets/images/ 에 hero.jpg / hero.png / hero.webp / hero.gif 중 하나를 넣으면 자동 적용됩니다.
 const heroModules = import.meta.glob(
-  "../assets/images/hero.{jpg,jpeg,png,webp,gif}",
-  { eager: true, query: "?url", import: "default" }
+  "../../assets/images/hero.{jpg,jpeg,png,webp,gif}",
+  { eager: true, as: "url" }
 ) as Record<string, string>;
 const HERO_IMAGE: string =
   Object.values(heroModules)[0] ||
