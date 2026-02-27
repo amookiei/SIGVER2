@@ -18,10 +18,16 @@ interface AuditPayload {
   details?: Record<string, unknown>;
 }
 
+// ─── Circuit breaker ─────────────────────────────────────
+// audit_logs 테이블이 없을 때 반복 404 에러를 막기 위한 플래그
+let _auditEnabled = true;
+
 // ─── 로그 기록 ────────────────────────────────────────────
-// Supabase audit_logs 테이블에 기록 (없으면 console만)
-// 로그 실패가 핵심 기능을 방해해선 안 됨
+// Supabase audit_logs 테이블에 기록.
+// 테이블이 없으면(404/42P01) 이후 요청을 중단해 콘솔 노이즈 방지.
 export async function logAudit(payload: AuditPayload): Promise<void> {
+  if (!supabase || !_auditEnabled) return;
+
   const entry = {
     action: payload.action,
     resource_id: payload.resourceId ?? null,
@@ -33,12 +39,19 @@ export async function logAudit(payload: AuditPayload): Promise<void> {
     created_at: new Date().toISOString(),
   };
 
-  if (supabase) {
-    try {
-      await supabase.from("audit_logs").insert(entry);
-    } catch {
-      // 로그 실패는 무시 (앱 동작 유지)
+  try {
+    const { error } = await supabase.from("audit_logs").insert(entry);
+    // 테이블 미존재(PostgreSQL 42P01) 또는 HTTP 404 → 이후 요청 비활성화
+    if (
+      error &&
+      (error.code === "42P01" ||
+        (error as { status?: number }).status === 404 ||
+        error.message?.includes("does not exist"))
+    ) {
+      _auditEnabled = false;
     }
+  } catch {
+    // 네트워크 오류 등 예외 → 무시 (앱 동작 유지)
   }
 }
 
