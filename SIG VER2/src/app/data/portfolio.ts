@@ -32,9 +32,10 @@ export interface PortfolioItem {
   order?: number;       // featured 항목 간 노출 순서 (낮을수록 먼저). 생략 시 id 순.
 
   // ── 이미지 ──────────────────────────────────────────────────────────────────
-  thumbnail: string;    // Work 리스트 카드에 보이는 썸네일 이미지 URL.
-  heroImage: string;    // 상세 페이지 상단 풀와이드 히어로 이미지 URL.
-  gallery: string[];    // 상세 페이지 갤러리 이미지 URL 배열. 최소 2장 권장.
+  thumbnail: string;       // Work 리스트 카드에 보이는 썸네일 이미지 URL.
+  thumbnailHover?: string; // (선택) Work 카드 호버 시 교체되는 이미지 URL. 없으면 기본 스케일 효과만 적용.
+  heroImage: string;       // 상세 페이지 상단 풀와이드 히어로 이미지 URL.
+  gallery: string[];       // 상세 페이지 갤러리 이미지 URL 배열. 최소 2장 권장.
 
   // ── 텍스트 콘텐츠 ────────────────────────────────────────────────────────────
   tagline: string;      // 카드 하단 한 줄 요약. 40자 이내 권장.

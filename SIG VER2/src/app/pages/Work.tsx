@@ -54,13 +54,28 @@ function WorkCell({
         >
           {/* Image */}
           <div style={{ aspectRatio: "4/3", overflow: "hidden", position: "relative", backgroundColor: "#F0F0F0" }}>
+            {/* 기본 썸네일 – hoverImage 없을 때만 scale 적용 */}
             <motion.img
               src={item.thumbnail}
               alt={item.title}
               className="w-full h-full object-cover"
-              animate={{ scale: localHover ? 1.05 : 1 }}
+              style={{ position: "absolute", inset: 0 }}
+              animate={{ scale: localHover && !item.thumbnailHover ? 1.05 : 1 }}
               transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
             />
+            {/* 호버 썸네일 – 등록된 경우 크로스페이드 */}
+            {item.thumbnailHover && (
+              <motion.img
+                src={item.thumbnailHover}
+                alt=""
+                aria-hidden
+                className="w-full h-full object-cover"
+                style={{ position: "absolute", inset: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: localHover ? 1 : 0 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+              />
+            )}
             {/* Cursor-tracking hover button */}
             <motion.div
               style={{

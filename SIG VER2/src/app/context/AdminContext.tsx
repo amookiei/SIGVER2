@@ -40,6 +40,7 @@ interface DBRow {
   featured: boolean;
   display_order: number | null;
   thumbnail: string;
+  thumbnail_hover: string | null;
   hero_image: string;
   gallery: string[];
   tagline: string;
@@ -69,6 +70,7 @@ function fromDB(row: DBRow): PortfolioItem {
     featured: row.featured,
     order: row.display_order ?? undefined,
     thumbnail: fixStorageUrl(row.thumbnail),
+    thumbnailHover: row.thumbnail_hover ? fixStorageUrl(row.thumbnail_hover) : undefined,
     heroImage: fixStorageUrl(row.hero_image),
     gallery: (row.gallery ?? []).map(fixStorageUrl),
     tagline: row.tagline,
@@ -94,6 +96,7 @@ function toDB(item: PortfolioItem): DBRow {
     featured: item.featured,
     display_order: item.order ?? null,
     thumbnail: item.thumbnail,
+    thumbnail_hover: item.thumbnailHover ?? null,
     hero_image: item.heroImage,
     gallery: item.gallery,
     tagline: item.tagline,
