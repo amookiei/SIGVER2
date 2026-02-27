@@ -10,17 +10,22 @@ function AdminModal({ onClose }: { onClose: () => void }) {
   const { login } = useAdmin();
   const navigate = useNavigate();
   const [pw, setPw] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    if (login(pw)) {
+  const handleSubmit = async () => {
+    if (isSubmitting || !pw.trim()) return;
+    setIsSubmitting(true);
+    setError(null);
+    const result = await login(pw);
+    setIsSubmitting(false);
+    if (result.success) {
       onClose();
       navigate("/admin");
     } else {
-      setError(true);
+      setError(result.error ?? "암호가 올바르지 않습니다");
       setPw("");
-      setTimeout(() => setError(false), 2000);
       inputRef.current?.focus();
     }
   };
@@ -77,6 +82,8 @@ function AdminModal({ onClose }: { onClose: () => void }) {
           onChange={(e) => setPw(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="암호를 입력하세요"
+          disabled={isSubmitting}
+          autoComplete="current-password"
           style={{
             width: "100%",
             background: "transparent",
@@ -90,14 +97,15 @@ function AdminModal({ onClose }: { onClose: () => void }) {
             marginBottom: "8px",
             boxSizing: "border-box",
             transition: "border-color 0.2s, color 0.2s",
+            opacity: isSubmitting ? 0.5 : 1,
           }}
         />
 
         {/* Error */}
-        <div style={{ height: "18px", marginBottom: "28px" }}>
+        <div style={{ minHeight: "18px", marginBottom: "28px" }}>
           {error && (
             <p style={{ fontFamily: F, fontSize: "11px", color: "#CC2222", letterSpacing: "0.04em" }}>
-              암호가 올바르지 않습니다
+              {error}
             </p>
           )}
         </div>
@@ -122,6 +130,7 @@ function AdminModal({ onClose }: { onClose: () => void }) {
           </button>
           <button
             onClick={handleSubmit}
+            disabled={isSubmitting}
             style={{
               flex: 2,
               background: "#FAFAFA",
@@ -131,11 +140,12 @@ function AdminModal({ onClose }: { onClose: () => void }) {
               fontSize: "12px",
               fontWeight: 700,
               padding: "10px",
-              cursor: "pointer",
+              cursor: isSubmitting ? "default" : "pointer",
               letterSpacing: "0.08em",
+              opacity: isSubmitting ? 0.6 : 1,
             }}
           >
-            로그인 →
+            {isSubmitting ? "확인 중..." : "로그인 →"}
           </button>
         </div>
       </div>
