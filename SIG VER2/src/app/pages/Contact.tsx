@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { contactSchema } from "../../lib/security/validation";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -44,18 +45,63 @@ export function Contact() {
     setIsSubmitting(true);
     setError(null);
 
+    // ── 클라이언트 측 제출 레이트 리밋 ──
+    const CONTACT_RL_KEY = "sig_contact_rl";
+    try {
+      const raw = sessionStorage.getItem(CONTACT_RL_KEY);
+      if (raw) {
+        const { count, firstAt } = JSON.parse(raw) as { count: number; firstAt: number };
+        const windowMs = 10 * 60 * 1000; // 10분 윈도우
+        if (Date.now() - firstAt < windowMs && count >= 3) {
+          setError("잠시 후 다시 시도해주세요. (10분에 최대 3회)");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+    } catch { /* ignore */ }
+
+    // ── Zod 입력 유효성 검사 ──
+    const parsed = contactSchema.safeParse({
+      ...form,
+      services: selectedServices,
+      budget: selectedBudget || undefined,
+    });
+
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0];
+      setError(firstError?.message ?? "입력 내용을 확인해주세요.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const response = await fetch("https://formspree.io/f/xjgepgzn", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          ...form,
-          services: selectedServices.join(", "),
-          budget: selectedBudget,
+          name: parsed.data.name,
+          company: parsed.data.company ?? "",
+          email: parsed.data.email,
+          phone: parsed.data.phone ?? "",
+          message: parsed.data.message,
+          services: (parsed.data.services ?? []).join(", "),
+          budget: parsed.data.budget ?? "",
         }),
       });
 
       if (response.ok) {
+        // 레이트 리밋 카운터 업데이트
+        try {
+          const raw = sessionStorage.getItem(CONTACT_RL_KEY);
+          const existing = raw ? JSON.parse(raw) as { count: number; firstAt: number } : null;
+          const now = Date.now();
+          const windowMs = 10 * 60 * 1000;
+          if (existing && now - existing.firstAt < windowMs) {
+            sessionStorage.setItem(CONTACT_RL_KEY, JSON.stringify({ count: existing.count + 1, firstAt: existing.firstAt }));
+          } else {
+            sessionStorage.setItem(CONTACT_RL_KEY, JSON.stringify({ count: 1, firstAt: now }));
+          }
+        } catch { /* ignore */ }
         setSubmitted(true);
       } else {
         setError("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
