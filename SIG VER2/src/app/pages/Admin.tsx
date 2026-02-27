@@ -27,6 +27,7 @@ const blank: Omit<PortfolioItem, "id"> = {
   featured: false,
   order: undefined,
   thumbnail: "",
+  thumbnailHover: "",
   heroImage: "",
   gallery: [],
   tagline: "",
@@ -75,6 +76,7 @@ function fromForm(form: FormState): Omit<PortfolioItem, "id"> {
     featured: form.featured,
     order: form.featured && form.order ? Number(form.order) : undefined,
     thumbnail: form.thumbnail.trim(),
+    thumbnailHover: form.thumbnailHover?.trim() || undefined,
     heroImage: form.heroImage.trim(),
     gallery: form.galleryUrls.map((u) => u.trim()).filter(Boolean),
     tagline: form.tagline.trim(),
@@ -529,8 +531,9 @@ function EditModal({
               >
                 <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, lineHeight: 2, margin: 0 }}>
                   <span style={{ color: TEXT2, letterSpacing: "0.08em", fontSize: "10px" }}>권장 규격 — JPG 형식</span><br />
-                  썸네일 &nbsp;&nbsp;800 × 600 px &nbsp;·&nbsp; 4:3 &nbsp;·&nbsp; 300 KB 이하<br />
-                  히어로 &nbsp;&nbsp;&nbsp;1920 × 1080 px &nbsp;·&nbsp; 16:9 &nbsp;·&nbsp; 800 KB 이하<br />
+                  썸네일 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;800 × 600 px &nbsp;·&nbsp; 4:3 &nbsp;·&nbsp; 300 KB 이하<br />
+                  썸네일(호버) &nbsp;800 × 600 px &nbsp;·&nbsp; 4:3 &nbsp;·&nbsp; 300 KB 이하 (선택)<br />
+                  히어로 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1920 × 1080 px &nbsp;·&nbsp; 16:9 &nbsp;·&nbsp; 800 KB 이하<br />
                   갤러리 &nbsp;&nbsp;1200 × 800 px &nbsp;·&nbsp; 3:2 &nbsp;·&nbsp; 400 KB 이하
                 </p>
               </div>
@@ -558,6 +561,18 @@ function EditModal({
                   handleUpload(file, "thumbnail", (url) => set("thumbnail", url))
                 }
                 onChange={(url) => set("thumbnail", url)}
+                previewHeight={70}
+              />
+
+              {/* 썸네일 호버 */}
+              <ImageUploadField
+                label="썸네일 – 호버 이미지 (800 × 600, 선택)"
+                value={form.thumbnailHover ?? ""}
+                uploading={!!uploading["thumbnailHover"]}
+                onFile={(file) =>
+                  handleUpload(file, "thumbnailHover", (url) => set("thumbnailHover", url))
+                }
+                onChange={(url) => set("thumbnailHover", url)}
                 previewHeight={70}
               />
 

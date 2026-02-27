@@ -65,6 +65,7 @@ export const portfolioItemSchema = z.object({
   featured: z.boolean(),
   order: z.number().int().nullable().optional(),
   thumbnail: z.string().max(500).trim(),
+  thumbnailHover: z.string().max(500).trim().optional(),
   heroImage: z.string().max(500).trim(),
   gallery: z.array(z.string().max(500).trim()).max(50),
 });
