@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
+import { useAbout } from "../context/AboutContext";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -8,26 +9,10 @@ const BG = "#FAFAFA";
 const TEXT2 = "#666666";
 const TEXT3 = "#999999";
 
-const team = [
-  { name: "김지훈", role: "Creative Director", desc: "10년 경력의 브랜드 디자이너. 삼성, 현대 등 대형 클라이언트와 협업.", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500" },
-  { name: "박서연", role: "UX Lead", desc: "사용자 중심 디자인의 전문가. 복잡한 서비스를 단순하게 만드는 것이 특기.", image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500" },
-  { name: "이민우", role: "Motion Designer", desc: "인터랙션과 모션 디자인 전문. GSAP, After Effects 고수.", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500" },
-];
-
-const values = [
-  { num: "01", title: "본질에 집중", desc: "우리는 비주얼만 만드는 게 아닙니다. 브랜드의 본질을 깊이 이해하고 그것을 가장 직관적인 방식으로 표현합니다." },
-  { num: "02", title: "경험을 설계", desc: "모든 터치포인트가 하나의 경험으로 연결되도록 설계합니다. 로고부터 디지털 프로덕트까지 일관된 브랜드 세계를 구축합니다." },
-  { num: "03", title: "함께 성장", desc: "클라이언트와의 파트너십을 중시합니다. 단순한 용역이 아닌, 장기적인 브랜드 성장을 함께 만들어 갑니다." },
-];
-
-const stats = [
-  { num: "8+", label: "Years" },
-  { num: "120+", label: "Projects" },
-  { num: "60+", label: "Clients" },
-  { num: "4", label: "Awards" },
-];
-
 export function About() {
+  const { about } = useAbout();
+  const { studio, stats, values, team } = about;
+
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
 
@@ -49,7 +34,7 @@ export function About() {
               transition={{ duration: 0.88, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
               style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(48px, 10vw, 130px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 0px", textTransform: "uppercase" }}
             >
-              WE MAKE
+              {studio.headline1}
             </motion.h1>
           </div>
           <div style={{ overflow: "hidden" }}>
@@ -59,7 +44,7 @@ export function About() {
               transition={{ duration: 0.88, delay: 0.18, ease: [0.76, 0, 0.24, 1] }}
               style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(48px, 10vw, 130px)", color: "transparent", WebkitTextStroke: `1px ${DARK}`, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 40px", textTransform: "uppercase" }}
             >
-              BRANDS MOVE.
+              {studio.headline2}
             </motion.h1>
           </div>
           <motion.div
@@ -69,22 +54,19 @@ export function About() {
             transition={{ duration: 0.7, delay: 0.4 }}
           >
             <p style={{ fontFamily: F, fontSize: "17px", color: TEXT2, lineHeight: 1.8 }}>
-              SIG Studio는 2024년 서울에서 시작된 디자인 에이전시입니다. 브랜드 아이덴티티, 디지털 경험, 마케팅 캠페인까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다.
+              {studio.description1}
             </p>
             <p style={{ fontFamily: F, fontSize: "17px", color: TEXT3, lineHeight: 1.8 }}>
-              정부지원사업부터 대기업 리브랜딩까지 다양한 클라이언트와 협업하며, 문제를 해결하는 디자인을 만들어냅니다.
+              {studio.description2}
             </p>
           </motion.div>
         </div>
 
         {/* Stats row */}
-        <div
-          className="grid grid-cols-2 md:grid-cols-4"
-          style={{ borderTop: BORDER }}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-4" style={{ borderTop: BORDER }}>
           {stats.map((stat, i) => (
             <motion.div
-              key={stat.label}
+              key={`${stat.label}-${i}`}
               style={{ padding: "28px 32px", borderRight: i < stats.length - 1 ? BORDER : "none" }}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -116,12 +98,14 @@ export function About() {
           >
             OUR VALUES
           </motion.h2>
-          <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 48px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>03</span>
+          <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 48px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>
+            {String(values.length).padStart(2, "0")}
+          </span>
         </div>
 
         {values.map((v, i) => (
           <motion.div
-            key={v.num}
+            key={v.id}
             className="px-8 md:px-12 lg:px-16 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 items-start"
             style={{ borderBottom: BORDER }}
             initial={{ opacity: 0, y: 20 }}
@@ -171,7 +155,7 @@ export function About() {
         <div className="grid grid-cols-1 md:grid-cols-3">
           {team.map((member, i) => (
             <motion.div
-              key={member.name}
+              key={member.id}
               style={{ borderRight: i < team.length - 1 ? "1px solid #1F1F1F" : "none", padding: "0" }}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}

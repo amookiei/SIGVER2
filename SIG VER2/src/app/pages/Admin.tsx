@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { useAdmin } from "../context/AdminContext";
+import { AdminAbout } from "./AdminAbout";
 import type { PortfolioItem } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 
@@ -799,8 +800,9 @@ function EditModal({
 // ─── Main Admin Page ──────────────────────────────────────
 export function Admin() {
   const navigate = useNavigate();
-  const { isAdmin, logout, items, loading, dbStatus, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
+  const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
+  const [adminPage, setAdminPage] = useState<"portfolio" | "about">("portfolio");
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState<FormState>(blankForm());
@@ -880,9 +882,29 @@ export function Admin() {
           >
             SIG ADMIN
           </span>
-          <span style={{ color: TEXT3, fontSize: "11px", letterSpacing: "0.06em" }}>
-            포트폴리오 관리
-          </span>
+          {/* 페이지 탭 */}
+          <div style={{ display: "flex", gap: "2px", background: "#0A0A0A", padding: "3px", border: BORDER }}>
+            {(["portfolio", "about"] as const).map((page) => (
+              <button
+                key={page}
+                onClick={() => setAdminPage(page)}
+                style={{
+                  fontFamily: F,
+                  fontSize: "10px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "5px 14px",
+                  border: "none",
+                  cursor: "pointer",
+                  background: adminPage === page ? TEXT : "none",
+                  color: adminPage === page ? BG : TEXT3,
+                  fontWeight: adminPage === page ? 700 : 400,
+                }}
+              >
+                {page === "portfolio" ? "포트폴리오" : "About 페이지"}
+              </button>
+            ))}
+          </div>
         </div>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
           {loading && (
@@ -943,7 +965,56 @@ export function Admin() {
         </div>
       </div>
 
-      {/* ─── Content ─────────────────────────────────────── */}
+      {/* ─── DB 오류 진단 배너 ──────────────────────────────── */}
+      {dbStatus === "error" && dbError && (
+        <div
+          style={{
+            background: "#1A0A00",
+            borderBottom: "1px solid #663300",
+            padding: "14px 32px",
+            display: "flex",
+            gap: "16px",
+            alignItems: "flex-start",
+          }}
+        >
+          <span style={{ color: "#FF8844", fontSize: "12px", flexShrink: 0, marginTop: "1px" }}>⚠ DB 오류</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontFamily: F, fontSize: "12px", color: "#CC6622", margin: "0 0 6px" }}>
+              {dbError}
+            </p>
+            {dbError.includes("thumbnail_hover") && (
+              <details>
+                <summary style={{ fontFamily: F, fontSize: "11px", color: TEXT3, cursor: "pointer", letterSpacing: "0.06em" }}>
+                  → Supabase SQL Editor에서 아래 마이그레이션을 실행하세요
+                </summary>
+                <pre
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "11px",
+                    color: "#88CCAA",
+                    background: "#0A0A0A",
+                    border: BORDER,
+                    padding: "12px 14px",
+                    marginTop: "8px",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-all",
+                    userSelect: "all",
+                  }}
+                >
+{`ALTER TABLE portfolio_items
+  ADD COLUMN IF NOT EXISTS thumbnail_hover TEXT;`}
+                </pre>
+              </details>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── About 탭 ────────────────────────────────────── */}
+      {adminPage === "about" && <AdminAbout />}
+
+      {/* ─── Portfolio 탭 Content ─────────────────────────── */}
+      {adminPage === "portfolio" && <>
       <div style={{ padding: "40px 32px", maxWidth: "1100px", margin: "0 auto" }}>
         {/* Toolbar */}
         <div
@@ -1216,6 +1287,7 @@ export function Admin() {
           allItems={items}
         />
       )}
+      </>}
     </div>
   );
 }
