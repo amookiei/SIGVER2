@@ -152,11 +152,12 @@ export function About() {
           </span>
         </div>
 
+        {/* 앞 3명 — 사진 + 이름 + 직급 + 설명 */}
         <div className="grid grid-cols-1 md:grid-cols-3">
-          {team.map((member, i) => (
+          {team.slice(0, 3).map((member, i) => (
             <motion.div
               key={member.id}
-              style={{ borderRight: i < team.length - 1 ? "1px solid #1F1F1F" : "none", padding: "0" }}
+              style={{ borderRight: i < Math.min(team.length, 3) - 1 ? "1px solid #1F1F1F" : "none", padding: "0" }}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -186,6 +187,35 @@ export function About() {
             </motion.div>
           ))}
         </div>
+
+        {/* 4번째 이후 — 이름 + 직급만 */}
+        {team.length > 3 && (
+          <div
+            className="grid grid-cols-2 md:grid-cols-4"
+            style={{ borderTop: "1px solid #1F1F1F" }}
+          >
+            {team.slice(3).map((member, i) => (
+              <motion.div
+                key={member.id}
+                style={{
+                  padding: "28px 28px",
+                  borderRight: i < team.slice(3).length - 1 ? "1px solid #1F1F1F" : "none",
+                }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.07 }}
+              >
+                <p style={{ fontFamily: F, fontWeight: 700, fontSize: "15px", color: "#FAFAFA", letterSpacing: "-0.01em", marginBottom: "6px" }}>
+                  {member.name}
+                </p>
+                <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {member.role}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── CTA ── */}
