@@ -1038,8 +1038,8 @@ export function Home() {
     <div style={{ backgroundColor: BG }}>
       <HeroSection />
       <MarqueeSection />
-      <ServicesSection />
       <SelectedWorksSection />
+      <ServicesSection />
       <AboutPreviewSection />
       <CTASection />
     </div>
