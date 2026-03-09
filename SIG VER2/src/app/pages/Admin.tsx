@@ -799,7 +799,7 @@ function EditModal({
 // ─── Main Admin Page ──────────────────────────────────────
 export function Admin() {
   const navigate = useNavigate();
-  const { isAdmin, logout, items, loading, dbStatus, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
+  const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -942,6 +942,51 @@ export function Admin() {
           </button>
         </div>
       </div>
+
+      {/* ─── DB 오류 진단 배너 ──────────────────────────────── */}
+      {dbStatus === "error" && dbError && (
+        <div
+          style={{
+            background: "#1A0A00",
+            borderBottom: "1px solid #663300",
+            padding: "14px 32px",
+            display: "flex",
+            gap: "16px",
+            alignItems: "flex-start",
+          }}
+        >
+          <span style={{ color: "#FF8844", fontSize: "12px", flexShrink: 0, marginTop: "1px" }}>⚠ DB 오류</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontFamily: F, fontSize: "12px", color: "#CC6622", margin: "0 0 6px" }}>
+              {dbError}
+            </p>
+            {dbError.includes("thumbnail_hover") && (
+              <details>
+                <summary style={{ fontFamily: F, fontSize: "11px", color: TEXT3, cursor: "pointer", letterSpacing: "0.06em" }}>
+                  → Supabase SQL Editor에서 아래 마이그레이션을 실행하세요
+                </summary>
+                <pre
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "11px",
+                    color: "#88CCAA",
+                    background: "#0A0A0A",
+                    border: BORDER,
+                    padding: "12px 14px",
+                    marginTop: "8px",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-all",
+                    userSelect: "all",
+                  }}
+                >
+{`ALTER TABLE portfolio_items
+  ADD COLUMN IF NOT EXISTS thumbnail_hover TEXT;`}
+                </pre>
+              </details>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ─── Content ─────────────────────────────────────── */}
       <div style={{ padding: "40px 32px", maxWidth: "1100px", margin: "0 auto" }}>

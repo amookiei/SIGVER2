@@ -1,3 +1,39 @@
+// =============================================================================
+// Supabase 스키마 마이그레이션 SQL (최초 1회 실행)
+// Supabase → SQL Editor에서 아래를 실행한 뒤 배포하세요.
+//
+// ── portfolio_items 테이블 초기 생성 ──────────────────────────────────────
+// CREATE TABLE IF NOT EXISTS portfolio_items (
+//   id              BIGSERIAL PRIMARY KEY,
+//   slug            TEXT NOT NULL UNIQUE,
+//   title           TEXT NOT NULL,
+//   client          TEXT NOT NULL,
+//   category        TEXT NOT NULL,
+//   year            INT  NOT NULL,
+//   featured        BOOLEAN NOT NULL DEFAULT false,
+//   display_order   INT,
+//   thumbnail       TEXT NOT NULL DEFAULT '',
+//   thumbnail_hover TEXT,          -- 호버 이미지 (선택)
+//   hero_image      TEXT NOT NULL DEFAULT '',
+//   gallery         TEXT[] NOT NULL DEFAULT '{}',
+//   tagline         TEXT NOT NULL DEFAULT '',
+//   description     TEXT NOT NULL DEFAULT '',
+//   challenge       TEXT,
+//   solution        TEXT,
+//   role            TEXT NOT NULL DEFAULT '',
+//   duration        TEXT NOT NULL DEFAULT '',
+//   tags            TEXT[] NOT NULL DEFAULT '{}',
+//   live_url        TEXT,
+//   next_project    TEXT
+// );
+// ALTER TABLE portfolio_items ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "public_read"  ON portfolio_items FOR SELECT USING (true);
+// CREATE POLICY "anon_write"   ON portfolio_items FOR ALL TO anon USING (true) WITH CHECK (true);
+//
+// ── 기존 테이블에 thumbnail_hover 칼럼 추가 (이미 테이블이 있는 경우) ─────
+// ALTER TABLE portfolio_items ADD COLUMN IF NOT EXISTS thumbnail_hover TEXT;
+// =============================================================================
+
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 import { portfolioItems as defaultItems } from "../data/portfolio";
@@ -124,6 +160,7 @@ interface AdminContextType {
   items: PortfolioItem[];
   loading: boolean;
   dbStatus: "none" | "synced" | "error";
+  dbError: string | null;          // 마지막 DB 오류 메시지 (스키마 오류 진단용)
   updateItem: (id: number, data: Partial<PortfolioItem>) => Promise<void>;
   addItem: (data: Omit<PortfolioItem, "id">) => Promise<void>;
   deleteItem: (id: number) => Promise<void>;
@@ -156,6 +193,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [items, setItemsState] = useState<PortfolioItem[]>(loadCache);
   const [loading, setLoading] = useState(isSupabaseReady);
   const [dbStatus, setDbStatus] = useState<"none" | "synced" | "error">("none");
+  const [dbError, setDbError] = useState<string | null>(null);
 
   const fetchFromDB = useCallback(async () => {
     if (!supabase) return;
@@ -260,9 +298,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase.from("portfolio_items").upsert(toDB(updated));
         if (!error) {
           setDbStatus("synced");
+          setDbError(null);
           await logAudit({ action: "portfolio.update", resourceId: id });
         } else {
           setDbStatus("error");
+          setDbError(error.message ?? "알 수 없는 오류");
         }
       }
     }
@@ -281,9 +321,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.from("portfolio_items").insert(toDB(newItem));
       if (!error) {
         setDbStatus("synced");
+        setDbError(null);
         await logAudit({ action: "portfolio.create", resourceId: id });
       } else {
         setDbStatus("error");
+        setDbError(error.message ?? "알 수 없는 오류");
       }
     }
   };
@@ -297,9 +339,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.from("portfolio_items").delete().eq("id", id);
       if (!error) {
         setDbStatus("synced");
+        setDbError(null);
         await logAudit({ action: "portfolio.delete", resourceId: id });
       } else {
         setDbStatus("error");
+        setDbError(error.message ?? "알 수 없는 오류");
       }
     }
   };
@@ -316,9 +360,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         .insert(defaultItems.map(toDB));
       if (!error) {
         setDbStatus("synced");
+        setDbError(null);
         await logAudit({ action: "portfolio.reset" });
       } else {
         setDbStatus("error");
+        setDbError(error.message ?? "알 수 없는 오류");
       }
     }
   };
@@ -341,6 +387,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         items,
         loading,
         dbStatus,
+        dbError,
         updateItem,
         addItem,
         deleteItem,
