@@ -830,8 +830,8 @@ function ServiceCard({
         <span style={{ fontFamily: F, fontSize: "12px", color: TEXT3 }}>{svc.count}</span>
       </motion.div>
 
-      {/* Image — desktop: hover reveal / mobile: always visible, grayscale↔color */}
-      <motion.div
+      {/* Image — 항상 표시, 기본 그레이스케일 → 호버 시 컬러 */}
+      <div
         style={{
           position: "absolute",
           bottom: 0,
@@ -840,13 +840,8 @@ function ServiceCard({
           height: "55%",
           zIndex: 1,
         }}
-        animate={{
-          opacity: isMobile ? 1 : (isActive ? 1 : 0),
-          y: isMobile ? 0 : (isActive ? 0 : 20),
-        }}
-        transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        {/* Gradient fade — avoid "transparent" keyword */}
+        {/* Gradient fade */}
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "60px", background: `linear-gradient(to bottom, #FAFAFA, rgba(250,250,250,0))`, zIndex: 2 }} />
         <img
           src={svc.image}
@@ -855,20 +850,11 @@ function ServiceCard({
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            filter: isMobile ? (mobileInView ? "grayscale(0%)" : "grayscale(100%)") : "none",
-            transition: "filter 0.65s ease",
+            filter: isActive ? "grayscale(0%)" : "grayscale(100%)",
+            transition: "filter 0.55s ease",
           }}
         />
-      </motion.div>
-
-      {/* CREAM bg overlay — desktop hover only */}
-      {!isMobile && (
-        <motion.div
-          style={{ position: "absolute", inset: 0, backgroundColor: CREAM, zIndex: 0 }}
-          animate={{ opacity: isActive ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        />
-      )}
+      </div>
     </motion.div>
   );
 }
