@@ -120,18 +120,18 @@ export function CustomCursor() {
             />
           </motion.div>
         ) : (
-          /* 기본 / 호버 상태: ✱ 심볼 */
+          /* 기본 / 호버 상태: 심볼 — 48px 고정 렌더링 후 scale로 크기 제어 (업스케일 화질깨짐 방지) */
           <motion.div
             key="asterisk"
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: isHover ? 2.4 : 1, opacity: 1 }}
+            animate={{ scale: isHover ? 1 : 0.54, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <LogoSymbol
               style={{
-                width: "18px",
-                height: "18px",
+                width: "48px",
+                height: "48px",
                 display: "block",
                 animationName: "sigSpin",
                 animationDuration: spinDuration,
