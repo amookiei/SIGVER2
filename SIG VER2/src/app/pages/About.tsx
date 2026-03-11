@@ -64,23 +64,25 @@ export function About() {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-4" style={{ borderTop: BORDER }}>
-          {stats.map((stat, i) => (
-            <motion.div
-              key={`${stat.label}-${i}`}
-              style={{ padding: "28px 32px", borderRight: i < stats.length - 1 ? BORDER : "none" }}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 + i * 0.08 }}
-            >
-              <p style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(28px, 4vw, 52px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 1, marginBottom: "6px" }}>
-                {stat.num}
-              </p>
-              <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
+        <div className="px-8 md:px-16 lg:px-28" style={{ borderTop: BORDER }}>
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={`${stat.label}-${i}`}
+                style={{ padding: "28px 24px 28px 0", borderRight: i < stats.length - 1 ? BORDER : "none" }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.08 }}
+              >
+                <p style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(28px, 4vw, 52px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 1, marginBottom: "6px" }}>
+                  {stat.num}
+                </p>
+                <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -157,67 +159,71 @@ export function About() {
         </div>
 
         {/* 앞 3명 — 사진 + 이름 + 직급 + 설명 */}
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          {team.slice(0, 3).map((member, i) => (
-            <motion.div
-              key={member.id}
-              style={{ borderRight: i < Math.min(team.length, 3) - 1 ? "1px solid #1F1F1F" : "none", padding: "0" }}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-            >
-              <div style={{ overflow: "hidden", aspectRatio: "3/4", backgroundColor: "#141414" }}>
-                <motion.img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover"
-                  style={{ filter: "grayscale(1)", opacity: 0.85 }}
-                  whileHover={{ scale: 1.04, filter: "grayscale(0)", opacity: 1 }}
-                  transition={{ duration: 0.55 }}
-                />
-              </div>
-              <div style={{ padding: "24px 28px", borderTop: "1px solid #1F1F1F" }}>
-                <p style={{ fontFamily: F, fontWeight: 700, fontSize: "17px", color: "#FAFAFA", letterSpacing: "-0.01em", marginBottom: "4px" }}>
-                  {member.name}
-                </p>
-                <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "12px" }}>
-                  {member.role}
-                </p>
-                <p style={{ fontFamily: F, fontSize: "13px", color: "#555555", lineHeight: 1.6 }}>
-                  {member.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        <div className="px-8 md:px-16 lg:px-28">
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            {team.slice(0, 3).map((member, i) => (
+              <motion.div
+                key={member.id}
+                style={{ borderRight: i < Math.min(team.length, 3) - 1 ? "1px solid #1F1F1F" : "none" }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+              >
+                <div style={{ overflow: "hidden", aspectRatio: "3/4", backgroundColor: "#141414" }}>
+                  <motion.img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover"
+                    style={{ filter: "grayscale(1)", opacity: 0.85 }}
+                    whileHover={{ scale: 1.04, filter: "grayscale(0)", opacity: 1 }}
+                    transition={{ duration: 0.55 }}
+                  />
+                </div>
+                <div style={{ padding: "24px 0 24px 0", borderTop: "1px solid #1F1F1F", paddingRight: i < Math.min(team.length, 3) - 1 ? "28px" : "0" }}>
+                  <p style={{ fontFamily: F, fontWeight: 700, fontSize: "17px", color: "#FAFAFA", letterSpacing: "-0.01em", marginBottom: "4px" }}>
+                    {member.name}
+                  </p>
+                  <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "12px" }}>
+                    {member.role}
+                  </p>
+                  <p style={{ fontFamily: F, fontSize: "13px", color: "#555555", lineHeight: 1.6 }}>
+                    {member.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* 4번째 이후 — 이름 + 직급만 */}
         {team.length > 3 && (
           <div
-            className="grid grid-cols-2 md:grid-cols-4"
+            className="px-8 md:px-16 lg:px-28"
             style={{ borderTop: "1px solid #1F1F1F" }}
           >
-            {team.slice(3).map((member, i) => (
-              <motion.div
-                key={member.id}
-                style={{
-                  padding: "28px 28px",
-                  borderRight: i < team.slice(3).length - 1 ? "1px solid #1F1F1F" : "none",
-                }}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.07 }}
-              >
-                <p style={{ fontFamily: F, fontWeight: 700, fontSize: "15px", color: "#FAFAFA", letterSpacing: "-0.01em", marginBottom: "6px" }}>
-                  {member.name}
-                </p>
-                <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  {member.role}
-                </p>
-              </motion.div>
-            ))}
+            <div className="grid grid-cols-2 md:grid-cols-4">
+              {team.slice(3).map((member, i) => (
+                <motion.div
+                  key={member.id}
+                  style={{
+                    padding: "28px 24px 28px 0",
+                    borderRight: i < team.slice(3).length - 1 ? "1px solid #1F1F1F" : "none",
+                  }}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                >
+                  <p style={{ fontFamily: F, fontWeight: 700, fontSize: "15px", color: "#FAFAFA", letterSpacing: "-0.01em", marginBottom: "6px" }}>
+                    {member.name}
+                  </p>
+                  <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {member.role}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         )}
       </section>
