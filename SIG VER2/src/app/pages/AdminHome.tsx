@@ -189,6 +189,17 @@ export function AdminHome() {
         </div>
       </div>
 
+      {/* ── Section 0: Hero ─────────────────────────────── */}
+      <div style={{ marginBottom: "48px" }}>
+        <p style={sectionHead}>히어로 섹션 이미지</p>
+        <ImageField
+          label="히어로 이미지 (1920 × 1080 권장) — 비워두면 기본 이미지 사용"
+          value={draft.heroImage}
+          onChange={(url) => setDraft({ ...draft, heroImage: url })}
+          uploadKey="hero"
+        />
+      </div>
+
       {/* ── Section 1: WHAT WE DO ───────────────────────── */}
       <div style={{ marginBottom: "48px" }}>
         <p style={sectionHead}>WHAT WE DO — 서비스 카드 (4개)</p>
