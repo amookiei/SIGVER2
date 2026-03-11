@@ -19,7 +19,7 @@ export function About() {
 
       {/* ── Hero ── */}
       <div style={{ borderBottom: BORDER, paddingTop: "72px" }}>
-        <div className="px-8 md:px-12 lg:px-16 pt-16 pb-14">
+        <div className="px-8 md:px-16 lg:px-28 pt-16 pb-14">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -87,7 +87,7 @@ export function About() {
       {/* ── Values ── */}
       <section style={{ borderBottom: BORDER }}>
         <div
-          className="px-8 md:px-12 lg:px-16 py-10 flex items-center justify-between"
+          className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"
           style={{ borderBottom: BORDER }}
         >
           <motion.h2
@@ -107,7 +107,7 @@ export function About() {
         {values.map((v, i) => (
           <motion.div
             key={v.id}
-            className="px-8 md:px-12 lg:px-16 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 items-start"
+            className="px-8 md:px-16 lg:px-28 py-10 grid grid-cols-1 md:grid-cols-4 gap-6 items-start"
             style={{ borderBottom: BORDER }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ export function About() {
       {/* ── Team ── */}
       <section style={{ borderBottom: BORDER, backgroundColor: DARK }}>
         <div
-          className="px-8 md:px-12 lg:px-16 py-10 flex items-center justify-between"
+          className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"
           style={{ borderBottom: "1px solid #1F1F1F" }}
         >
           <motion.h2
@@ -224,7 +224,7 @@ export function About() {
 
       {/* ── CTA ── */}
       <section style={{ borderBottom: BORDER }}>
-        <div className="px-8 md:px-12 lg:px-16 py-20 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+        <div className="px-8 md:px-16 lg:px-28 py-20 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

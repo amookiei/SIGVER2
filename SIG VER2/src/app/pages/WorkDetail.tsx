@@ -26,7 +26,7 @@ export function WorkDetail() {
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
       {/* Back nav */}
-      <div className="px-8 md:px-12 lg:px-16 pt-24 pb-6" style={{ borderBottom: BORDER }}>
+      <div className="px-8 md:px-16 lg:px-28 pt-24 pb-6" style={{ borderBottom: BORDER }}>
         <Link to="/work" data-cursor="hover-link">
           <motion.div
             className="inline-flex items-center gap-3"
@@ -56,7 +56,7 @@ export function WorkDetail() {
 
       {/* Project Info */}
       <div style={{ borderBottom: BORDER }}>
-        <div className="px-8 md:px-12 lg:px-16 py-14">
+        <div className="px-8 md:px-16 lg:px-28 py-14">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             {/* Title + Description */}
             <div className="lg:col-span-2">
@@ -180,7 +180,7 @@ export function WorkDetail() {
       {/* Challenge & Solution */}
       {(item.challenge || item.solution) && (
         <div style={{ borderBottom: BORDER }}>
-          <div className="px-8 md:px-12 lg:px-16 py-14 grid grid-cols-1 md:grid-cols-2 gap-0">
+          <div className="px-8 md:px-16 lg:px-28 py-14 grid grid-cols-1 md:grid-cols-2 gap-0">
             {item.challenge && (
               <motion.div
                 style={{ paddingRight: "48px", borderRight: "1px solid #EEEEEE" }}
@@ -292,7 +292,7 @@ export function WorkDetail() {
         <div style={{ backgroundColor: BG }}>
           <Link to={`/work/${nextItem.slug}`} data-cursor="view">
             <motion.div
-              className="px-8 md:px-12 lg:px-16 py-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+              className="px-8 md:px-16 lg:px-28 py-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
               style={{ borderBottom: BORDER }}
               whileHover={{ backgroundColor: "#F5F3EF" }}
               transition={{ duration: 0.3 }}

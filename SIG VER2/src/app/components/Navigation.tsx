@@ -34,7 +34,7 @@ export function Navigation() {
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 px-8 md:px-12 lg:px-16"
+        className="fixed top-0 left-0 right-0 z-50 px-8 md:px-16 lg:px-28"
         animate={{
           backgroundColor: scrolled ? "rgba(250,250,250,0.92)" : "#FAFAFA",
           backdropFilter: scrolled ? "blur(20px)" : "blur(0px)",

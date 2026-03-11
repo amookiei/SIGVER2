@@ -10,6 +10,8 @@ import { LogoSymbol } from "../components/LogoSymbol";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAdmin } from "../context/AdminContext";
+import { useHomeContent } from "../context/HomeContentContext";
+import type { HomeService } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -352,7 +354,7 @@ function SelectedWorksSection() {
     <section ref={sectionRef} style={{ borderBottom: BORDER }}>
       {/* Header */}
       <div
-        className="px-8 md:px-12 lg:px-16 pt-16 pb-10 flex items-end justify-between"
+        className="px-8 md:px-16 lg:px-28 pt-16 pb-10 flex items-end justify-between"
         style={{ borderBottom: BORDER }}
       >
         <motion.h2
@@ -731,7 +733,7 @@ function MarqueeSection() {
       >
         {items.map((item, i) => (
           <span key={i} className="inline-flex items-center">
-            <span style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(13px, 1.8vw, 21px)", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase", padding: "0 20px" }}>
+            <span style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(13px, 1.8vw, 21px)", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase", padding: "0 10px" }}>
               {item}
             </span>
             <LogoSymbol style={{ color: "#CCCCCC", width: "14px", height: "14px", marginRight: "4px", flexShrink: 0 }} />
@@ -743,38 +745,7 @@ function MarqueeSection() {
 }
 
 // ─── SERVICES ─────────────────────────────────────────────
-const services = [
-  {
-    id: "01",
-    title: "BRANDING\n& IDENTITY",
-    desc: "브랜드 전략 수립부터 시각 아이덴티티까지, 기업의 본질을 정제된 언어로 시각화합니다.",
-    count: "(12)",
-    image: "https://images.unsplash.com/photo-1658863025658-4a259cc68fc9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-  },
-  {
-    id: "02",
-    title: "WEB &\nDIGITAL",
-    desc: "반응형 웹, 앱 UI/UX, 인터랙티브 경험 설계. 사용자 중심의 디지털 프로덕트를 만듭니다.",
-    count: "(08)",
-    image: "https://images.unsplash.com/photo-1750056393331-82e69d28c9d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-  },
-  {
-    id: "03",
-    title: "MARKETING\nCAMPAIGN",
-    desc: "캠페인, 콘텐츠 제작, 퍼포먼스 마케팅. 브랜드 메시지를 세상에 효과적으로 전달합니다.",
-    count: "(15)",
-    image: "https://images.unsplash.com/photo-1759308553474-ce2c768a6b7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-  },
-  {
-    id: "04",
-    title: "GOVERNMENT\nSUPPORT",
-    desc: "정부지원사업 기반 예산 디자인 실행 최적화.",
-    count: "(21)",
-    image: "https://images.unsplash.com/photo-1758384077411-6a06e201a177?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-  },
-];
-
-type ServiceItem = typeof services[0];
+type ServiceItem = HomeService;
 
 function ServiceCard({
   svc,
@@ -782,12 +753,14 @@ function ServiceCard({
   hoveredIdx,
   setHoveredIdx,
   isMobile,
+  total = 4,
 }: {
   svc: ServiceItem;
   idx: number;
   hoveredIdx: number | null;
   setHoveredIdx: (i: number | null) => void;
   isMobile: boolean;
+  total?: number;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mobileInView, setMobileInView] = useState(false);
@@ -810,7 +783,7 @@ function ServiceCard({
     <motion.div
       ref={cardRef}
       style={{
-        borderRight: idx < services.length - 1 ? BORDER : "none",
+        borderRight: idx < total - 1 ? BORDER : "none",
         position: "relative",
         overflow: "hidden",
         minHeight: "420px",
@@ -871,6 +844,7 @@ function ServiceCard({
 function ServicesSection() {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const { content } = useHomeContent();
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -882,7 +856,7 @@ function ServicesSection() {
 
   return (
     <section style={{ borderBottom: BORDER }}>
-      <div className="flex items-center justify-between px-8 md:px-12 lg:px-16 py-10" style={{ borderBottom: BORDER }}>
+      <div className="flex items-center justify-between px-8 md:px-16 lg:px-28 py-10" style={{ borderBottom: BORDER }}>
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -892,11 +866,13 @@ function ServicesSection() {
         >
           WHAT WE DO
         </motion.h2>
-        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>04</span>
+        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>
+          {String(content.services.length).padStart(2, "0")}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        {services.map((svc, idx) => (
+        {content.services.map((svc, idx) => (
           <ServiceCard
             key={svc.id}
             svc={svc}
@@ -904,6 +880,7 @@ function ServicesSection() {
             hoveredIdx={hoveredIdx}
             setHoveredIdx={setHoveredIdx}
             isMobile={isMobile}
+            total={content.services.length}
           />
         ))}
       </div>
@@ -912,16 +889,14 @@ function ServicesSection() {
 }
 
 // ─── ABOUT PREVIEW ────────────────────────────────────────
-const ABOUT_IMAGE =
-  "https://images.unsplash.com/photo-1765371513276-a74f1ecbcf7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080";
-
 function AboutPreviewSection() {
+  const { content } = useHomeContent();
   return (
     <section style={{ borderBottom: BORDER }}>
       <div className="grid grid-cols-1 md:grid-cols-2">
         <div style={{ overflow: "hidden", aspectRatio: "4/3", position: "relative", backgroundColor: "#F0F0F0", borderRight: BORDER }}>
           <motion.img
-            src={ABOUT_IMAGE}
+            src={content.aboutImage}
             alt="SIG Studio"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
             initial={{ scale: 1.08 }}
@@ -940,10 +915,7 @@ function AboutPreviewSection() {
           >
             About Us
           </motion.p>
-          {[
-            "SIG STUDIO는 디자인이 단순한 비주얼이 아닌, 비즈니스 전략이 되는 순간을 만듭니다.",
-            "전문 디자인 파트너로서, 효율적인 예산 운용과 최대의 결과를 도출합니다.",
-          ].map((line, i) => (
+          {[content.aboutLine1, content.aboutLine2].map((line, i) => (
             <motion.p
               key={i}
               initial={{ opacity: 0, y: 16 }}
@@ -996,7 +968,7 @@ function CTASection() {
           }}
         />
       </div>
-      <div className="relative z-10 px-8 md:px-12 lg:px-16 py-28 md:py-40">
+      <div className="relative z-10 px-8 md:px-16 lg:px-28 py-28 md:py-40">
         <div className="max-w-[900px]">
           {["READY TO", "START YOUR", "PROJECT?"].map((line, i) => (
             <motion.h2
@@ -1029,7 +1001,7 @@ function CTASection() {
           </motion.div>
         </div>
       </div>
-      <div style={{ borderTop: "1px solid #1F1F1F" }} className="flex justify-between items-center px-8 md:px-12 lg:px-16 py-4">
+      <div style={{ borderTop: "1px solid #1F1F1F" }} className="flex justify-between items-center px-8 md:px-16 lg:px-28 py-4">
         <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>DESIGN AGENCY · SEOUL</span>
         <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>hello@sigstudio.kr</span>
       </div>

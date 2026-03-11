@@ -174,7 +174,7 @@ export function Footer() {
     <>
       <footer style={{ backgroundColor: "#0D0D0D" }}>
         {/* Top */}
-        <div className="px-8 md:px-12 lg:px-16 pt-16 pb-0">
+        <div className="px-8 md:px-16 lg:px-28 pt-16 pb-0">
           <div className="flex items-start justify-between" style={{ borderBottom: "1px solid #1F1F1F", paddingBottom: "40px" }}>
             <span
               style={{

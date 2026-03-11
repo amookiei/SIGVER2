@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { useAdmin } from "../context/AdminContext";
 import { AdminAbout } from "./AdminAbout";
+import { AdminHome } from "./AdminHome";
 import type { PortfolioItem } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 
@@ -802,7 +803,7 @@ export function Admin() {
   const navigate = useNavigate();
   const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
-  const [adminPage, setAdminPage] = useState<"portfolio" | "about">("portfolio");
+  const [adminPage, setAdminPage] = useState<"portfolio" | "about" | "home">("portfolio");
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState<FormState>(blankForm());
@@ -884,10 +885,14 @@ export function Admin() {
           </span>
           {/* 페이지 탭 */}
           <div style={{ display: "flex", gap: "2px", background: "#0A0A0A", padding: "3px", border: BORDER }}>
-            {(["portfolio", "about"] as const).map((page) => (
+            {([
+              { id: "portfolio", label: "포트폴리오" },
+              { id: "home", label: "홈 콘텐츠" },
+              { id: "about", label: "About 페이지" },
+            ] as const).map((page) => (
               <button
-                key={page}
-                onClick={() => setAdminPage(page)}
+                key={page.id}
+                onClick={() => setAdminPage(page.id)}
                 style={{
                   fontFamily: F,
                   fontSize: "10px",
@@ -896,12 +901,12 @@ export function Admin() {
                   padding: "5px 14px",
                   border: "none",
                   cursor: "pointer",
-                  background: adminPage === page ? TEXT : "none",
-                  color: adminPage === page ? BG : TEXT3,
-                  fontWeight: adminPage === page ? 700 : 400,
+                  background: adminPage === page.id ? TEXT : "none",
+                  color: adminPage === page.id ? BG : TEXT3,
+                  fontWeight: adminPage === page.id ? 700 : 400,
                 }}
               >
-                {page === "portfolio" ? "포트폴리오" : "About 페이지"}
+                {page.label}
               </button>
             ))}
           </div>
@@ -1012,6 +1017,9 @@ export function Admin() {
 
       {/* ─── About 탭 ────────────────────────────────────── */}
       {adminPage === "about" && <AdminAbout />}
+
+      {/* ─── 홈 콘텐츠 탭 ─────────────────────────────────── */}
+      {adminPage === "home" && <AdminHome />}
 
       {/* ─── Portfolio 탭 Content ─────────────────────────── */}
       {adminPage === "portfolio" && <>

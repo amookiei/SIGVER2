@@ -119,7 +119,7 @@ export function Contact() {
 
       {/* ── Hero ── */}
       <div style={{ borderBottom: BORDER, paddingTop: "72px" }}>
-        <div className="px-8 md:px-12 lg:px-16 pt-16 pb-14">
+        <div className="px-8 md:px-16 lg:px-28 pt-16 pb-14">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -190,7 +190,7 @@ export function Contact() {
       {/* ── Form Section ── */}
       <section>
         <div
-          className="px-8 md:px-12 lg:px-16 py-10 flex items-center justify-between"
+          className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"
           style={{ borderBottom: BORDER }}
         >
           <motion.h2
@@ -205,7 +205,7 @@ export function Contact() {
           <LogoSymbol style={{ color: "#EEEEEE", width: "clamp(28px, 4vw, 48px)", height: "clamp(28px, 4vw, 48px)", flexShrink: 0 }} />
         </div>
 
-        <div className="px-8 md:px-12 lg:px-16 py-16">
+        <div className="px-8 md:px-16 lg:px-28 py-16">
           <div className="max-w-[1200px] mx-auto">
             <AnimatePresence mode="wait">
               {submitted ? (
