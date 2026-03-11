@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { contactSchema } from "../../lib/security/validation";
 import { LogoSymbol } from "../components/LogoSymbol";
+import { useContact } from "../context/ContactContext";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -28,6 +29,7 @@ const budgets = [
 ];
 
 export function Contact() {
+  const { contact } = useContact();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedBudget, setSelectedBudget] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -154,7 +156,7 @@ export function Contact() {
             transition={{ duration: 0.6, delay: 0.45 }}
             style={{ fontFamily: F, fontSize: "17px", color: TEXT2, lineHeight: 1.8, maxWidth: "480px" }}
           >
-            프로젝트 문의, 협업 제안, 견적 요청 모두 환영합니다.
+            {contact.tagline}
           </motion.p>
         </div>
       </div>
@@ -165,10 +167,10 @@ export function Contact() {
         style={{ borderBottom: BORDER }}
       >
         {[
-          { label: "Email", value: "hello@sigstudio.kr" },
-          { label: "Phone", value: "010-7667-6013" },
-          { label: "Address", value: "서울특별시 서대문구\n홍제천로 6길 40 1층" },
-          { label: "Hours", value: "월 – 금 / 09:00 – 18:00\n주말 및 공휴일 휴무" },
+          { label: "Email", value: contact.email },
+          { label: "Phone", value: contact.phone },
+          { label: "Address", value: contact.address },
+          { label: "Hours", value: contact.hours },
         ].map((item, i) => (
           <motion.div
             key={item.label}
