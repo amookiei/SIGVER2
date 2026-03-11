@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 import { supabase } from "../../lib/supabase";
 
@@ -130,8 +130,9 @@ export function HomeContentProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useState(() => { fetchFromDB(); });
+  useEffect(() => {
+    if (supabase) fetchFromDB();
+  }, [fetchFromDB]);
 
   const updateContent = async (data: HomeContent) => {
     setContent(data);

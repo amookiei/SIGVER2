@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useAdmin } from "../context/AdminContext";
 import { AdminAbout } from "./AdminAbout";
 import { AdminHome } from "./AdminHome";
+import { AdminContact } from "./AdminContact";
 import type { PortfolioItem } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 
@@ -803,7 +804,7 @@ export function Admin() {
   const navigate = useNavigate();
   const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
-  const [adminPage, setAdminPage] = useState<"portfolio" | "about" | "home">("portfolio");
+  const [adminPage, setAdminPage] = useState<"portfolio" | "about" | "home" | "contact">("portfolio");
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState<FormState>(blankForm());
@@ -889,6 +890,7 @@ export function Admin() {
               { id: "portfolio", label: "포트폴리오" },
               { id: "home", label: "홈 콘텐츠" },
               { id: "about", label: "About 페이지" },
+              { id: "contact", label: "Contact" },
             ] as const).map((page) => (
               <button
                 key={page.id}
@@ -1020,6 +1022,9 @@ export function Admin() {
 
       {/* ─── 홈 콘텐츠 탭 ─────────────────────────────────── */}
       {adminPage === "home" && <AdminHome />}
+
+      {/* ─── Contact 탭 ──────────────────────────────────── */}
+      {adminPage === "contact" && <AdminContact />}
 
       {/* ─── Portfolio 탭 Content ─────────────────────────── */}
       {adminPage === "portfolio" && <>
