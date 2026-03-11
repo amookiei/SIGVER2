@@ -13,6 +13,7 @@ export interface HomeService {
 
 export interface HomeContent {
   services: HomeService[];
+  heroImage: string;
   aboutImage: string;
   aboutLine1: string;
   aboutLine2: string;
@@ -20,6 +21,7 @@ export interface HomeContent {
 
 // ─── Defaults (현재 Home.tsx 하드코딩 값) ─────────────────
 export const defaultHomeContent: HomeContent = {
+  heroImage: "",
   services: [
     {
       id: "01",
@@ -65,6 +67,7 @@ function loadCache(): HomeContent {
     if (!raw) return defaultHomeContent;
     const parsed = JSON.parse(raw) as Partial<HomeContent>;
     return {
+      heroImage: parsed.heroImage ?? defaultHomeContent.heroImage,
       services: parsed.services ?? defaultHomeContent.services,
       aboutImage: parsed.aboutImage ?? defaultHomeContent.aboutImage,
       aboutLine1: parsed.aboutLine1 ?? defaultHomeContent.aboutLine1,
@@ -115,6 +118,7 @@ export function HomeContentProvider({ children }: { children: ReactNode }) {
       if (data?.value) {
         const parsed = data.value as Partial<HomeContent>;
         setContent({
+          heroImage: parsed.heroImage ?? defaultHomeContent.heroImage,
           services: parsed.services ?? defaultHomeContent.services,
           aboutImage: parsed.aboutImage ?? defaultHomeContent.aboutImage,
           aboutLine1: parsed.aboutLine1 ?? defaultHomeContent.aboutLine1,

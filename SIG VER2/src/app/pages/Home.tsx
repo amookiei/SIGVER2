@@ -472,6 +472,8 @@ const bottomCells = [
 
 function HeroSection() {
   const headlineRef = useRef<HTMLDivElement>(null);
+  const { content } = useHomeContent();
+  const heroSrc = content.heroImage || HERO_IMAGE;
 
   // GSAP hero text stagger reveal
   useEffect(() => {
@@ -545,7 +547,7 @@ function HeroSection() {
             animate={{ clipPath: "inset(0 0% 0 0)" }}
             transition={{ duration: 1.1, delay: 0.5, ease: [0.77, 0, 0.175, 1] }}
           >
-            <img src={HERO_IMAGE} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src={heroSrc} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </motion.div>
           <motion.div
             className="absolute bottom-5 right-5"
@@ -626,7 +628,7 @@ function HeroSection() {
       {/* Mobile */}
       <div className="flex flex-col md:hidden flex-1 pt-24 pb-8">
         <div style={{ overflow: "hidden", height: "52vw", backgroundColor: "#F0F0F0" }}>
-          <img src={HERO_IMAGE} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src={heroSrc} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <div className="px-6 mt-8">
           {["CREATING", "BRANDS", "THAT", "MOVE"].map((line, i) => (
