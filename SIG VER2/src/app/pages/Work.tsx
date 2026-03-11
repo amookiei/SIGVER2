@@ -38,9 +38,19 @@ function WorkCell({
 
   const isActive = hoveredId === null || hoveredId === item.id;
 
+  // sm(2열)에서 우측 열(홀수 index)의 borderRight 제거, lg(4열)에서 복원
+  const cellClass = [
+    "border-b border-[#E0E0E0]",
+    index % 2 === 0
+      ? "border-r border-[#E0E0E0]"
+      : "border-r border-[#E0E0E0] sm:border-r-0",
+    "lg:border-r lg:border-[#E0E0E0]",
+  ].join(" ");
+
   return (
     <motion.div
-      style={{ borderRight: BORDER, borderBottom: BORDER, position: "relative" }}
+      className={cellClass}
+      style={{ position: "relative" }}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}

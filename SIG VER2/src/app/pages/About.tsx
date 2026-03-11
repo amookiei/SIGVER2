@@ -66,10 +66,23 @@ export function About() {
         {/* Stats row */}
         <div className="px-8 md:px-16 lg:px-28" style={{ borderTop: BORDER }}>
           <div className="grid grid-cols-2 md:grid-cols-4">
-            {stats.map((stat, i) => (
+            {stats.map((stat, i) => {
+              // 모바일 2열: 짝수(0,2) = 좌측 열, 홀수(1,3) = 우측 열
+              const mobileLeftCol = i % 2 === 0;
+              // 데스크톱 4열: 마지막 항목만 border 없음
+              const desktopHasBorder = i < stats.length - 1;
+              return (
               <motion.div
                 key={`${stat.label}-${i}`}
-                style={{ padding: "36px 40px 36px 0", paddingLeft: i === 0 ? "0" : "40px", borderRight: i < stats.length - 1 ? BORDER : "none" }}
+                className={[
+                  "py-9 pr-10",
+                  // 모바일: 좌측 열 paddingLeft=0 + borderRight, 우측 열 paddingLeft=10
+                  mobileLeftCol ? "pl-0 border-r border-[#E0E0E0]" : "pl-8",
+                  // 데스크톱: 첫 항목만 paddingLeft=0, 나머지는 pl-10
+                  i === 0 ? "md:pl-0" : "md:pl-10",
+                  // 데스크톱: border 여부 재정의
+                  desktopHasBorder ? "md:border-r md:border-[#E0E0E0]" : "md:border-r-0",
+                ].join(" ")}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + i * 0.08 }}
@@ -81,7 +94,8 @@ export function About() {
                   {stat.label}
                 </p>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
