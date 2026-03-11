@@ -154,7 +154,7 @@ export function Work() {
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
       {/* Hero */}
       <div style={{ borderBottom: BORDER, paddingTop: "72px" }}>
-        <div className="px-8 md:px-12 lg:px-16 pt-14 pb-0">
+        <div className="px-8 md:px-16 lg:px-28 pt-14 pb-0">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -177,7 +177,7 @@ export function Work() {
 
         {/* Filter bar */}
         <div style={{ borderTop: BORDER }}>
-          <div className="px-8 md:px-12 lg:px-16 flex items-center gap-0 overflow-x-auto">
+          <div className="px-8 md:px-16 lg:px-28 flex items-center gap-0 overflow-x-auto">
             {CATEGORIES.map((cat) => {
               const isActive = activeCategory === cat;
               return (
@@ -252,7 +252,7 @@ export function Work() {
       </div>
 
       {/* Count bar */}
-      <div className="px-8 md:px-12 lg:px-16 py-5 flex items-center justify-between" style={{ borderTop: BORDER }}>
+      <div className="px-8 md:px-16 lg:px-28 py-5 flex items-center justify-between" style={{ borderTop: BORDER }}>
         <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.06em" }}>
           {filtered.length} projects
         </span>

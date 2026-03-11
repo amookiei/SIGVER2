@@ -352,7 +352,7 @@ function SelectedWorksSection() {
     <section ref={sectionRef} style={{ borderBottom: BORDER }}>
       {/* Header */}
       <div
-        className="px-8 md:px-12 lg:px-16 pt-16 pb-10 flex items-end justify-between"
+        className="px-8 md:px-16 lg:px-28 pt-16 pb-10 flex items-end justify-between"
         style={{ borderBottom: BORDER }}
       >
         <motion.h2
@@ -882,7 +882,7 @@ function ServicesSection() {
 
   return (
     <section style={{ borderBottom: BORDER }}>
-      <div className="flex items-center justify-between px-8 md:px-12 lg:px-16 py-10" style={{ borderBottom: BORDER }}>
+      <div className="flex items-center justify-between px-8 md:px-16 lg:px-28 py-10" style={{ borderBottom: BORDER }}>
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -996,7 +996,7 @@ function CTASection() {
           }}
         />
       </div>
-      <div className="relative z-10 px-8 md:px-12 lg:px-16 py-28 md:py-40">
+      <div className="relative z-10 px-8 md:px-16 lg:px-28 py-28 md:py-40">
         <div className="max-w-[900px]">
           {["READY TO", "START YOUR", "PROJECT?"].map((line, i) => (
             <motion.h2
@@ -1029,7 +1029,7 @@ function CTASection() {
           </motion.div>
         </div>
       </div>
-      <div style={{ borderTop: "1px solid #1F1F1F" }} className="flex justify-between items-center px-8 md:px-12 lg:px-16 py-4">
+      <div style={{ borderTop: "1px solid #1F1F1F" }} className="flex justify-between items-center px-8 md:px-16 lg:px-28 py-4">
         <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>DESIGN AGENCY · SEOUL</span>
         <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>hello@sigstudio.kr</span>
       </div>
