@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { contactSchema } from "../../lib/security/validation";
+import { LogoSymbol } from "../components/LogoSymbol";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -201,9 +202,7 @@ export function Contact() {
           >
             SEND A MESSAGE
           </motion.h2>
-          <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 48px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>
-            ✱
-          </span>
+          <LogoSymbol style={{ color: "#EEEEEE", width: "clamp(28px, 4vw, 48px)", height: "clamp(28px, 4vw, 48px)", flexShrink: 0 }} />
         </div>
 
         <div className="px-8 md:px-12 lg:px-16 py-16">

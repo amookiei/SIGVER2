@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "motion/react";
+import { LogoSymbol } from "./LogoSymbol";
 
 type CursorState = "default" | "hover-link" | "hover-button" | "view";
 
@@ -107,19 +108,16 @@ export function CustomCursor() {
             >
               VIEW
             </span>
-            <span
+            <LogoSymbol
               style={{
-                fontSize: "14px",
-                lineHeight: 1,
+                width: "14px",
+                height: "14px",
                 animationName: "sigSpin",
                 animationDuration: "2s",
                 animationTimingFunction: "linear",
                 animationIterationCount: "infinite",
-                display: "block",
               }}
-            >
-              ✱
-            </span>
+            />
           </motion.div>
         ) : (
           /* 기본 / 호버 상태: ✱ 심볼 */
@@ -130,19 +128,17 @@ export function CustomCursor() {
             exit={{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <span
+            <LogoSymbol
               style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: "18px",
-                fontWeight: 300,
-                lineHeight: 1,
+                width: "18px",
+                height: "18px",
                 display: "block",
                 animationName: "sigSpin",
                 animationDuration: spinDuration,
                 animationTimingFunction: "linear",
                 animationIterationCount: "infinite",
               }}
-            >✱</span>
+            />
           </motion.div>
         )}
       </AnimatePresence>

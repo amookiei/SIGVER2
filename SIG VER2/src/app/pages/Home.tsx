@@ -6,6 +6,7 @@ import {
   useSpring,
   AnimatePresence,
 } from "motion/react";
+import { LogoSymbol } from "../components/LogoSymbol";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAdmin } from "../context/AdminContext";
@@ -135,19 +136,18 @@ function ImageHoverCell({
             }}
           >
             <span style={{ color: "#FAFAFA", fontSize: "15px", lineHeight: 1 }}>→</span>
-            <span
+            <LogoSymbol
               style={{
                 color: "#FAFAFA",
-                fontSize: "9px",
+                width: "9px",
+                height: "9px",
                 display: "block",
                 animationName: "sigSpin",
                 animationDuration: "3s",
                 animationTimingFunction: "linear",
                 animationIterationCount: "infinite",
               }}
-            >
-              ✱
-            </span>
+            />
           </div>
         </motion.div>
       </div>
@@ -545,25 +545,25 @@ function HeroSection() {
           >
             <img src={HERO_IMAGE} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </motion.div>
-          <motion.span
+          <motion.div
             className="absolute bottom-5 right-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.7 }}
-            style={{
-              fontFamily: F,
-              fontSize: "22px",
-              color: "rgba(255,255,255,0.65)",
-              lineHeight: 1,
-              animationName: "sigSpin",
-              animationDuration: "10s",
-              animationTimingFunction: "linear",
-              animationIterationCount: "infinite",
-              display: "block",
-            }}
           >
-            ✱
-          </motion.span>
+            <LogoSymbol
+              style={{
+                color: "rgba(255,255,255,0.65)",
+                width: "22px",
+                height: "22px",
+                display: "block",
+                animationName: "sigSpin",
+                animationDuration: "10s",
+                animationTimingFunction: "linear",
+                animationIterationCount: "infinite",
+              }}
+            />
+          </motion.div>
         </div>
 
         {/* Cell 3 — Headline (GSAP animated) */}
@@ -576,7 +576,7 @@ function HeroSection() {
           }}
         >
           <div ref={headlineRef} style={{ marginBottom: "32px" }}>
-            {["CREATING", "BRANDS", "THAT", "MOVE ✱"].map((line, i) => (
+            {["CREATING", "BRANDS", "THAT", "MOVE"].map((line, i) => (
               <div key={i} style={{ overflow: "hidden" }}>
                 <div
                   className="hero-headline-line"
@@ -589,9 +589,15 @@ function HeroSection() {
                     lineHeight: 0.94,
                     textTransform: "uppercase",
                     opacity: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.12em",
                   }}
                 >
                   {line}
+                  {i === 3 && (
+                    <LogoSymbol style={{ width: "0.72em", height: "0.72em", display: "inline-block", flexShrink: 0 }} />
+                  )}
                 </div>
               </div>
             ))}
@@ -621,15 +627,18 @@ function HeroSection() {
           <img src={HERO_IMAGE} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <div className="px-6 mt-8">
-          {["CREATING", "BRANDS", "THAT", "MOVE ✱"].map((line, i) => (
+          {["CREATING", "BRANDS", "THAT", "MOVE"].map((line, i) => (
             <div key={i} style={{ overflow: "hidden" }}>
               <motion.div
                 initial={{ y: "100%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 0.82, delay: 0.15 + i * 0.08, ease: [0.76, 0, 0.24, 1] }}
-                style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(38px, 11vw, 64px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.9, textTransform: "uppercase" }}
+                style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(38px, 11vw, 64px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.9, textTransform: "uppercase", display: "flex", alignItems: "center", gap: "0.12em" }}
               >
                 {line}
+                {i === 3 && (
+                  <LogoSymbol style={{ width: "0.72em", height: "0.72em", display: "inline-block", flexShrink: 0 }} />
+                )}
               </motion.div>
             </div>
           ))}
@@ -725,7 +734,7 @@ function MarqueeSection() {
             <span style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(13px, 1.8vw, 21px)", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase", padding: "0 20px" }}>
               {item}
             </span>
-            <span style={{ color: "#CCCCCC", fontSize: "14px", marginRight: "4px" }}>✱</span>
+            <LogoSymbol style={{ color: "#CCCCCC", width: "14px", height: "14px", marginRight: "4px", flexShrink: 0 }} />
           </span>
         ))}
       </motion.div>
@@ -974,22 +983,18 @@ function CTASection() {
   return (
     <section style={{ backgroundColor: DARK, position: "relative", overflow: "hidden" }}>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <span
+        <LogoSymbol
           style={{
-            fontFamily: F,
-            fontSize: "clamp(200px, 38vw, 400px)",
             color: "rgba(255,255,255,0.025)",
-            lineHeight: 1,
-            fontWeight: 800,
+            width: "clamp(200px, 38vw, 400px)",
+            height: "clamp(200px, 38vw, 400px)",
             animationName: "sigSpin",
             animationDuration: "30s",
             animationTimingFunction: "linear",
             animationIterationCount: "infinite",
             display: "block",
           }}
-        >
-          ✱
-        </span>
+        />
       </div>
       <div className="relative z-10 px-8 md:px-12 lg:px-16 py-28 md:py-40">
         <div className="max-w-[900px]">

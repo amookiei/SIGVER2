@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import { useAbout } from "../context/AboutContext";
+import { LogoSymbol } from "../components/LogoSymbol";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -141,15 +142,18 @@ export function About() {
           >
             THE TEAM
           </motion.h2>
-          <span
+          <LogoSymbol
             style={{
-              fontFamily: F, fontSize: "22px", color: "#333333", lineHeight: 1,
-              animationName: "sigSpin", animationDuration: "12s",
-              animationTimingFunction: "linear", animationIterationCount: "infinite", display: "block",
+              color: "#333333",
+              width: "22px",
+              height: "22px",
+              display: "block",
+              animationName: "sigSpin",
+              animationDuration: "12s",
+              animationTimingFunction: "linear",
+              animationIterationCount: "infinite",
             }}
-          >
-            ✱
-          </span>
+          />
         </div>
 
         {/* 앞 3명 — 사진 + 이름 + 직급 + 설명 */}

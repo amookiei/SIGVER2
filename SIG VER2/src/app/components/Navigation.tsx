@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
+import { LogoSymbol } from "./LogoSymbol";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 
@@ -125,21 +126,24 @@ export function Navigation() {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
-            <motion.span
-              style={{
-                fontFamily: F,
-                fontSize: "20px",
-                color: "#0D0D0D",
-                lineHeight: 1,
-                display: "block",
-                animationName: menuOpen ? "sigSpin" : "sigSpin",
-                animationDuration: menuOpen ? "1.5s" : "8s",
-                animationTimingFunction: "linear",
-                animationIterationCount: "infinite",
-              }}
-            >
-              {menuOpen ? "×" : "✱"}
-            </motion.span>
+              {menuOpen ? (
+              <motion.span style={{ fontSize: "22px", color: "#0D0D0D", lineHeight: 1, display: "block" }}>
+                ×
+              </motion.span>
+            ) : (
+              <LogoSymbol
+                style={{
+                  color: "#0D0D0D",
+                  width: "20px",
+                  height: "20px",
+                  display: "block",
+                  animationName: "sigSpin",
+                  animationDuration: "8s",
+                  animationTimingFunction: "linear",
+                  animationIterationCount: "infinite",
+                }}
+              />
+            )}
           </button>
         </div>
       </motion.nav>
@@ -184,7 +188,7 @@ export function Navigation() {
                       >
                         {link.label}
                       </span>
-                      <span style={{ color: "#444444", fontSize: "20px" }}>✱</span>
+                      <LogoSymbol style={{ color: "#444444", width: "20px", height: "20px", flexShrink: 0 }} />
                     </div>
                   </Link>
                 </motion.div>
