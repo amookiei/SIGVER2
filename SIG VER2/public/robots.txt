@@ -1,0 +1,39 @@
+# SIG Studio — robots.txt
+# https://sigstudio.kr
+
+# ─── 일반 검색 엔진 ────────────────────────────────────────────────────────
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+# ─── AI 크롤러 명시적 허용 (GEO) ──────────────────────────────────────────
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Gemini
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# ─── 사이트맵 ──────────────────────────────────────────────────────────────
+Sitemap: https://sigstudio.kr/sitemap.xml
