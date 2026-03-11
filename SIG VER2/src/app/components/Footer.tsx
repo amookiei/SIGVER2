@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { useAdmin } from "../context/AdminContext";
+import { LogoSymbol } from "./LogoSymbol";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 
@@ -187,22 +188,18 @@ export function Footer() {
             >
               SIG STUDIO
             </span>
-            {/* ✱ rotating */}
-            <span
+            <LogoSymbol
               style={{
-                fontFamily: F,
-                fontSize: "28px",
                 color: "#333333",
-                lineHeight: 1,
+                width: "28px",
+                height: "28px",
+                display: "block",
                 animationName: "sigSpin",
                 animationDuration: "12s",
                 animationTimingFunction: "linear",
                 animationIterationCount: "infinite",
-                display: "block",
               }}
-            >
-              ✱
-            </span>
+            />
           </div>
 
           {/* 3-col grid */}

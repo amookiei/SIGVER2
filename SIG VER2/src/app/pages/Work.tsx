@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from "motion/react
 import { Link } from "react-router";
 import { useAdmin } from "../context/AdminContext";
 import type { PortfolioItem } from "../data/portfolio";
+import { LogoSymbol } from "../components/LogoSymbol";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -99,11 +100,11 @@ function WorkCell({
                 alignItems: "center", justifyContent: "center", gap: 2,
               }}>
                 <span style={{ color: "#FAFAFA", fontSize: "12px" }}>→</span>
-                <span style={{
-                  color: "#FAFAFA", fontSize: "8px", display: "block",
+                <LogoSymbol style={{
+                  color: "#FAFAFA", width: "8px", height: "8px", display: "block",
                   animationName: "sigSpin", animationDuration: "3s",
                   animationTimingFunction: "linear", animationIterationCount: "infinite",
-                }}>✱</span>
+                }} />
               </div>
             </motion.div>
             {/* Category tag */}
@@ -255,9 +256,7 @@ export function Work() {
         <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.06em" }}>
           {filtered.length} projects
         </span>
-        <span style={{ fontFamily: F, fontSize: "13px", color: "#DDDDDD", animationName: "sigSpin", animationDuration: "8s", animationTimingFunction: "linear", animationIterationCount: "infinite", display: "block" }}>
-          ✱
-        </span>
+        <LogoSymbol style={{ color: "#DDDDDD", width: "13px", height: "13px", display: "block", animationName: "sigSpin", animationDuration: "8s", animationTimingFunction: "linear", animationIterationCount: "infinite" }} />
       </div>
     </div>
   );
