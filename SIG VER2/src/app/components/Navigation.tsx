@@ -31,16 +31,31 @@ export function Navigation() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
+  // 홈 히어로(영상 배경)에서는 투명 + 블러 + 흰 텍스트
+  const isHome = location.pathname === "/";
+  const isTransparent = isHome && !scrolled;
+
+  const logoColor = isTransparent ? "#FFFFFF" : "#0D0D0D";
+  const mobileToggleColor = isTransparent ? "#FFFFFF" : "#0D0D0D";
+
   return (
     <>
       <motion.nav
         className="fixed top-0 left-0 right-0 z-50 px-8 md:px-16 lg:px-28"
         animate={{
-          backgroundColor: scrolled ? "rgba(250,250,250,0.92)" : "#FAFAFA",
-          backdropFilter: scrolled ? "blur(20px)" : "blur(0px)",
+          backgroundColor: isTransparent
+            ? "rgba(0,0,0,0)"
+            : scrolled
+            ? "rgba(250,250,250,0.92)"
+            : "#FAFAFA",
+          backdropFilter: isTransparent ? "blur(18px)" : scrolled ? "blur(20px)" : "blur(0px)",
         }}
         transition={{ duration: 0.3 }}
-        style={{ borderBottom: "1px solid #E0E0E0" }}
+        style={{
+          borderBottom: isTransparent
+            ? "1px solid rgba(255,255,255,0.12)"
+            : "1px solid #E0E0E0",
+        }}
       >
         <div className="flex items-center justify-between h-[72px]">
           {/* Logo */}
@@ -55,9 +70,10 @@ export function Navigation() {
                   fontFamily: F,
                   fontWeight: 800,
                   fontSize: "15px",
-                  color: "#0D0D0D",
+                  color: logoColor,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
+                  transition: "color 0.3s",
                 }}
               >
                 SIG STUDIO
@@ -67,52 +83,65 @@ export function Navigation() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <Link key={link.href} to={link.href} data-cursor="hover-link">
-                <motion.span
-                  className="relative block overflow-hidden"
-                  style={{
-                    fontFamily: F,
-                    fontWeight: 500,
-                    fontSize: "13px",
-                    color: location.pathname.startsWith(link.href) ? "#0D0D0D" : "#999999",
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                  }}
-                  whileHover={{ color: "#0D0D0D" }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {link.label}
-                  {location.pathname.startsWith(link.href) && (
-                    <motion.span
-                      layoutId="nav-indicator"
-                      style={{
-                        position: "absolute",
-                        bottom: -2,
-                        left: 0,
-                        right: 0,
-                        height: "1px",
-                        backgroundColor: "#0D0D0D",
-                      }}
-                    />
-                  )}
-                </motion.span>
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = location.pathname.startsWith(link.href);
+              const linkColor = isTransparent
+                ? isActive ? "#FFFFFF" : "rgba(255,255,255,0.6)"
+                : isActive ? "#0D0D0D" : "#999999";
+              const indicatorColor = isTransparent ? "#FFFFFF" : "#0D0D0D";
+              return (
+                <Link key={link.href} to={link.href} data-cursor="hover-link">
+                  <motion.span
+                    className="relative block overflow-hidden"
+                    style={{
+                      fontFamily: F,
+                      fontWeight: 500,
+                      fontSize: "13px",
+                      color: linkColor,
+                      letterSpacing: "0.05em",
+                      textTransform: "uppercase",
+                      transition: "color 0.3s",
+                    }}
+                    whileHover={{ color: isTransparent ? "#FFFFFF" : "#0D0D0D" }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-indicator"
+                        style={{
+                          position: "absolute",
+                          bottom: -2,
+                          left: 0,
+                          right: 0,
+                          height: "1px",
+                          backgroundColor: indicatorColor,
+                        }}
+                      />
+                    )}
+                  </motion.span>
+                </Link>
+              );
+            })}
             <Link to="/contact" data-cursor="hover-button">
               <motion.button
                 style={{
                   fontFamily: F,
                   fontWeight: 600,
                   fontSize: "12px",
-                  color: "#FAFAFA",
+                  color: "#FFFFFF",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
                   padding: "9px 20px",
-                  border: "1px solid #0D0D0D",
-                  background: "#0D0D0D",
+                  border: isTransparent ? "1px solid rgba(255,255,255,0.55)" : "1px solid #0D0D0D",
+                  background: isTransparent ? "transparent" : "#0D0D0D",
+                  transition: "border-color 0.3s, background 0.3s",
                 }}
-                whileHover={{ background: "#FAFAFA", color: "#0D0D0D" }}
+                whileHover={
+                  isTransparent
+                    ? { background: "rgba(255,255,255,0.15)", color: "#FFFFFF" }
+                    : { background: "#FAFAFA", color: "#0D0D0D" }
+                }
                 transition={{ duration: 0.25 }}
               >
                 문의하기
@@ -133,7 +162,7 @@ export function Navigation() {
             ) : (
               <LogoSymbol
                 style={{
-                  color: "#0D0D0D",
+                  color: mobileToggleColor,
                   width: "20px",
                   height: "20px",
                   display: "block",
@@ -141,6 +170,7 @@ export function Navigation() {
                   animationDuration: "8s",
                   animationTimingFunction: "linear",
                   animationIterationCount: "infinite",
+                  transition: "color 0.3s",
                 }}
               />
             )}

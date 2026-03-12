@@ -1,15 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>SIG STUDIO</title>
-    </head>
+    <!-- ─── 기본 SEO ─────────────────────────────────────────────────────── -->
+    <title>SIG Studio | 브랜딩·마케팅·디자인 에이전시 서울</title>
+    <meta
+      name="description"
+      content="SIG Studio는 브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업 전략을 제공하는 서울 홍대의 디자인 에이전시입니다. 스타트업부터 대기업까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다."
+    />
+    <meta name="keywords" content="브랜딩 에이전시, 마케팅 에이전시, 디자인 에이전시, 서울 홍대, 브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업, UI UX 디자인, SIG Studio" />
+    <meta name="author" content="SIG Studio" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://sigstudio.kr/" />
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <!-- ─── Open Graph ────────────────────────────────────────────────────── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SIG Studio" />
+    <meta property="og:title" content="SIG Studio | 브랜딩·마케팅·디자인 에이전시 서울" />
+    <meta property="og:description" content="브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업 전략을 제공하는 서울 홍대의 디자인 에이전시. 스타트업부터 대기업까지 함께합니다." />
+    <meta property="og:url" content="https://sigstudio.kr/" />
+    <meta property="og:locale" content="ko_KR" />
+
+    <!-- ─── Twitter Card ──────────────────────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SIG Studio | 브랜딩·마케팅·디자인 에이전시" />
+    <meta name="twitter:description" content="브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업 전략을 제공하는 서울 홍대의 디자인 에이전시." />
+
+    <!-- ─── JSON-LD 구조화 데이터 (GEO 핵심) ─────────────────────────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://sigstudio.kr/#organization",
+          "name": "SIG Studio",
+          "alternateName": "시그 스튜디오",
+          "description": "SIG Studio는 브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업 전략을 제공하는 서울 홍대의 디자인 에이전시입니다. 스타트업부터 대기업까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다.",
+          "url": "https://sigstudio.kr",
+          "foundingDate": "2024",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "서울",
+            "addressRegion": "마포구",
+            "addressCountry": "KR"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "대한민국"
+          },
+          "serviceType": [
+            "브랜드 아이덴티티 디자인",
+            "퍼포먼스 마케팅",
+            "정부 지원사업 전략 컨설팅",
+            "콘텐츠 디자인",
+            "UI/UX 디자인",
+            "캠페인 기획",
+            "모션 디자인"
+          ],
+          "knowsAbout": [
+            "브랜드 전략",
+            "비주얼 아이덴티티",
+            "디자인 시스템",
+            "통합 마케팅 커뮤니케이션",
+            "공공 서비스 디자인",
+            "패키지 디자인"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "SIG Studio 서비스",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "브랜드 아이덴티티",
+                  "description": "로고, 컬러 시스템, 타이포그래피, 브랜드 가이드라인 제작"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "퍼포먼스 마케팅",
+                  "description": "디지털 캠페인 기획·운영, 콘텐츠 전략, 광고 크리에이티브"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "정부 지원사업 전략",
+                  "description": "공공기관·지자체 사업 기획, 접근성 설계, 서비스 디자인"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "UI/UX 디자인",
+                  "description": "웹·앱 서비스 UX 리서치, 정보 구조 설계, UI 디자인"
+                }
+              }
+            ]
+          },
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://sigstudio.kr/#website",
+          "url": "https://sigstudio.kr",
+          "name": "SIG Studio",
+          "publisher": { "@id": "https://sigstudio.kr/#organization" },
+          "inLanguage": "ko-KR"
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "SIG Studio는 어떤 회사인가요?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SIG Studio는 서울 홍대를 기반으로 한 디자인 에이전시입니다. 브랜드 아이덴티티 디자인, 퍼포먼스 마케팅, 정부 지원사업 전략 컨설팅을 주요 서비스로 제공하며, 스타트업부터 현대자동차·삼성전자 등 대기업까지 다양한 클라이언트와 협업해왔습니다."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "SIG Studio의 주요 서비스는 무엇인가요?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SIG Studio는 브랜드 아이덴티티 디자인, 퍼포먼스 마케팅, 정부 지원사업 전략 컨설팅, UI/UX 디자인, 캠페인 기획, 패키지 디자인, 모션 디자인을 제공합니다."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "SIG Studio는 어디에 있나요?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SIG Studio는 서울 마포구 홍대 지역에 위치한 디자인 에이전시입니다."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "SIG Studio의 포트폴리오를 볼 수 있나요?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "현대자동차 리브랜딩, 삼성 갤럭시 글로벌 캠페인, 카카오 브랜드 가이드라인, 서울시 시민 포털 리뉴얼, 크래프톤 에디토리얼 등 다양한 프로젝트를 sigstudio.kr/work 에서 확인하실 수 있습니다."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <!-- ─── 파비콘 ─────────────────────────────────────────────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
