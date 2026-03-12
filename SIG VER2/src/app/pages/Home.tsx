@@ -454,264 +454,129 @@ function SelectedWorksSection() {
 }
 
 // ─── HERO SECTION ─────────────────────────────────────────
-// 히어로 이미지: src/assets/images/ 에 hero.jpg / hero.png / hero.webp / hero.gif 중 하나를 넣으면 자동 적용됩니다.
-const heroModules = import.meta.glob(
-  "../../assets/images/hero.{jpg,jpeg,png,webp,gif}",
-  { eager: true, as: "url" }
+// 배경 영상: src/assets/images/bghero.mp4 을 넣으면 자동 적용됩니다.
+const bgVideoModules = import.meta.glob(
+  "../../assets/images/bghero.mp4",
+  { eager: true, query: "?url", import: "default" }
 ) as Record<string, string>;
-const HERO_IMAGE: string =
-  Object.values(heroModules)[0] ||
-  "https://images.unsplash.com/photo-1615852993296-b42d4dbb5555?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080";
+const BG_VIDEO: string = Object.values(bgVideoModules)[0] || "";
 
-const bottomCells = [
-  { label: "Our Approach", sub: "Design-first strategy", href: "/about" },
-  { label: "Our Work", sub: "Selected projects", href: "/work" },
-  { label: "Our Story", sub: "Who we are", href: "/about" },
-  { label: "Our Team", sub: "The people behind", href: "/about" },
-];
+// 배경 음악: src/assets/images/bgsound.mp4 을 넣으면 자동 적용됩니다.
+const bgSoundModules = import.meta.glob(
+  "../../assets/images/bgsound.mp4",
+  { eager: true, query: "?url", import: "default" }
+) as Record<string, string>;
+const BG_SOUND: string = Object.values(bgSoundModules)[0] || "";
 
 function HeroSection() {
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const { content } = useHomeContent();
-  const heroSrc = content.heroImage || HERO_IMAGE;
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [soundOn, setSoundOn] = useState(false);
 
-  // GSAP hero text stagger reveal
+  // 오디오 자동 재생 시도 (뮤트 상태로 시작)
   useEffect(() => {
-    if (!headlineRef.current) return;
-    const lines = headlineRef.current.querySelectorAll(".hero-headline-line");
-    gsap.fromTo(
-      lines,
-      { y: "105%", opacity: 0 },
-      {
-        y: "0%",
-        opacity: 1,
-        duration: 0.88,
-        stagger: 0.1,
-        ease: "power3.out",
-        delay: 0.25,
-      }
-    );
+    const audio = audioRef.current;
+    if (!audio || !BG_SOUND) return;
+    audio.muted = true;
+    audio.loop = true;
+    audio.play().catch(() => {});
+    return () => { audio.pause(); };
   }, []);
+
+  const toggleSound = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (soundOn) {
+      audio.muted = true;
+      setSoundOn(false);
+    } else {
+      audio.muted = false;
+      audio.play().catch(() => {});
+      setSoundOn(true);
+    }
+  };
 
   return (
     <section
       style={{
         minHeight: "100svh",
-        backgroundColor: BG,
-        display: "flex",
-        flexDirection: "column",
+        position: "relative",
+        overflow: "hidden",
         borderBottom: BORDER,
       }}
     >
-      {/* Desktop grid */}
-      <div
-        className="hidden md:grid flex-1"
-        style={{ gridTemplateColumns: "minmax(0,2fr) minmax(0,3fr) minmax(0,5fr)", flex: 1 }}
-      >
-        {/* Cell 1 — Tagline */}
-        <div
+      {/* 배경 영상 */}
+      {BG_VIDEO && (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
           style={{
-            borderRight: BORDER,
-            padding: "100px 32px 40px",
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            zIndex: 0,
+          }}
+        >
+          <source src={BG_VIDEO} type="video/mp4" />
+        </video>
+      )}
+
+      {/* 배경 음악 */}
+      {BG_SOUND && (
+        <audio ref={audioRef} preload="none">
+          <source src={BG_SOUND} type="audio/mp4" />
+        </audio>
+      )}
+
+      {/* 사운드 토글 버튼 */}
+      {BG_SOUND && (
+        <motion.button
+          onClick={toggleSound}
+          style={{
+            position: "absolute",
+            bottom: "28px",
+            right: "28px",
+            zIndex: 10,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "8px",
+            padding: "8px 12px",
           }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          whileHover={{ opacity: 0.7 }}
         >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.3, duration: 0.7 }}
-            style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.65, maxWidth: "180px" }}
+          {/* 소리 상태 표시 점 */}
+          <span
+            style={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              backgroundColor: soundOn ? "#FFFFFF" : "rgba(255,255,255,0.35)",
+              display: "block",
+              flexShrink: 0,
+            }}
+          />
+          <span
+            style={{
+              fontFamily: F,
+              fontSize: "10px",
+              color: "rgba(255,255,255,0.6)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
           >
-            Where Design Meets Strategy
-          </motion.p>
-          <motion.div
-            className="flex items-center gap-2 mt-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 0.6 }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: DARK, display: "block" }} />
-            <span style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-              EST. 2024 · SEOUL
-            </span>
-          </motion.div>
-        </div>
-
-        {/* Cell 2 — Image with clip reveal */}
-        <div style={{ borderRight: BORDER, overflow: "hidden", position: "relative", backgroundColor: "#F0F0F0" }}>
-          <motion.div
-            style={{ position: "absolute", inset: 0 }}
-            initial={{ clipPath: "inset(0 100% 0 0)" }}
-            animate={{ clipPath: "inset(0 0% 0 0)" }}
-            transition={{ duration: 1.1, delay: 0.5, ease: [0.77, 0, 0.175, 1] }}
-          >
-            <img src={heroSrc} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          </motion.div>
-          <motion.div
-            className="absolute bottom-5 right-5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.7 }}
-          >
-            <LogoSymbol
-              style={{
-                color: "rgba(255,255,255,0.65)",
-                width: "22px",
-                height: "22px",
-                display: "block",
-                animationName: "sigSpin",
-                animationDuration: "10s",
-                animationTimingFunction: "linear",
-                animationIterationCount: "infinite",
-              }}
-            />
-          </motion.div>
-        </div>
-
-        {/* Cell 3 — Headline (GSAP animated) */}
-        <div
-          style={{
-            padding: "100px 44px 40px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-          }}
-        >
-          <div ref={headlineRef} style={{ marginBottom: "32px" }}>
-            {["CREATING", "BRANDS", "THAT", "MOVE"].map((line, i) => (
-              <div key={i} style={{ overflow: "hidden" }}>
-                <div
-                  className="hero-headline-line"
-                  style={{
-                    fontFamily: F,
-                    fontWeight: 800,
-                    fontSize: "clamp(38px, 5.2vw, 84px)",
-                    color: DARK,
-                    letterSpacing: "-0.04em",
-                    lineHeight: 0.94,
-                    textTransform: "uppercase",
-                    opacity: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.12em",
-                  }}
-                >
-                  {line}
-                  {i === 3 && (
-                    <LogoSymbol style={{ width: "0.72em", height: "0.72em", display: "inline-block", flexShrink: 0 }} />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-          >
-            <div style={{ width: "72px", height: "1px", backgroundColor: DARK, marginBottom: "18px" }} />
-            <Link to="/work" data-cursor="hover-link">
-              <motion.span
-                style={{ fontFamily: F, fontSize: "12px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}
-                whileHover={{ color: DARK, letterSpacing: "0.16em" }}
-                transition={{ duration: 0.3 }}
-              >
-                (EXPLORE WORK)
-              </motion.span>
-            </Link>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Mobile */}
-      <div className="flex flex-col md:hidden flex-1 pt-24 pb-8">
-        <div style={{ overflow: "hidden", height: "52vw", backgroundColor: "#F0F0F0" }}>
-          <img src={heroSrc} alt="SIG Studio" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        </div>
-        <div className="px-6 mt-8">
-          {["CREATING", "BRANDS", "THAT", "MOVE"].map((line, i) => (
-            <div key={i} style={{ overflow: "hidden" }}>
-              <motion.div
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 0.82, delay: 0.15 + i * 0.08, ease: [0.76, 0, 0.24, 1] }}
-                style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(38px, 11vw, 64px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.9, textTransform: "uppercase", display: "flex", alignItems: "center", gap: "0.12em" }}
-              >
-                {line}
-                {i === 3 && (
-                  <LogoSymbol style={{ width: "0.72em", height: "0.72em", display: "inline-block", flexShrink: 0 }} />
-                )}
-              </motion.div>
-            </div>
-          ))}
-          <div style={{ marginTop: "24px", display: "flex", alignItems: "center", gap: "14px" }}>
-            <div style={{ width: "36px", height: "1px", backgroundColor: DARK }} />
-            <Link to="/work">
-              <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                (EXPLORE WORK)
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile bottom cells — 2×2 grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            borderTop: BORDER,
-            marginTop: "32px",
-          }}
-        >
-          {bottomCells.map((cell, i) => (
-            <Link key={i} to={cell.href}>
-              <motion.div
-                style={{
-                  padding: "18px 20px",
-                  borderRight: i % 2 === 0 ? BORDER : "none",
-                  borderBottom: i < 2 ? BORDER : "none",
-                }}
-                whileHover={{ backgroundColor: CREAM }}
-                transition={{ duration: 0.3 }}
-              >
-                <p style={{ fontFamily: F, fontSize: "9px", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>
-                  {cell.label}
-                </p>
-                <p style={{ fontFamily: F, fontSize: "11px", color: "#BBBBBB" }}>{cell.sub}</p>
-              </motion.div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom row cells */}
-      <div
-        className="hidden md:grid"
-        style={{ gridTemplateColumns: `repeat(${bottomCells.length + 1}, 1fr)`, borderTop: BORDER }}
-      >
-        {bottomCells.map((cell, i) => (
-          <Link key={i} to={cell.href} data-cursor="hover-link">
-            <motion.div
-              style={{ padding: "18px 24px", borderRight: BORDER, position: "relative" }}
-              whileHover={{ backgroundColor: CREAM }}
-              transition={{ duration: 0.3 }}
-            >
-              <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>
-                {cell.label}
-              </p>
-              <p style={{ fontFamily: F, fontSize: "12px", color: "#BBBBBB" }}>{cell.sub}</p>
-            </motion.div>
-          </Link>
-        ))}
-        <div style={{ padding: "18px 24px" }}>
-          <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>
-            EST. 2024
-          </p>
-          <p style={{ fontFamily: F, fontSize: "12px", color: "#BBBBBB" }}>Seoul, Korea</p>
-        </div>
-      </div>
+            {soundOn ? "SOUND ON" : "SOUND OFF"}
+          </span>
+        </motion.button>
+      )}
     </section>
   );
 }
