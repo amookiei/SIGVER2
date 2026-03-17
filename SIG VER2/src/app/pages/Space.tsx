@@ -178,7 +178,7 @@ export function Space() {
             {content.notionUrl && (
               <a href={content.notionUrl} target="_blank" rel="noopener noreferrer"
                 style={{ fontFamily: F, fontSize: "11px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em", textDecoration: "underline", textUnderlineOffset: "3px", whiteSpace: "nowrap", flexShrink: 0 }}>
-                기물 사진 보러가기 →
+                메뉴얼 보러가기 →
               </a>
             )}
           </div>
