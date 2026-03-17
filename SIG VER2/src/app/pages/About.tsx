@@ -243,26 +243,45 @@ export function About() {
       </section>
 
       {/* ── Client Showreel ── */}
-      <section style={{ height: "100vh", position: "relative", overflow: "hidden", backgroundColor: "#0D0D0D" }}>
-        <video
-          src="/clint.mp4"
-          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
-          autoPlay
-          loop
-          muted
-          playsInline
-          disablePictureInPicture
-          onContextMenu={(e) => e.preventDefault()}
-        />
-        <motion.span
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.3 }}
-          style={{ position: "absolute", bottom: "32px", left: "clamp(32px, 7vw, 112px)", fontFamily: F, fontSize: "11px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", pointerEvents: "none" }}
+      <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0D0D0D" }}>
+        {/* PARTNER 헤더 */}
+        <div
+          className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"
+          style={{ borderBottom: "1px solid #1F1F1F" }}
         >
-          Clients Showreel
-        </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(22px, 3vw, 36px)", color: "#FAFAFA", letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+          >
+            PARTNER
+          </motion.h2>
+        </div>
+
+        {/* 비율 유지 비디오 */}
+        <div style={{ position: "relative" }}>
+          <video
+            src="/clint.mp4"
+            style={{ width: "100%", height: "auto", display: "block", pointerEvents: "none" }}
+            autoPlay
+            loop
+            muted
+            playsInline
+            disablePictureInPicture
+            onContextMenu={(e) => e.preventDefault()}
+          />
+          <motion.span
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.3 }}
+            style={{ position: "absolute", bottom: "32px", left: "clamp(32px, 7vw, 112px)", fontFamily: F, fontSize: "11px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", pointerEvents: "none" }}
+          >
+            Clients Showreel
+          </motion.span>
+        </div>
       </section>
 
       {/* ── CTA ── */}
