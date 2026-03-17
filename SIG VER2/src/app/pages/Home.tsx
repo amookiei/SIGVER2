@@ -182,7 +182,7 @@ function ProjectInfo({
             transition={{ duration: 0.25 }}
             style={{
               fontFamily: F,
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: titleSize,
               color: DARK,
               letterSpacing: "-0.03em",
@@ -373,7 +373,7 @@ function SelectedWorksSection() {
           transition={{ duration: 0.65 }}
           style={{
             fontFamily: F,
-            fontWeight: 800,
+            fontWeight: 700,
             fontSize: "clamp(40px, 8vw, 100px)",
             color: DARK,
             letterSpacing: "-0.04em",
@@ -382,9 +382,7 @@ function SelectedWorksSection() {
             margin: 0,
           }}
         >
-          SELECTED
-          <br />
-          WORKS
+          SELECTED WORKS
         </motion.h2>
         <Link to="/work" data-cursor="hover-link">
           <motion.span
@@ -738,11 +736,11 @@ function ServicesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+          style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
         >
           WHAT WE DO
         </motion.h2>
-        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>
+        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 700, letterSpacing: "-0.04em" }}>
           {String(content.services.length).padStart(2, "0")}
         </span>
       </div>
@@ -853,7 +851,7 @@ function CTASection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.75, delay: i * 0.1, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(40px, 9vw, 112px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 4px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(40px, 9vw, 112px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 4px", textTransform: "uppercase" }}
             >
               {line}
             </motion.h2>

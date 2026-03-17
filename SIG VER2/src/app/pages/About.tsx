@@ -33,7 +33,7 @@ export function About() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.88, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(48px, 10vw, 130px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 0px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(48px, 10vw, 130px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 0px", textTransform: "uppercase" }}
             >
               {studio.headline1}
             </motion.h1>
@@ -43,7 +43,7 @@ export function About() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.88, delay: 0.18, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(48px, 10vw, 130px)", color: "transparent", WebkitTextStroke: `1px ${DARK}`, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 40px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(48px, 10vw, 130px)", color: "transparent", WebkitTextStroke: `1px ${DARK}`, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 40px", textTransform: "uppercase" }}
             >
               {studio.headline2}
             </motion.h1>
@@ -87,7 +87,7 @@ export function About() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + i * 0.08 }}
               >
-                <p style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(28px, 4vw, 52px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 1, marginBottom: "6px" }}>
+                <p style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(28px, 4vw, 52px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 1, marginBottom: "6px" }}>
                   {stat.num}
                 </p>
                 <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase" }}>
@@ -111,11 +111,11 @@ export function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(22px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+            style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(22px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
           >
             OUR VALUES
           </motion.h2>
-          <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 48px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>
+          <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 48px)", color: "#EEEEEE", fontWeight: 700, letterSpacing: "-0.04em" }}>
             {String(values.length).padStart(2, "0")}
           </span>
         </div>
@@ -154,7 +154,7 @@ export function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(22px, 3vw, 36px)", color: "#FAFAFA", letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+            style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(22px, 3vw, 36px)", color: "#FAFAFA", letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
           >
             THE TEAM
           </motion.h2>
@@ -250,7 +250,7 @@ export function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.65 }}
-            style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(36px, 7vw, 88px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.92, textTransform: "uppercase", margin: 0 }}
+            style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(36px, 7vw, 88px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.92, textTransform: "uppercase", margin: 0 }}
           >
             함께 만들어갈<br />준비가 됐나요?
           </motion.h2>
