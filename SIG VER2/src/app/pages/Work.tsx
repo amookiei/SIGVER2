@@ -229,12 +229,12 @@ export function Work() {
       </div>
 
       {/* Grid */}
-      <div style={{ borderLeft: BORDER }}>
+      <div className="px-8 md:px-16 lg:px-28" style={{ borderTop: BORDER }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeCategory}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-            style={{ borderTop: BORDER }}
+            style={{ borderLeft: BORDER }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
