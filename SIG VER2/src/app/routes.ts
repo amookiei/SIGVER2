@@ -5,7 +5,6 @@ import { Home } from "./pages/Home";
 import { Work } from "./pages/Work";
 import { WorkDetail } from "./pages/WorkDetail";
 import { About } from "./pages/About";
-import { Clients } from "./pages/Clients";
 import { Gallery } from "./pages/Gallery";
 import { Space } from "./pages/Space";
 import { Contact } from "./pages/Contact";
@@ -24,7 +23,6 @@ export const router = createBrowserRouter([
         errorElement: createElement(Navigate, { to: "/work", replace: true }),
       },
       { path: "about", Component: About },
-      { path: "clients", Component: Clients },
       { path: "gallery", Component: Gallery },
       { path: "space", Component: Space },
       { path: "contact", Component: Contact },

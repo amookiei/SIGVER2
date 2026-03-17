@@ -8,7 +8,6 @@ const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 
 const navLinks = [
   { href: "/about", label: "About" },
-  { href: "/clients", label: "Clients" },
   { href: "/work", label: "Work" },
   { href: "/gallery", label: "Gallery" },
   { href: "/space", label: "Space" },
