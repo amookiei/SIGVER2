@@ -199,7 +199,7 @@ export function Work() {
                     padding: "15px 20px",
                     background: "none",
                     border: "none",
-                    borderRight: BORDER,
+                    borderRight: "none",
                     position: "relative",
                     whiteSpace: "nowrap",
                     flexShrink: 0,
