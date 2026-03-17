@@ -182,7 +182,7 @@ function ProjectInfo({
             transition={{ duration: 0.25 }}
             style={{
               fontFamily: F,
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: titleSize,
               color: DARK,
               letterSpacing: "-0.03em",
@@ -220,8 +220,8 @@ function RowA({ item }: { item: PortfolioItem }) {
   return (
     <div style={{ borderBottom: BORDER }}>
       <ImageHoverCell item={item} aspectRatio="16/9" />
-      <div style={{ borderTop: BORDER }}>
-        <ProjectInfo item={item} titleSize="clamp(24px, 3.5vw, 48px)" pad="28px 32px" />
+      <div style={{ borderTop: BORDER }} className="px-8 md:px-16 lg:px-28">
+        <ProjectInfo item={item} titleSize="clamp(24px, 3.5vw, 48px)" pad="28px 0" />
       </div>
     </div>
   );
@@ -235,6 +235,7 @@ function RowB({ item }: { item: PortfolioItem }) {
       style={{ borderBottom: BORDER, minHeight: "400px" }}
     >
       <div
+        className="pl-8 md:pl-16 lg:pl-28"
         style={{
           flex: "0 0 40%",
           borderRight: BORDER,
@@ -243,7 +244,7 @@ function RowB({ item }: { item: PortfolioItem }) {
           justifyContent: "flex-end",
         }}
       >
-        <ProjectInfo item={item} titleSize="clamp(20px, 2.8vw, 36px)" pad="40px 36px" />
+        <ProjectInfo item={item} titleSize="clamp(20px, 2.8vw, 36px)" pad="40px 24px 40px 0" />
       </div>
       <div style={{ flex: "0 0 60%", minHeight: "340px" }}>
         <ImageHoverCell item={item} aspectRatio="4/3" />
@@ -260,6 +261,7 @@ function RowC({ item }: { item: PortfolioItem }) {
       style={{ borderBottom: BORDER, minHeight: "360px" }}
     >
       <div
+        className="pl-8 md:pl-16 lg:pl-28"
         style={{
           flex: "0 0 30%",
           borderRight: BORDER,
@@ -268,7 +270,7 @@ function RowC({ item }: { item: PortfolioItem }) {
           justifyContent: "flex-end",
         }}
       >
-        <ProjectInfo item={item} titleSize="clamp(18px, 2.4vw, 30px)" pad="40px 32px" />
+        <ProjectInfo item={item} titleSize="clamp(18px, 2.4vw, 30px)" pad="40px 24px 40px 0" />
       </div>
       <div style={{ flex: "0 0 70%", minHeight: "320px" }}>
         <ImageHoverCell item={item} aspectRatio="16/10" />
@@ -297,8 +299,15 @@ function RowD({ items }: { items: [PortfolioItem, PortfolioItem] }) {
           }}
         >
           <ImageHoverCell item={item} aspectRatio="4/3" />
-          <div style={{ borderTop: BORDER }}>
-            <ProjectInfo item={item} titleSize="clamp(16px, 2vw, 26px)" pad="24px 24px" />
+          <div
+            style={{ borderTop: BORDER }}
+            className={i === 0 ? "pl-8 md:pl-16 lg:pl-28" : "pr-8 md:pr-16 lg:pr-28"}
+          >
+            <ProjectInfo
+              item={item}
+              titleSize="clamp(16px, 2vw, 26px)"
+              pad={i === 0 ? "24px 24px 24px 0" : "24px 0 24px 24px"}
+            />
           </div>
         </motion.div>
       ))}
@@ -364,7 +373,7 @@ function SelectedWorksSection() {
           transition={{ duration: 0.65 }}
           style={{
             fontFamily: F,
-            fontWeight: 800,
+            fontWeight: 700,
             fontSize: "clamp(40px, 8vw, 100px)",
             color: DARK,
             letterSpacing: "-0.04em",
@@ -373,9 +382,7 @@ function SelectedWorksSection() {
             margin: 0,
           }}
         >
-          SELECTED
-          <br />
-          WORKS
+          SELECTED WORKS
         </motion.h2>
         <Link to="/work" data-cursor="hover-link">
           <motion.span
@@ -390,7 +397,7 @@ function SelectedWorksSection() {
 
       {/* Filter tabs — active item gets parentheses */}
       <div
-        className="hidden md:flex items-center gap-0"
+        className="hidden md:flex items-center gap-0 px-8 md:px-16 lg:px-28"
         style={{ borderBottom: BORDER }}
       >
         {WORK_FILTERS.map((f) => {
@@ -729,11 +736,11 @@ function ServicesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+          style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
         >
           WHAT WE DO
         </motion.h2>
-        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 800, letterSpacing: "-0.04em" }}>
+        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 700, letterSpacing: "-0.04em" }}>
           {String(content.services.length).padStart(2, "0")}
         </span>
       </div>
@@ -844,7 +851,7 @@ function CTASection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.75, delay: i * 0.1, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(40px, 9vw, 112px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 4px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(40px, 9vw, 112px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 4px", textTransform: "uppercase" }}
             >
               {line}
             </motion.h2>

@@ -71,7 +71,7 @@ export function WorkDetail() {
               <motion.h1
                 style={{
                   fontFamily: F,
-                  fontWeight: 800,
+                  fontWeight: 700,
                   fontSize: "clamp(32px, 6vw, 72px)",
                   color: DARK,
                   letterSpacing: "-0.04em",
@@ -304,7 +304,7 @@ export function WorkDetail() {
                 <h3
                   style={{
                     fontFamily: F,
-                    fontWeight: 800,
+                    fontWeight: 700,
                     fontSize: "clamp(24px, 4vw, 52px)",
                     color: DARK,
                     letterSpacing: "-0.03em",

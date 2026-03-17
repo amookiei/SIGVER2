@@ -178,7 +178,7 @@ export function Work() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.88, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(64px, 14vw, 180px)", color: DARK, letterSpacing: "-0.05em", lineHeight: 0.84, margin: "0 0 20px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(64px, 14vw, 180px)", color: DARK, letterSpacing: "-0.05em", lineHeight: 0.84, margin: "0 0 20px", textTransform: "uppercase" }}
             >
               WORK
             </motion.h1>

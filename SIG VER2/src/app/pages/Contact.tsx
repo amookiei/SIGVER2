@@ -135,7 +135,7 @@ export function Contact() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.88, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(48px, 10vw, 130px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 0px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(48px, 10vw, 130px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 0px", textTransform: "uppercase" }}
             >
               GET IN
             </motion.h1>
@@ -145,7 +145,7 @@ export function Contact() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.88, delay: 0.18, ease: [0.76, 0, 0.24, 1] }}
-              style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(48px, 10vw, 130px)", color: "transparent", WebkitTextStroke: `1px ${DARK}`, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 40px", textTransform: "uppercase" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(48px, 10vw, 130px)", color: "transparent", WebkitTextStroke: `1px ${DARK}`, letterSpacing: "-0.04em", lineHeight: 0.88, margin: "0 0 40px", textTransform: "uppercase" }}
             >
               TOUCH.
             </motion.h1>
@@ -163,7 +163,7 @@ export function Contact() {
 
       {/* ── Contact Info Row ── */}
       <div
-        className="grid grid-cols-2 md:grid-cols-4"
+        className="grid grid-cols-2 md:grid-cols-4 px-8 md:px-16 lg:px-28"
         style={{ borderBottom: BORDER }}
       >
         {[
@@ -174,7 +174,7 @@ export function Contact() {
         ].map((item, i) => (
           <motion.div
             key={item.label}
-            style={{ padding: "28px 32px", borderRight: i < 3 ? BORDER : "none" }}
+            style={{ padding: "28px 24px", borderRight: i < 3 ? BORDER : "none" }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 + i * 0.08 }}
@@ -200,7 +200,7 @@ export function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            style={{ fontFamily: F, fontWeight: 800, fontSize: "clamp(22px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+            style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(22px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
           >
             SEND A MESSAGE
           </motion.h2>
@@ -219,7 +219,7 @@ export function Contact() {
                 >
                   <CheckCircle size={48} color="#FF4D00" className="mb-6" />
                   <h3
-                    style={{ fontFamily: F, fontWeight: 800, fontSize: "28px", color: DARK, letterSpacing: "-0.02em", marginBottom: "12px", textTransform: "uppercase" }}
+                    style={{ fontFamily: F, fontWeight: 700, fontSize: "28px", color: DARK, letterSpacing: "-0.02em", marginBottom: "12px", textTransform: "uppercase" }}
                   >
                     문의가 접수됐습니다!
                   </h3>
