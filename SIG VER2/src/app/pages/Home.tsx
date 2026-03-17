@@ -682,8 +682,8 @@ function ClientLogo({ client }: { client: HomeClient }) {
           src={client.logoUrl}
           alt={client.name}
           style={{
-            maxHeight: "40px",
-            maxWidth: "130px",
+            maxHeight: "120px",
+            maxWidth: "200px",
             objectFit: "contain",
             filter: hovered ? "none" : "grayscale(100%)",
             transition: "filter 0.4s ease",
@@ -740,8 +740,7 @@ function ClientsSection() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                borderTop: BORDER,
-                borderLeft: BORDER,
+                gap: "24px",
               }}
             >
               {displayClients.map((client, i) => (
@@ -751,7 +750,6 @@ function ClientsSection() {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.06 }}
-                  style={{ borderRight: BORDER, borderBottom: BORDER }}
                 >
                   <ClientLogo client={client} />
                 </motion.div>
