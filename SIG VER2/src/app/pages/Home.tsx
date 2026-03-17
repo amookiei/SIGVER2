@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import { useGallery } from "../context/GalleryContext";
 import {
   motion,
   useMotionValue,
@@ -784,64 +785,85 @@ function ClientsSection() {
   );
 }
 
-// ─── ABOUT PREVIEW ────────────────────────────────────────
-function AboutPreviewSection() {
-  const { content } = useHomeContent();
+// ─── GALLERY PREVIEW ──────────────────────────────────────
+function GalleryPreviewSection() {
+  const { data } = useGallery();
+
+  // Collect first 4 photos across all sections
+  const previews: { url: string; alt: string }[] = [];
+  for (const section of data.sections) {
+    for (const img of section.images) {
+      if (previews.length >= 4) break;
+      previews.push({ url: img.url, alt: img.alt || section.title });
+    }
+    if (previews.length >= 4) break;
+  }
+
+  const totalPhotos = data.sections.reduce((acc, s) => acc + s.images.length, 0);
+
+  if (totalPhotos === 0) return null;
+
   return (
     <section style={{ borderBottom: BORDER }}>
-      <div className="grid grid-cols-1 md:grid-cols-2">
-        <div style={{ overflow: "hidden", aspectRatio: "4/3", position: "relative", backgroundColor: "#F0F0F0", borderRight: BORDER }}>
-          <motion.img
-            src={content.aboutImage}
-            alt="SIG Studio"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            initial={{ scale: 1.08 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
-          />
-        </div>
-        <div style={{ padding: "60px 48px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <motion.p
-            style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "24px" }}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            About Us
-          </motion.p>
-          {[content.aboutLine1, content.aboutLine2].map((line, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 + i * 0.12 }}
-              style={{ fontFamily: F, fontSize: "17px", color: i === 0 ? DARK : TEXT2, lineHeight: 1.75, marginBottom: "20px" }}
+      {/* Header row */}
+      <div
+        className="px-8 md:px-16 lg:px-28 py-8 flex items-center justify-between"
+        style={{ borderBottom: BORDER }}
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+        >
+          GALLERY
+        </motion.h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <span style={{ fontFamily: F, fontSize: "12px", color: TEXT3 }}>
+            {data.sections.length} Series · {totalPhotos} Photos
+          </span>
+          <Link to="/gallery" data-cursor="hover-link">
+            <motion.span
+              style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
+              whileHover={{ color: DARK }}
+              transition={{ duration: 0.2 }}
             >
-              {line}
-            </motion.p>
-          ))}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            style={{ marginTop: "12px" }}
-          >
-            <Link to="/about" data-cursor="hover-link">
-              <motion.span
-                style={{ fontFamily: F, fontSize: "12px", color: DARK, letterSpacing: "0.08em", textTransform: "uppercase" }}
-                whileHover={{ letterSpacing: "0.14em" }}
-                transition={{ duration: 0.3 }}
-              >
-                ABOUT US →
-              </motion.span>
-            </Link>
-          </motion.div>
+              VIEW ALL →
+            </motion.span>
+          </Link>
         </div>
       </div>
+
+      {/* 4-photo horizontal strip */}
+      {previews.length > 0 && (
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${previews.length}, 1fr)` }}>
+          {previews.map((p, i) => (
+            <Link to="/gallery" key={i} data-cursor="view">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.07 }}
+                style={{
+                  overflow: "hidden",
+                  aspectRatio: "3/4",
+                  borderRight: i < previews.length - 1 ? BORDER : "none",
+                  position: "relative",
+                }}
+              >
+                <motion.img
+                  src={p.url}
+                  alt={p.alt}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  whileHover={{ scale: 1.04 }}
+                  transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
+                />
+              </motion.div>
+            </Link>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -913,7 +935,7 @@ export function Home() {
       <MarqueeSection />
       <SelectedWorksSection />
       <ClientsSection />
-      <AboutPreviewSection />
+      <GalleryPreviewSection />
       <CTASection />
     </div>
   );
