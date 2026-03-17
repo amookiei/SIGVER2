@@ -7,14 +7,10 @@ import {
   AnimatePresence,
 } from "motion/react";
 import { LogoSymbol } from "../components/LogoSymbol";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAdmin } from "../context/AdminContext";
 import { useHomeContent } from "../context/HomeContentContext";
 import type { HomeService } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // ─── Design tokens ───────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -341,52 +337,140 @@ function RowD({ items }: { items: [PortfolioItem, PortfolioItem] }) {
   );
 }
 
-// ─── SELECTED WORKS SECTION ───────────────────────────────
-const WORK_FILTERS = ["All", "Branding", "Web Design", "Campaign", "Government"] as const;
+// ─── Home Work Card (3-col grid) ──────────────────────────
+function HomeWorkCard({ item, index }: { item: PortfolioItem; index: number }) {
+  const [hovered, setHovered] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const btnX = useSpring(mouseX, { stiffness: 280, damping: 28 });
+  const btnY = useSpring(mouseY, { stiffness: 280, damping: 28 });
 
-function SelectedWorksSection() {
-  const [activeFilter, setActiveFilter] = useState<string>("All");
-  const sectionRef = useRef<HTMLElement>(null);
-  const { items } = useAdmin();
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - r.left);
+    mouseY.set(e.clientY - r.top);
+  };
 
-  const displayItems =
-    activeFilter === "All"
-      ? items.slice(0, 5)
-      : items.filter((p) => p.category === activeFilter);
-
-  const rows = groupIntoRows(displayItems);
-
-  // GSAP ScrollTrigger — clip-path image reveals
-  useEffect(() => {
-    let timerId: ReturnType<typeof setTimeout>;
-
-    timerId = setTimeout(() => {
-      const reveals = document.querySelectorAll(".work-img-reveal");
-      reveals.forEach((el) => {
-        // Reset to clipped state first
-        gsap.set(el, { clipPath: "inset(0 0 100% 0)" });
-
-        gsap.to(el, {
-          clipPath: "inset(0 0 0% 0)",
-          duration: 0.95,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 82%",
-            once: true,
-          },
-        });
-      });
-    }, 380);
-
-    return () => {
-      clearTimeout(timerId);
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  }, [activeFilter]);
+  // desktop 3-col: 3번째 칸(index%3===2)은 오른쪽 border 없음
+  const borderRight = (index + 1) % 3 !== 0 ? BORDER : "none";
 
   return (
-    <section ref={sectionRef} style={{ borderBottom: BORDER }}>
+    <motion.div
+      style={{ borderRight, borderBottom: BORDER }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay: (index % 3) * 0.08 }}
+    >
+      {/* Thumbnail */}
+      <Link to={`/work/${item.slug}`} data-cursor="view">
+        <div
+          style={{ aspectRatio: "4/3", overflow: "hidden", position: "relative", backgroundColor: "#F0F0F0" }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onMouseMove={onMouseMove}
+        >
+          {/* Base thumbnail */}
+          <motion.img
+            src={item.thumbnail}
+            alt={item.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }}
+            animate={{ scale: hovered && !item.thumbnailHover ? 1.05 : 1 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+          />
+          {/* Hover thumbnail crossfade */}
+          {item.thumbnailHover && (
+            <motion.img
+              src={item.thumbnailHover}
+              alt=""
+              aria-hidden
+              style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: hovered ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+            />
+          )}
+          {/* Cursor-tracking circle button */}
+          <motion.div
+            style={{ position: "absolute", x: btnX, y: btnY, translateX: "-50%", translateY: "-50%", pointerEvents: "none", zIndex: 10 }}
+            animate={{ opacity: hovered ? 1 : 0, scale: hovered ? 1 : 0.5 }}
+            transition={{ duration: 0.26 }}
+          >
+            <div style={{
+              width: 60, height: 60, borderRadius: "50%",
+              border: "1px solid rgba(255,255,255,0.85)",
+              backgroundColor: "rgba(13,13,13,0.65)",
+              backdropFilter: "blur(6px)",
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: 2,
+            }}>
+              <span style={{ color: "#FAFAFA", fontSize: "12px" }}>→</span>
+              <LogoSymbol style={{ color: "#FAFAFA", width: "8px", height: "8px", display: "block", animationName: "sigSpin", animationDuration: "3s", animationTimingFunction: "linear", animationIterationCount: "infinite" }} />
+            </div>
+          </motion.div>
+          {/* Category tag */}
+          <div style={{ position: "absolute", top: "12px", left: "12px" }}>
+            <span style={{ fontFamily: F, fontSize: "9px", fontWeight: 600, color: "#FAFAFA", letterSpacing: "0.1em", textTransform: "uppercase", background: "rgba(13,13,13,0.55)", backdropFilter: "blur(6px)", padding: "3px 8px" }}>
+              {item.category}
+            </span>
+          </div>
+        </div>
+      </Link>
+
+      {/* Info */}
+      <div style={{ borderTop: BORDER, padding: "20px 22px 26px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+          <Link to={`/work/${item.slug}`} data-cursor="hover-link">
+            <motion.h3
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.25 }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(15px, 1.6vw, 20px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", lineHeight: 1.2 }}
+            >
+              {item.title}
+            </motion.h3>
+          </Link>
+          <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3, paddingTop: "3px", flexShrink: 0, marginLeft: "12px" }}>{item.year}</span>
+        </div>
+
+        {/* Tagline — hover: grey → dark */}
+        <motion.p
+          whileHover={{ color: DARK }}
+          transition={{ duration: 0.22 }}
+          style={{ fontFamily: F, fontSize: "12px", color: TEXT3, lineHeight: 1.5, marginBottom: "10px", cursor: "default" }}
+        >
+          {item.tagline}
+        </motion.p>
+
+        {/* Description — hover: grey → dark, 3-line clamp */}
+        <motion.p
+          whileHover={{ color: DARK }}
+          transition={{ duration: 0.22 }}
+          style={{
+            fontFamily: F, fontSize: "12px", color: TEXT3, lineHeight: 1.7,
+            marginBottom: "16px", display: "-webkit-box",
+            WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden",
+            cursor: "default",
+          } as React.CSSProperties}
+        >
+          {item.description}
+        </motion.p>
+
+        {/* Category badge */}
+        <span style={{ display: "inline-block", fontFamily: F, fontSize: "10px", fontWeight: 600, color: TEXT2, letterSpacing: "0.1em", textTransform: "uppercase", border: `1px solid #D8D8D8`, padding: "4px 10px" }}>
+          {item.category}
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── SELECTED WORKS SECTION ───────────────────────────────
+function SelectedWorksSection() {
+  const { items } = useAdmin();
+  const displayItems = items.slice(0, 6);
+
+  return (
+    <section style={{ borderBottom: BORDER }}>
       {/* Header */}
       <div
         className="px-8 md:px-16 lg:px-28 pt-16 pb-10 flex items-end justify-between"
@@ -397,16 +481,7 @@ function SelectedWorksSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.65 }}
-          style={{
-            fontFamily: F,
-            fontWeight: 700,
-            fontSize: "clamp(40px, 8vw, 100px)",
-            color: DARK,
-            letterSpacing: "-0.04em",
-            lineHeight: 0.88,
-            textTransform: "uppercase",
-            margin: 0,
-          }}
+          style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(40px, 8vw, 100px)", color: DARK, letterSpacing: "-0.04em", lineHeight: 0.88, textTransform: "uppercase", margin: 0 }}
         >
           SELECTED WORKS
         </motion.h2>
@@ -421,67 +496,22 @@ function SelectedWorksSection() {
         </Link>
       </div>
 
-      {/* Filter tabs — active item gets parentheses */}
-      <div
-        className="hidden md:flex items-center gap-0 px-8 md:px-16 lg:px-28"
-        style={{ borderBottom: BORDER }}
-      >
-        {WORK_FILTERS.map((f) => {
-          const isActive = activeFilter === f;
-          return (
-            <motion.button
-              key={f}
-              onClick={() => setActiveFilter(f)}
-              data-cursor="hover-button"
-              style={{
-                fontFamily: F,
-                fontSize: "12px",
-                fontWeight: isActive ? 700 : 400,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                padding: "12px 14px",
-                background: "none",
-                border: "none",
-                outline: "none",
-                borderRight: `1px solid #E0E0E0`,
-              }}
-              animate={{ color: isActive ? DARK : TEXT3 }}
-              whileHover={{ color: DARK }}
-              transition={{ duration: 0.2 }}
-            >
-              {isActive ? `(${f})` : f}
-            </motion.button>
-          );
-        })}
-      </div>
-
-      {/* Rows */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeFilter}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+      {/* 3-col grid (mobile: 1-col) */}
+      <div className="px-8 md:px-16 lg:px-28">
+        <div
+          className="grid grid-cols-1 md:grid-cols-3"
+          style={{ borderTop: BORDER }}
         >
-          {rows.map((row, i) => {
-            if (row.type === "A") return <RowA key={`A-${i}`} item={row.item} />;
-            if (row.type === "B") return <RowB key={`B-${i}`} item={row.item} />;
-            if (row.type === "C") return <RowC key={`C-${i}`} item={row.item} />;
-            if (row.type === "D") return <RowD key={`D-${i}`} items={row.items} />;
-            return null;
-          })}
-
-          {/* Empty state */}
-          {rows.length === 0 && (
-            <div className="py-24 text-center">
-              <p style={{ fontFamily: F, fontSize: "14px", color: TEXT3 }}>
-                해당 카테고리의 프로젝트가 없습니다.
-              </p>
+          {displayItems.map((item, i) => (
+            <HomeWorkCard key={item.id} item={item} index={i} />
+          ))}
+          {displayItems.length === 0 && (
+            <div className="col-span-3 py-24 text-center">
+              <p style={{ fontFamily: F, fontSize: "14px", color: TEXT3 }}>등록된 프로젝트가 없습니다.</p>
             </div>
           )}
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </div>
     </section>
   );
 }
