@@ -719,7 +719,7 @@ function ClientsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              style={{ fontFamily: F, fontWeight: 700, fontSize: "14px", color: DARK, letterSpacing: "0.01em" }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase" }}
             >
               Our clients
             </motion.p>
