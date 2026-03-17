@@ -114,18 +114,18 @@ function PlaceholderBox({ label }: { label: string }) {
 function SectionCard({ section, delay }: { section: SpaceSection; delay: number }) {
   return (
     <Reveal delay={delay}>
-      <div style={{ padding: "36px 32px", border: BORDER, height: "100%" }}>
+      <div style={{ padding: "36px 0", height: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}>
-          <span style={{ fontSize: "14px", color: DARK }}>{section.icon}</span>
-          <p style={{ fontFamily: F, fontWeight: 700, fontSize: "12px", color: DARK, letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
+          <span style={{ fontSize: "13px", color: DARK }}>{section.icon}</span>
+          <p style={{ fontFamily: F, fontWeight: 700, fontSize: "11px", color: DARK, letterSpacing: "0.12em", textTransform: "uppercase", margin: 0 }}>
             {section.title}
           </p>
         </div>
         <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
           {section.items.map((item, i) => (
-            <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "10px" }}>
-              <span style={{ color: TEXT3, fontFamily: F, fontSize: "11px", lineHeight: "22px", flexShrink: 0 }}>—</span>
-              <span style={{ fontFamily: F, fontSize: "13px", color: TEXT2, lineHeight: "22px", letterSpacing: "-0.01em" }}>
+            <li key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "12px" }}>
+              <span style={{ color: TEXT3, fontFamily: F, fontSize: "13px", lineHeight: "1.6", flexShrink: 0 }}>—</span>
+              <span style={{ fontFamily: F, fontSize: "clamp(14px, 1.2vw, 17px)", color: TEXT2, lineHeight: "1.6", letterSpacing: "-0.01em" }}>
                 {item}
               </span>
             </li>
@@ -257,17 +257,9 @@ export function Space() {
                 Facilities & Equipment
               </p>
             </Reveal>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
-                gap: "0",
-                borderTop: BORDER,
-                borderLeft: BORDER,
-              }}
-            >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-x-12 lg:gap-x-20">
               {content.sections.map((sec, i) => (
-                <div key={sec.id} style={{ borderRight: BORDER, borderBottom: BORDER }}>
+                <div key={sec.id}>
                   <SectionCard section={sec} delay={i * 0.07} />
                 </div>
               ))}
