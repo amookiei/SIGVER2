@@ -17,9 +17,10 @@ export interface GallerySection {
 
 export interface GalleryData {
   sections: GallerySection[];
+  featuredImageIds: string[]; // up to 4 image IDs for home preview
 }
 
-export const defaultGalleryData: GalleryData = { sections: [] };
+export const defaultGalleryData: GalleryData = { sections: [], featuredImageIds: [] };
 
 const CACHE_KEY = "sig_gallery_data";
 const DB_KEY = "gallery_data";
@@ -29,7 +30,7 @@ function loadCache(): GalleryData {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return defaultGalleryData;
     const parsed = JSON.parse(raw) as Partial<GalleryData>;
-    return { sections: parsed.sections ?? [] };
+    return { sections: parsed.sections ?? [], featuredImageIds: parsed.featuredImageIds ?? [] };
   } catch {
     return defaultGalleryData;
   }
@@ -68,7 +69,7 @@ export function GalleryProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       if (row?.value) {
         const parsed = row.value as Partial<GalleryData>;
-        setData({ sections: parsed.sections ?? [] });
+        setData({ sections: parsed.sections ?? [], featuredImageIds: parsed.featuredImageIds ?? [] });
       }
     } catch (err) {
       console.error("[GalleryDB fetch]", err);

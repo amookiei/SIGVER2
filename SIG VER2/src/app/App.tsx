@@ -5,6 +5,7 @@ import { AboutProvider } from "./context/AboutContext";
 import { HomeContentProvider } from "./context/HomeContentContext";
 import { ContactProvider } from "./context/ContactContext";
 import { GalleryProvider } from "./context/GalleryContext";
+import { SpaceProvider } from "./context/SpaceContext";
 
 export default function App() {
   return (
@@ -13,7 +14,9 @@ export default function App() {
         <HomeContentProvider>
           <ContactProvider>
             <GalleryProvider>
-              <RouterProvider router={router} />
+              <SpaceProvider>
+                <RouterProvider router={router} />
+              </SpaceProvider>
             </GalleryProvider>
           </ContactProvider>
         </HomeContentProvider>
