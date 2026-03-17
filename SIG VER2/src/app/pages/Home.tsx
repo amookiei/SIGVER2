@@ -9,7 +9,7 @@ import {
 import { LogoSymbol } from "../components/LogoSymbol";
 import { useAdmin } from "../context/AdminContext";
 import { useHomeContent } from "../context/HomeContentContext";
-import type { HomeService } from "../context/HomeContentContext";
+import type { HomeClient } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
 
 // ─── Design tokens ───────────────────────────────────────
@@ -667,145 +667,120 @@ function MarqueeSection() {
   );
 }
 
-// ─── SERVICES ─────────────────────────────────────────────
-type ServiceItem = HomeService;
-
-function ServiceCard({
-  svc,
-  idx,
-  hoveredIdx,
-  setHoveredIdx,
-  isMobile,
-  total = 4,
-}: {
-  svc: ServiceItem;
-  idx: number;
-  hoveredIdx: number | null;
-  setHoveredIdx: (i: number | null) => void;
-  isMobile: boolean;
-  total?: number;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [mobileInView, setMobileInView] = useState(false);
-
-  useEffect(() => {
-    if (!isMobile || !cardRef.current) return;
-    const el = cardRef.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => setMobileInView(entry.isIntersecting),
-      { threshold: 0.45 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [isMobile]);
-
-  const isActive = isMobile ? mobileInView : hoveredIdx === idx;
-  const isDimmed = !isMobile && hoveredIdx !== null && hoveredIdx !== idx;
+// ─── CLIENTS ─────────────────────────────────────────────
+function ClientLogo({ client }: { client: HomeClient }) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.div
-      ref={cardRef}
-      style={{
-        borderRight: idx < total - 1 ? BORDER : "none",
-        position: "relative",
-        overflow: "hidden",
-        minHeight: "420px",
-        display: "flex",
-        flexDirection: "column",
-      }}
-      onMouseEnter={() => { if (!isMobile) setHoveredIdx(idx); }}
-      onMouseLeave={() => { if (!isMobile) setHoveredIdx(null); }}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.55, delay: idx * 0.08 }}
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "36px 28px", cursor: "default" }}
     >
-      {/* Text content */}
-      <motion.div
-        style={{ padding: "32px 28px", flex: 1, position: "relative", zIndex: 2 }}
-        animate={{ opacity: isDimmed ? 0.25 : 1 }}
-        transition={{ duration: 0.35 }}
-      >
-        <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", marginBottom: "20px" }}>{svc.id}</p>
-        <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: "17px", color: DARK, letterSpacing: "-0.01em", lineHeight: 1.25, textTransform: "uppercase", marginBottom: "16px", whiteSpace: "pre-line" }}>
-          {svc.title}
-        </h3>
-        <p style={{ fontFamily: F, fontSize: "13px", color: TEXT2, lineHeight: 1.7, marginBottom: "24px" }}>{svc.desc}</p>
-        <div style={{ width: "32px", height: "1px", backgroundColor: "#CCCCCC", marginBottom: "12px" }} />
-        <span style={{ fontFamily: F, fontSize: "12px", color: TEXT3 }}>{svc.count}</span>
-      </motion.div>
-
-      {/* Image — 항상 표시, 기본 그레이스케일 → 호버 시 컬러 */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: "55%",
-          zIndex: 1,
-        }}
-      >
-        {/* Gradient fade */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "60px", background: `linear-gradient(to bottom, #FAFAFA, rgba(250,250,250,0))`, zIndex: 2 }} />
+      {client.logoUrl ? (
         <img
-          src={svc.image}
-          alt={svc.title}
+          src={client.logoUrl}
+          alt={client.name}
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            filter: isActive ? "grayscale(0%)" : "grayscale(100%)",
-            transition: "filter 0.55s ease",
+            maxHeight: "40px",
+            maxWidth: "130px",
+            objectFit: "contain",
+            filter: hovered ? "none" : "grayscale(100%)",
+            transition: "filter 0.4s ease",
           }}
         />
-      </div>
-    </motion.div>
+      ) : (
+        <span style={{ fontFamily: F, fontSize: "13px", color: "#CCCCCC", letterSpacing: "0.04em" }}>{client.name || "—"}</span>
+      )}
+    </div>
   );
 }
 
-function ServicesSection() {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+function ClientsSection() {
   const { content } = useHomeContent();
+  const [showAll, setShowAll] = useState(false);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const featured = content.clients.slice(0, 6);
+  const hasMore = content.clients.length > 6;
+  const displayClients = showAll ? content.clients : featured;
+
+  if (content.clients.length === 0) return null;
 
   return (
     <section style={{ borderBottom: BORDER }}>
-      <div className="flex items-center justify-between px-8 md:px-16 lg:px-28 py-10" style={{ borderBottom: BORDER }}>
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
-        >
-          WHAT WE DO
-        </motion.h2>
-        <span style={{ fontFamily: F, fontSize: "clamp(28px, 4vw, 52px)", color: "#EEEEEE", fontWeight: 700, letterSpacing: "-0.04em" }}>
-          {String(content.services.length).padStart(2, "0")}
-        </span>
-      </div>
+      <div className="px-8 md:px-16 lg:px-28 py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0">
+          {/* Left */}
+          <div style={{ position: "relative", minHeight: "200px" }}>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "14px", color: DARK, letterSpacing: "0.01em" }}
+            >
+              Our clients
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, delay: 0.15 }}
+              style={{ position: "absolute", bottom: 0, left: 0 }}
+            >
+              <p style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(30px, 4.5vw, 54px)", color: "#E8E8E8", letterSpacing: "-0.04em", lineHeight: 1.05, margin: 0 }}>
+                Pleasure to<br />work with
+              </p>
+            </motion.div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 px-8 md:px-16 lg:px-28" style={{ borderTop: BORDER }}>
-        {content.services.map((svc, idx) => (
-          <ServiceCard
-            key={svc.id}
-            svc={svc}
-            idx={idx}
-            hoveredIdx={hoveredIdx}
-            setHoveredIdx={setHoveredIdx}
-            isMobile={isMobile}
-            total={content.services.length}
-          />
-        ))}
+          {/* Right — 2-col logo grid */}
+          <div className="md:col-span-2">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                borderTop: BORDER,
+                borderLeft: BORDER,
+              }}
+            >
+              {displayClients.map((client, i) => (
+                <motion.div
+                  key={client.id}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  style={{ borderRight: BORDER, borderBottom: BORDER }}
+                >
+                  <ClientLogo client={client} />
+                </motion.div>
+              ))}
+            </div>
+
+            {hasMore && (
+              <div style={{ marginTop: "28px" }}>
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    fontFamily: F,
+                    fontSize: "13px",
+                    color: DARK,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "3px",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  {showAll ? "Close ↑" : "All Clients →"}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -939,7 +914,7 @@ export function Home() {
       <HeroSection />
       <MarqueeSection />
       <SelectedWorksSection />
-      <ServicesSection />
+      <ClientsSection />
       <AboutPreviewSection />
       <CTASection />
     </div>
