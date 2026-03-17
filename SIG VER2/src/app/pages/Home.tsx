@@ -351,12 +351,8 @@ function HomeWorkCard({ item, index }: { item: PortfolioItem; index: number }) {
     mouseY.set(e.clientY - r.top);
   };
 
-  // desktop 3-col: 3번째 칸(index%3===2)은 오른쪽 border 없음
-  const borderRight = (index + 1) % 3 !== 0 ? BORDER : "none";
-
   return (
     <motion.div
-      style={{ borderRight, borderBottom: BORDER }}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -418,7 +414,7 @@ function HomeWorkCard({ item, index }: { item: PortfolioItem; index: number }) {
       </Link>
 
       {/* Info */}
-      <div style={{ borderTop: BORDER, padding: "20px 22px 26px" }}>
+      <div style={{ padding: "20px 4px 26px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
           <Link to={`/work/${item.slug}`} data-cursor="hover-link">
             <motion.h3
@@ -497,11 +493,8 @@ function SelectedWorksSection() {
       </div>
 
       {/* 3-col grid (mobile: 1-col) */}
-      <div className="px-8 md:px-16 lg:px-28">
-        <div
-          className="grid grid-cols-1 md:grid-cols-3"
-          style={{ borderTop: BORDER }}
-        >
+      <div className="px-8 md:px-16 lg:px-28 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           {displayItems.map((item, i) => (
             <HomeWorkCard key={item.id} item={item} index={i} />
           ))}
