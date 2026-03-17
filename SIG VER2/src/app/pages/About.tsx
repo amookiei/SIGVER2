@@ -242,6 +242,29 @@ export function About() {
         )}
       </section>
 
+      {/* ── Client Showreel ── */}
+      <section style={{ height: "100vh", position: "relative", overflow: "hidden", backgroundColor: "#0D0D0D" }}>
+        <video
+          src="/clint.mp4"
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
+          autoPlay
+          loop
+          muted
+          playsInline
+          disablePictureInPicture
+          onContextMenu={(e) => e.preventDefault()}
+        />
+        <motion.span
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.3 }}
+          style={{ position: "absolute", bottom: "32px", left: "clamp(32px, 7vw, 112px)", fontFamily: F, fontSize: "11px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", pointerEvents: "none" }}
+        >
+          Clients Showreel
+        </motion.span>
+      </section>
+
       {/* ── CTA ── */}
       <section style={{ borderBottom: BORDER }}>
         <div className="px-8 md:px-16 lg:px-28 py-20 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
