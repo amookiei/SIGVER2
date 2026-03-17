@@ -714,15 +714,33 @@ function ClientsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0">
           {/* Left */}
           <div style={{ position: "relative", minHeight: "200px" }}>
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase" }}
-            >
-              Our clients
-            </motion.p>
+            <div className="flex items-start justify-between md:flex-col md:items-start gap-4">
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase" }}
+              >
+                Our clients
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <Link to="/clients" data-cursor="hover-link">
+                  <motion.span
+                    style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
+                    whileHover={{ color: DARK }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    VIEW ALL →
+                  </motion.span>
+                </Link>
+              </motion.div>
+            </div>
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
