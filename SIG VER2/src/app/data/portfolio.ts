@@ -88,13 +88,13 @@ export const portfolioItems: PortfolioItem[] = [
     tags: ["브랜드 전략", "아이덴티티 디자인", "모션 가이드라인", "UI 시스템"],
     liveUrl: "https://www.hyundai.com",
 
-    nextProject: "M3AT",
+    nextProject: "m3at",
   },
 
   // ── 2 ───────────────────────────────────────────────────────────────────────
   {
     id: 2,
-    slug: "M3AT",
+    slug: "m3at",
     title: "M3AT",
     client: "밋더한우",
     category: "Branding",
