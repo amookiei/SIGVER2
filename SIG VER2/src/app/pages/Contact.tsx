@@ -208,7 +208,6 @@ export function Contact() {
         </div>
 
         <div className="px-8 md:px-16 lg:px-28 py-16">
-          <div className="max-w-[1200px] mx-auto">
             <AnimatePresence mode="wait">
               {submitted ? (
                 <motion.div
@@ -449,7 +448,6 @@ export function Contact() {
                 </motion.form>
               )}
             </AnimatePresence>
-          </div>
         </div>
       </section>
     </div>
