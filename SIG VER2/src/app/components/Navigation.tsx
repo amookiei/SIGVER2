@@ -7,9 +7,9 @@ import mainLogo from "../../assets/images/mainlg.svg";
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 
 const navLinks = [
-  { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/work", label: "Work" },
+  { href: "/gallery", label: "Gallery" },
 ];
 
 export function Navigation() {
@@ -190,7 +190,7 @@ export function Navigation() {
           >
             {/* Big nav links */}
             <div className="px-8 pb-16 flex flex-col gap-0">
-              {[{ href: "/", label: "Home" }, ...navLinks].map((link, i) => (
+              {[{ href: "/", label: "Home" }, ...navLinks, { href: "/contact", label: "Contact" }].map((link, i) => (
                 <motion.div
                   key={link.href}
                   initial={{ opacity: 0, y: 30 }}
