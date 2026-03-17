@@ -33,23 +33,24 @@ function Reveal({
   );
 }
 
-// ─── Photo grid (editorial asymmetric) ───────────────────
+// ─── Photo grid (3-photo editorial) ──────────────────────
+// Layout: [Photo 0 large portrait | Photo 1 top + Photo 2 bottom]
 function PhotoGrid({ photos }: { photos: string[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
-  const filled = [...photos, "", "", "", ""].slice(0, 4);
+  const filled = [...photos, "", "", ""].slice(0, 3);
 
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "2fr 1fr 1fr",
-        gridTemplateRows: "auto auto",
+        gridTemplateColumns: "3fr 2fr",
+        gridTemplateRows: "1fr 1fr",
         gap: "6px",
       }}
     >
-      {/* Photo 0 — large, spans 2 rows */}
+      {/* Photo 0 — large portrait, spans 2 rows */}
       <div
-        style={{ gridColumn: "1", gridRow: "1 / 3", overflow: "hidden", aspectRatio: "3/4", position: "relative", background: "#EBEBEB" }}
+        style={{ gridColumn: "1", gridRow: "1 / 3", overflow: "hidden", aspectRatio: "2/3", position: "relative", background: "#EBEBEB" }}
         onMouseEnter={() => setHovered(0)} onMouseLeave={() => setHovered(null)}
       >
         {filled[0] ? (
@@ -60,9 +61,9 @@ function PhotoGrid({ photos }: { photos: string[] }) {
         ) : <PlaceholderBox label="01" />}
       </div>
 
-      {/* Photo 1 — top right, spans 2 cols */}
+      {/* Photo 1 — top right */}
       <div
-        style={{ gridColumn: "2 / 4", gridRow: "1", overflow: "hidden", aspectRatio: "16/9", position: "relative", background: "#EBEBEB" }}
+        style={{ gridColumn: "2", gridRow: "1", overflow: "hidden", aspectRatio: "4/3", position: "relative", background: "#EBEBEB" }}
         onMouseEnter={() => setHovered(1)} onMouseLeave={() => setHovered(null)}
       >
         {filled[1] ? (
@@ -73,9 +74,9 @@ function PhotoGrid({ photos }: { photos: string[] }) {
         ) : <PlaceholderBox label="02" />}
       </div>
 
-      {/* Photo 2 — bottom middle */}
+      {/* Photo 2 — bottom right */}
       <div
-        style={{ gridColumn: "2", gridRow: "2", overflow: "hidden", aspectRatio: "4/5", position: "relative", background: "#EBEBEB" }}
+        style={{ gridColumn: "2", gridRow: "2", overflow: "hidden", aspectRatio: "4/3", position: "relative", background: "#EBEBEB" }}
         onMouseEnter={() => setHovered(2)} onMouseLeave={() => setHovered(null)}
       >
         {filled[2] ? (
@@ -84,19 +85,6 @@ function PhotoGrid({ photos }: { photos: string[] }) {
             animate={{ scale: hovered === 2 ? 1.04 : 1 }}
             transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }} />
         ) : <PlaceholderBox label="03" />}
-      </div>
-
-      {/* Photo 3 — bottom right */}
-      <div
-        style={{ gridColumn: "3", gridRow: "2", overflow: "hidden", aspectRatio: "4/5", position: "relative", background: "#EBEBEB" }}
-        onMouseEnter={() => setHovered(3)} onMouseLeave={() => setHovered(null)}
-      >
-        {filled[3] ? (
-          <motion.img src={filled[3]} alt="스튜디오"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            animate={{ scale: hovered === 3 ? 1.04 : 1 }}
-            transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }} />
-        ) : <PlaceholderBox label="04" />}
       </div>
     </div>
   );

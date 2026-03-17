@@ -88,6 +88,18 @@ function PhotoUploadArea({
           e.target.value = "";
         }}
       />
+      {/* 권장 규격 안내 */}
+      <div style={{ background: "#0D0D0D", border: "1px solid #1A1A1A", padding: "8px 14px", marginBottom: "10px", display: "flex", gap: "20px", flexWrap: "wrap" }}>
+        <span style={{ fontFamily: F, fontSize: "11px", color: "#555" }}>
+          📐 <span style={{ color: "#666" }}>권장 비율</span> — 1:1 정사각형 (갤러리 UI 최적화)
+        </span>
+        <span style={{ fontFamily: F, fontSize: "11px", color: "#555" }}>
+          📏 <span style={{ color: "#666" }}>권장 크기</span> — 1200×1200px 이상
+        </span>
+        <span style={{ fontFamily: F, fontSize: "11px", color: "#555" }}>
+          🗂 JPG / PNG / WebP · 라이트박스에서는 원본 비율로 전체 표시됨
+        </span>
+      </div>
       <div
         onDrop={(e) => { e.preventDefault(); handleFiles(Array.from(e.dataTransfer.files)); }}
         onDragOver={(e) => e.preventDefault()}

@@ -143,7 +143,7 @@ function Lightbox({
   );
 }
 
-// ─── Photo Item ────────────────────────────────────────────
+// ─── Photo Item (1:1 square) ───────────────────────────────
 function PhotoItem({
   img,
   onClick,
@@ -159,12 +159,11 @@ function PhotoItem({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        breakInside: "avoid",
-        marginBottom: "10px",
+        aspectRatio: "1",
         cursor: "pointer",
         overflow: "hidden",
-        display: "block",
         position: "relative",
+        background: "#EBEBEB",
       }}
     >
       <img
@@ -173,8 +172,10 @@ function PhotoItem({
         loading="lazy"
         style={{
           width: "100%",
+          height: "100%",
+          objectFit: "cover",
           display: "block",
-          transform: hovered ? "scale(1.03)" : "scale(1)",
+          transform: hovered ? "scale(1.05)" : "scale(1)",
           transition: "transform 0.55s cubic-bezier(0.25, 0.1, 0.25, 1)",
         }}
       />
@@ -207,14 +208,8 @@ function SectionBlock({
         </span>
       </div>
 
-      {/* Masonry grid */}
-      <div
-        style={{
-          columns: "3 auto",
-          columnGap: "10px",
-        } as React.CSSProperties}
-        className="gallery-columns"
-      >
+      {/* 1:1 square grid */}
+      <div className="gallery-grid">
         {section.images.map((img, i) => (
           <PhotoItem
             key={img.id}
@@ -411,10 +406,17 @@ export function Gallery() {
         )}
       </AnimatePresence>
 
-      {/* Mobile: 2-col masonry */}
       <style>{`
-        @media (max-width: 767px) {
-          .gallery-columns { columns: 2 auto !important; }
+        .gallery-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 6px;
+        }
+        @media (max-width: 1024px) {
+          .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 640px) {
+          .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; }
         }
       `}</style>
     </div>
