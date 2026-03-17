@@ -108,19 +108,39 @@ function SpecsEditor({ specs, onChange }: { specs: SpaceSpec[]; onChange: (s: Sp
 
 // ─── Photo slots ──────────────────────────────────────────
 function PhotoSlotsEditor({ photos, onChange }: { photos: string[]; onChange: (p: string[]) => void }) {
-  const filled = [...photos, "", "", "", ""].slice(0, 4) as [string, string, string, string];
+  const filled = [...photos, "", "", ""].slice(0, 3) as [string, string, string];
   function setPhoto(idx: number, url: string) {
     const next = [...filled] as string[];
     next[idx] = url;
     while (next.length > 0 && !next[next.length - 1]) next.pop();
     onChange(next);
   }
-  const labels = ["사진 1 (대형 좌)", "사진 2 (상단 우)", "사진 3 (하단 중)", "사진 4 (하단 우)"];
+  const labels = [
+    "사진 1 — 대형 좌 (세로형 권장)",
+    "사진 2 — 우측 상단 (가로형 권장)",
+    "사진 3 — 우측 하단 (가로형 권장)",
+  ];
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-      {filled.map((url, i) => (
-        <ImageField key={i} label={labels[i]} value={url} onChange={(u) => setPhoto(i, u)} uploadPath={`space/photo-${i + 1}`} />
-      ))}
+    <div>
+      <div style={{ background: "#0D0D0D", border: "1px solid #1A1A1A", padding: "10px 14px", marginBottom: "20px", display: "flex", gap: "24px", flexWrap: "wrap" }}>
+        <span style={{ fontFamily: F, fontSize: "11px", color: "#555", letterSpacing: "0.04em" }}>
+          📐 <span style={{ color: "#777" }}>사진 1</span> — 세로형 · 2:3 비율 · 800×1200px 이상
+        </span>
+        <span style={{ fontFamily: F, fontSize: "11px", color: "#555", letterSpacing: "0.04em" }}>
+          📐 <span style={{ color: "#777" }}>사진 2·3</span> — 가로형 · 4:3 비율 · 1200×900px 이상
+        </span>
+        <span style={{ fontFamily: F, fontSize: "11px", color: "#555", letterSpacing: "0.04em" }}>
+          🗂 JPG / PNG / WebP
+        </span>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        {/* Photo 1 takes full width (big portrait) */}
+        <div style={{ gridColumn: "1 / 3" }}>
+          <ImageField label={labels[0]} value={filled[0]} onChange={(u) => setPhoto(0, u)} uploadPath="space/photo-1" />
+        </div>
+        <ImageField label={labels[1]} value={filled[1]} onChange={(u) => setPhoto(1, u)} uploadPath="space/photo-2" />
+        <ImageField label={labels[2]} value={filled[2]} onChange={(u) => setPhoto(2, u)} uploadPath="space/photo-3" />
+      </div>
     </div>
   );
 }
@@ -289,7 +309,7 @@ export function AdminSpace() {
 
       {/* ── 사진 4장 ───────────────────────────────────── */}
       <div style={{ marginBottom: "40px" }}>
-        <p style={sectionHead}>스튜디오 사진 (4장, 에디토리얼 그리드)</p>
+        <p style={sectionHead}>스튜디오 사진 (3장, 에디토리얼 그리드)</p>
         <PhotoSlotsEditor photos={draft.photos} onChange={(p) => setDraft({ ...draft, photos: p })} />
       </div>
 
