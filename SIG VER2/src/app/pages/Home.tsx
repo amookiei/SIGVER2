@@ -175,7 +175,8 @@ function ProjectInfo({
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
+      {/* Title + Year */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
         <Link to={`/work/${item.slug}`} data-cursor="hover-link">
           <motion.h3
             whileHover={{ x: 6 }}
@@ -198,19 +199,44 @@ function ProjectInfo({
           {item.year}
         </span>
       </div>
-      <div style={{ display: "flex", gap: "36px" }}>
-        {[
-          { label: "Client", value: item.client },
-          { label: "Type", value: item.category },
-        ].map((m) => (
-          <div key={m.label}>
-            <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "4px" }}>
-              {m.label}
-            </p>
-            <p style={{ fontFamily: F, fontSize: "13px", color: TEXT2 }}>{m.value}</p>
-          </div>
-        ))}
-      </div>
+
+      {/* Tagline — hover: grey → dark */}
+      <motion.p
+        whileHover={{ color: DARK }}
+        transition={{ duration: 0.22 }}
+        style={{
+          fontFamily: F, fontSize: "13px", color: TEXT3,
+          letterSpacing: "0.01em", lineHeight: 1.5,
+          marginBottom: "12px", cursor: "default",
+        }}
+      >
+        {item.tagline}
+      </motion.p>
+
+      {/* Description — hover: grey → dark, 3-line clamp */}
+      <motion.p
+        whileHover={{ color: DARK }}
+        transition={{ duration: 0.22 }}
+        style={{
+          fontFamily: F, fontSize: "12px", color: TEXT3,
+          lineHeight: 1.7, marginBottom: "16px",
+          display: "-webkit-box", WebkitLineClamp: 3,
+          WebkitBoxOrient: "vertical", overflow: "hidden",
+          cursor: "default",
+        } as React.CSSProperties}
+      >
+        {item.description}
+      </motion.p>
+
+      {/* Category badge */}
+      <span style={{
+        display: "inline-block",
+        fontFamily: F, fontSize: "10px", fontWeight: 600,
+        color: TEXT2, letterSpacing: "0.1em", textTransform: "uppercase",
+        border: `1px solid #D8D8D8`, padding: "4px 10px",
+      }}>
+        {item.category}
+      </span>
     </motion.div>
   );
 }
