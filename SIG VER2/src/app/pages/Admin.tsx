@@ -5,6 +5,7 @@ import { AdminAbout } from "./AdminAbout";
 import { AdminHome } from "./AdminHome";
 import { AdminContact } from "./AdminContact";
 import { AdminGallery } from "./AdminGallery";
+import { AdminSpace } from "./AdminSpace";
 import type { PortfolioItem } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 
@@ -805,7 +806,7 @@ export function Admin() {
   const navigate = useNavigate();
   const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
-  const [adminPage, setAdminPage] = useState<"portfolio" | "about" | "home" | "gallery" | "contact">("portfolio");
+  const [adminPage, setAdminPage] = useState<"portfolio" | "about" | "home" | "gallery" | "space" | "contact">("portfolio");
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState<FormState>(blankForm());
@@ -891,6 +892,7 @@ export function Admin() {
               { id: "portfolio", label: "포트폴리오" },
               { id: "home", label: "홈 콘텐츠" },
               { id: "gallery", label: "갤러리" },
+              { id: "space", label: "스페이스" },
               { id: "about", label: "About 페이지" },
               { id: "contact", label: "Contact" },
             ] as const).map((page) => (
@@ -1027,6 +1029,9 @@ export function Admin() {
 
       {/* ─── 갤러리 탭 ──────────────────────────────────── */}
       {adminPage === "gallery" && <AdminGallery />}
+
+      {/* ─── 스페이스 탭 ─────────────────────────────────── */}
+      {adminPage === "space" && <AdminSpace />}
 
       {/* ─── Contact 탭 ──────────────────────────────────── */}
       {adminPage === "contact" && <AdminContact />}
