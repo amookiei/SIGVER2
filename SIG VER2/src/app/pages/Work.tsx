@@ -39,13 +39,7 @@ function WorkCell({
   const isActive = hoveredId === null || hoveredId === item.id;
 
   // sm(2열)에서 우측 열(홀수 index)의 borderRight 제거, lg(4열)에서 복원
-  const cellClass = [
-    "border-b border-[#E0E0E0]",
-    index % 2 === 0
-      ? "border-r border-[#E0E0E0]"
-      : "border-r border-[#E0E0E0] sm:border-r-0",
-    "lg:border-r lg:border-[#E0E0E0]",
-  ].join(" ");
+  const cellClass = "border-b border-[#E0E0E0]";
 
   return (
     <motion.div
@@ -234,7 +228,7 @@ export function Work() {
           <motion.div
             key={activeCategory}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-            style={{ borderLeft: BORDER }}
+            style={{}}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
