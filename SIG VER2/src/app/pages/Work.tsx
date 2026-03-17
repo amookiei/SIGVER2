@@ -186,7 +186,7 @@ export function Work() {
         </div>
 
         {/* Filter bar */}
-        <div style={{ borderTop: BORDER }}>
+        <div>
           <div className="px-8 md:px-16 lg:px-28 flex items-center gap-0 overflow-x-auto">
             {CATEGORIES.map((cat) => {
               const isActive = activeCategory === cat;
@@ -229,7 +229,7 @@ export function Work() {
       </div>
 
       {/* Grid */}
-      <div className="px-8 md:px-16 lg:px-28" style={{ borderTop: BORDER }}>
+      <div className="px-8 md:px-16 lg:px-28">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeCategory}

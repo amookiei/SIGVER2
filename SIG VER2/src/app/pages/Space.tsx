@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import { motion } from "motion/react";
 import { useSpace } from "../context/SpaceContext";
 import type { SpaceSection } from "../context/SpaceContext";
@@ -287,17 +286,17 @@ export function Space() {
             </p>
           </Reveal>
           <Reveal delay={0.15}>
-            <Link to="/contact" data-cursor="hover-link">
+            <a href="https://naver.me/GbANRItw" target="_blank" rel="noopener noreferrer" data-cursor="hover-link">
               <motion.div
                 style={{ display: "inline-flex", alignItems: "center", gap: "12px", padding: "16px 32px", background: DARK, cursor: "pointer" }}
                 whileHover={{ gap: "20px" }}
                 transition={{ duration: 0.25 }}>
                 <span style={{ fontFamily: F, fontSize: "13px", color: "#FAFAFA", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 600 }}>
-                  문의하기
+                  예약하기
                 </span>
                 <span style={{ color: "#FAFAFA", fontSize: "16px" }}>→</span>
               </motion.div>
-            </Link>
+            </a>
           </Reveal>
         </div>
       </section>
