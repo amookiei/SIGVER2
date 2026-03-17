@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useSpace, defaultSpaceContent } from "../context/SpaceContext";
-import type { SpaceContent, SpaceSpec } from "../context/SpaceContext";
+import type { SpaceContent, SpaceSpec, SpaceSection } from "../context/SpaceContext";
 import { supabase } from "../../lib/supabase";
 
 // ─── Design tokens ────────────────────────────────────────
@@ -14,15 +14,9 @@ const TEXT3 = "#444444";
 const ACCENT = "#FAFAFA";
 
 const inputStyle: React.CSSProperties = {
-  background: SURFACE,
-  border: BORDER2,
-  color: TEXT,
-  fontFamily: F,
-  fontSize: "13px",
-  padding: "9px 12px",
-  width: "100%",
-  outline: "none",
-  boxSizing: "border-box",
+  background: SURFACE, border: BORDER2, color: TEXT,
+  fontFamily: F, fontSize: "13px", padding: "9px 12px",
+  width: "100%", outline: "none", boxSizing: "border-box",
 };
 
 const sectionHead: React.CSSProperties = {
@@ -42,19 +36,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-// ─── Image upload (JPG/PNG/WebP) ─────────────────────────
-function ImageField({
-  label,
-  value,
-  onChange,
-  uploadPath,
-  accept = ".jpg,.jpeg,.png,.webp",
-}: {
-  label: string;
-  value: string;
-  onChange: (url: string) => void;
-  uploadPath: string;
-  accept?: string;
+// ─── Image upload ──────────────────────────────────────────
+function ImageField({ label, value, onChange, uploadPath }: {
+  label: string; value: string; onChange: (url: string) => void; uploadPath: string;
 }) {
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -65,8 +49,7 @@ function ImageField({
     setUploading(true); setErr(null);
     const ext = file.name.split(".").pop() ?? "jpg";
     const path = `${uploadPath}-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage
-      .from("project-images")
+    const { error } = await supabase.storage.from("project-images")
       .upload(path, file, { contentType: file.type, upsert: true });
     if (error) { setErr(`업로드 실패: ${error.message}`); setUploading(false); return; }
     const { data } = supabase.storage.from("project-images").getPublicUrl(path);
@@ -76,7 +59,7 @@ function ImageField({
 
   return (
     <Field label={label}>
-      <input ref={ref} type="file" accept={accept} style={{ display: "none" }}
+      <input ref={ref} type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: "none" }}
         onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }} />
       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <button onClick={() => ref.current?.click()} disabled={uploading}
@@ -105,26 +88,17 @@ function SpecsEditor({ specs, onChange }: { specs: SpaceSpec[]; onChange: (s: Sp
   function set(idx: number, key: keyof SpaceSpec, val: string) {
     onChange(specs.map((s, i) => i === idx ? { ...s, [key]: val } : s));
   }
-  function add() {
-    onChange([...specs, { id: `s-${Date.now()}`, label: "", value: "" }]);
-  }
-  function remove(idx: number) {
-    onChange(specs.filter((_, i) => i !== idx));
-  }
-
   return (
     <div>
       {specs.map((spec, i) => (
         <div key={spec.id} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 28px", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
           <input style={inputStyle} value={spec.label} onChange={(e) => set(i, "label", e.target.value)} placeholder="항목 (예: 규모)" />
           <input style={inputStyle} value={spec.value} onChange={(e) => set(i, "value", e.target.value)} placeholder="값 (예: 200평)" />
-          <button onClick={() => remove(i)}
-            style={{ background: "none", border: "none", cursor: "pointer", color: TEXT3, fontFamily: F, fontSize: "16px", lineHeight: 1 }}>
-            ×
-          </button>
+          <button onClick={() => onChange(specs.filter((_, j) => j !== i))}
+            style={{ background: "none", border: "none", cursor: "pointer", color: TEXT3, fontFamily: F, fontSize: "16px", lineHeight: 1 }}>×</button>
         </div>
       ))}
-      <button onClick={add}
+      <button onClick={() => onChange([...specs, { id: `s-${Date.now()}`, label: "", value: "" }])}
         style={{ background: "none", border: BORDER2, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "6px 14px", cursor: "pointer", letterSpacing: "0.06em", marginTop: "4px" }}>
         + 항목 추가
       </button>
@@ -132,26 +106,37 @@ function SpecsEditor({ specs, onChange }: { specs: SpaceSpec[]; onChange: (s: Sp
   );
 }
 
-// ─── Capabilities editor ─────────────────────────────────
-function CapabilitiesEditor({ items, onChange }: { items: string[]; onChange: (v: string[]) => void }) {
-  function set(idx: number, val: string) {
-    onChange(items.map((s, i) => i === idx ? val : s));
+// ─── Photo slots ──────────────────────────────────────────
+function PhotoSlotsEditor({ photos, onChange }: { photos: string[]; onChange: (p: string[]) => void }) {
+  const filled = [...photos, "", "", "", ""].slice(0, 4) as [string, string, string, string];
+  function setPhoto(idx: number, url: string) {
+    const next = [...filled] as string[];
+    next[idx] = url;
+    while (next.length > 0 && !next[next.length - 1]) next.pop();
+    onChange(next);
   }
-  function remove(idx: number) { onChange(items.filter((_, i) => i !== idx)); }
-  function add() { onChange([...items, ""]); }
+  const labels = ["사진 1 (대형 좌)", "사진 2 (상단 우)", "사진 3 (하단 중)", "사진 4 (하단 우)"];
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+      {filled.map((url, i) => (
+        <ImageField key={i} label={labels[i]} value={url} onChange={(u) => setPhoto(i, u)} uploadPath={`space/photo-${i + 1}`} />
+      ))}
+    </div>
+  );
+}
 
+// ─── String list editor ───────────────────────────────────
+function StringListEditor({ items, onChange, placeholder }: { items: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
   return (
     <div>
       {items.map((item, i) => (
         <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 28px", gap: "8px", marginBottom: "8px" }}>
-          <input style={inputStyle} value={item} onChange={(e) => set(i, e.target.value)} placeholder="예: 씨즐 촬영" />
-          <button onClick={() => remove(i)}
-            style={{ background: "none", border: "none", cursor: "pointer", color: TEXT3, fontFamily: F, fontSize: "16px", lineHeight: 1 }}>
-            ×
-          </button>
+          <input style={inputStyle} value={item} onChange={(e) => onChange(items.map((s, j) => j === i ? e.target.value : s))} placeholder={placeholder ?? ""} />
+          <button onClick={() => onChange(items.filter((_, j) => j !== i))}
+            style={{ background: "none", border: "none", cursor: "pointer", color: TEXT3, fontFamily: F, fontSize: "16px", lineHeight: 1 }}>×</button>
         </div>
       ))}
-      <button onClick={add}
+      <button onClick={() => onChange([...items, ""])}
         style={{ background: "none", border: BORDER2, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "6px 14px", cursor: "pointer", letterSpacing: "0.06em", marginTop: "4px" }}>
         + 항목 추가
       </button>
@@ -159,37 +144,56 @@ function CapabilitiesEditor({ items, onChange }: { items: string[]; onChange: (v
   );
 }
 
-// ─── 4-Photo slots ────────────────────────────────────────
-function PhotoSlotsEditor({
-  photos,
-  onChange,
-}: {
-  photos: string[];
-  onChange: (p: string[]) => void;
-}) {
-  const filled = [...photos, "", "", "", ""].slice(0, 4) as [string, string, string, string];
+// ─── Sections editor (조명/조리/편의 등) ─────────────────
+function SectionsEditor({ sections, onChange }: { sections: SpaceSection[]; onChange: (s: SpaceSection[]) => void }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
 
-  function setPhoto(idx: number, url: string) {
-    const next = [...filled] as string[];
-    next[idx] = url;
-    // trim trailing empty strings
-    while (next.length > 0 && !next[next.length - 1]) next.pop();
-    onChange(next);
+  function setSection(idx: number, patch: Partial<SpaceSection>) {
+    onChange(sections.map((s, i) => i === idx ? { ...s, ...patch } : s));
+  }
+  function addSection() {
+    const s: SpaceSection = { id: `sec-${Date.now()}`, icon: "✦", title: "", items: [] };
+    onChange([...sections, s]);
+    setOpenIdx(sections.length);
   }
 
-  const labels = ["사진 1 (대형 좌)", "사진 2 (상단 우)", "사진 3 (하단 중)", "사진 4 (하단 우)"];
-
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-      {filled.map((url, i) => (
-        <ImageField
-          key={i}
-          label={labels[i]}
-          value={url}
-          onChange={(u) => setPhoto(i, u)}
-          uploadPath={`space/photo-${i + 1}`}
-        />
+    <div>
+      {sections.map((sec, i) => (
+        <div key={sec.id} style={{ border: BORDER2, marginBottom: "8px" }}>
+          {/* Accordion header */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 14px", cursor: "pointer" }}
+            onClick={() => setOpenIdx(openIdx === i ? null : i)}>
+            <span style={{ fontFamily: F, fontSize: "14px", color: TEXT2, flexShrink: 0 }}>{sec.icon || "✦"}</span>
+            <span style={{ fontFamily: F, fontSize: "12px", color: TEXT, flex: 1, fontWeight: 600 }}>{sec.title || "제목 없음"}</span>
+            <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3 }}>{openIdx === i ? "▲" : "▼"}</span>
+            <button onClick={(e) => { e.stopPropagation(); onChange(sections.filter((_, j) => j !== i)); }}
+              style={{ background: "none", border: "none", cursor: "pointer", color: TEXT3, fontFamily: F, fontSize: "14px", lineHeight: 1, marginLeft: "8px" }}>×</button>
+          </div>
+
+          {/* Accordion body */}
+          {openIdx === i && (
+            <div style={{ padding: "12px 14px", borderTop: BORDER }}>
+              <div style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: "8px", marginBottom: "14px" }}>
+                <input style={inputStyle} value={sec.icon} onChange={(e) => setSection(i, { icon: e.target.value })} placeholder="아이콘" />
+                <input style={inputStyle} value={sec.title} onChange={(e) => setSection(i, { title: e.target.value })} placeholder="섹션 제목 (예: 조명 장비)" />
+              </div>
+              <label style={{ display: "block", color: TEXT3, fontFamily: F, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "8px" }}>
+                항목 목록
+              </label>
+              <StringListEditor
+                items={sec.items}
+                onChange={(items) => setSection(i, { items })}
+                placeholder="예: NANLITE FC-500B 2대"
+              />
+            </div>
+          )}
+        </div>
       ))}
+      <button onClick={addSection}
+        style={{ background: "none", border: BORDER2, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "6px 14px", cursor: "pointer", letterSpacing: "0.06em", marginTop: "4px" }}>
+        + 섹션 추가
+      </button>
     </div>
   );
 }
@@ -217,7 +221,7 @@ export function AdminSpace() {
   return (
     <div style={{ padding: "40px 32px", maxWidth: "900px", margin: "0 auto" }}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "36px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "36px", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <p style={{ fontFamily: F, fontWeight: 700, fontSize: "13px", color: TEXT, letterSpacing: "0.08em", marginBottom: "4px" }}>
             스페이스 페이지 편집
@@ -226,7 +230,7 @@ export function AdminSpace() {
             스튜디오 소개 페이지의 콘텐츠를 관리합니다.
           </p>
         </div>
-        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
           {toast && <span style={{ fontFamily: F, fontSize: "12px", color: "#4CAF50" }}>{toast}</span>}
           {saveError && <span style={{ fontFamily: F, fontSize: "11px", color: "#FF5555" }}>{saveError}</span>}
           <button onClick={handleReset}
@@ -240,32 +244,40 @@ export function AdminSpace() {
         </div>
       </div>
 
-      {/* ── Hero 이미지 ────────────────────────────────── */}
+      {/* ── 히어로 이미지 ──────────────────────────────── */}
       <div style={{ marginBottom: "40px" }}>
         <p style={sectionHead}>히어로 이미지</p>
-        <ImageField
-          label="배경 이미지 (1920×1080 권장, 세로 이미지도 가능)"
-          value={draft.heroImage}
-          onChange={(url) => setDraft({ ...draft, heroImage: url })}
-          uploadPath="space/hero"
-        />
+        <ImageField label="배경 이미지 (1920×1080 권장)" value={draft.heroImage}
+          onChange={(url) => setDraft({ ...draft, heroImage: url })} uploadPath="space/hero" />
       </div>
 
-      {/* ── 기본 텍스트 ────────────────────────────────── */}
+      {/* ── 기본 정보 ──────────────────────────────────── */}
       <div style={{ marginBottom: "40px" }}>
         <p style={sectionHead}>기본 정보</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
           <Field label="페이지 제목">
-            <input style={inputStyle} value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} placeholder="STUDIO SPACE" />
+            <input style={inputStyle} value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} placeholder="MEATVERSE COOKING STUDIO" />
           </Field>
           <Field label="태그라인">
-            <input style={inputStyle} value={draft.tagline} onChange={(e) => setDraft({ ...draft, tagline: e.target.value })} placeholder="Where Vision Meets Light" />
+            <input style={inputStyle} value={draft.tagline} onChange={(e) => setDraft({ ...draft, tagline: e.target.value })} />
           </Field>
         </div>
         <Field label="스튜디오 설명">
           <textarea style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }}
-            value={draft.description}
-            onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
+            value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
+        </Field>
+      </div>
+
+      {/* ── 리뷰 이벤트 ────────────────────────────────── */}
+      <div style={{ marginBottom: "40px" }}>
+        <p style={sectionHead}>리뷰 이벤트 배너 (비워두면 숨김)</p>
+        <Field label="이벤트 문구">
+          <input style={inputStyle} value={draft.reviewEvent} onChange={(e) => setDraft({ ...draft, reviewEvent: e.target.value })}
+            placeholder="예: 리뷰 작성 후 인증 시 시간당 5,000원 페이백" />
+        </Field>
+        <Field label="기물 소개 노션 URL">
+          <input style={inputStyle} value={draft.notionUrl} onChange={(e) => setDraft({ ...draft, notionUrl: e.target.value })}
+            placeholder="https://notion.so/..." />
         </Field>
       </div>
 
@@ -275,16 +287,22 @@ export function AdminSpace() {
         <SpecsEditor specs={draft.specs} onChange={(s) => setDraft({ ...draft, specs: s })} />
       </div>
 
-      {/* ── 스튜디오 사진 4장 ─────────────────────────── */}
+      {/* ── 사진 4장 ───────────────────────────────────── */}
       <div style={{ marginBottom: "40px" }}>
-        <p style={sectionHead}>스튜디오 사진 (4장, 에디토리얼 그리드 배치)</p>
+        <p style={sectionHead}>스튜디오 사진 (4장, 에디토리얼 그리드)</p>
         <PhotoSlotsEditor photos={draft.photos} onChange={(p) => setDraft({ ...draft, photos: p })} />
+      </div>
+
+      {/* ── 시설·장비 섹션 ────────────────────────────── */}
+      <div style={{ marginBottom: "40px" }}>
+        <p style={sectionHead}>시설 & 장비 섹션 (조명장비·조리시설·편의시설 등)</p>
+        <SectionsEditor sections={draft.sections} onChange={(s) => setDraft({ ...draft, sections: s })} />
       </div>
 
       {/* ── 촬영 가능 목록 ─────────────────────────────── */}
       <div>
         <p style={sectionHead}>촬영 가능 목록 (What We Shoot)</p>
-        <CapabilitiesEditor items={draft.capabilities} onChange={(v) => setDraft({ ...draft, capabilities: v })} />
+        <StringListEditor items={draft.capabilities} onChange={(v) => setDraft({ ...draft, capabilities: v })} placeholder="예: 레시피·푸드 콘텐츠" />
       </div>
     </div>
   );
