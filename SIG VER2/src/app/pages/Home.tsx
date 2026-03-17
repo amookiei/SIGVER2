@@ -745,7 +745,7 @@ function ServicesSection() {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 px-8 md:px-16 lg:px-28" style={{ borderTop: BORDER }}>
         {content.services.map((svc, idx) => (
           <ServiceCard
             key={svc.id}
