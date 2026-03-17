@@ -463,8 +463,9 @@ function HomeWorkCard({ item, index }: { item: PortfolioItem; index: number }) {
 
 // ─── SELECTED WORKS SECTION ───────────────────────────────
 function SelectedWorksSection() {
-  const { items } = useAdmin();
-  const displayItems = items.slice(0, 6);
+  const { getFeatured, items } = useAdmin();
+  const featured = getFeatured();
+  const displayItems = (featured.length > 0 ? featured : items).slice(0, 6);
 
   return (
     <section style={{ borderBottom: BORDER }}>
@@ -789,19 +790,34 @@ function ClientsSection() {
 function GalleryPreviewSection() {
   const { data } = useGallery();
 
-  // Collect first 4 photos across all sections
-  const previews: { url: string; alt: string }[] = [];
+  const totalPhotos = data.sections.reduce((acc, s) => acc + s.images.length, 0);
+  if (totalPhotos === 0) return null;
+
+  // Build lookup map: imageId → { url, alt }
+  const imgMap = new Map<string, { url: string; alt: string }>();
   for (const section of data.sections) {
     for (const img of section.images) {
-      if (previews.length >= 4) break;
-      previews.push({ url: img.url, alt: img.alt || section.title });
+      imgMap.set(img.id, { url: img.url, alt: img.alt || section.title });
     }
-    if (previews.length >= 4) break;
   }
 
-  const totalPhotos = data.sections.reduce((acc, s) => acc + s.images.length, 0);
-
-  if (totalPhotos === 0) return null;
+  // Use admin-selected featured IDs (up to 4); fall back to first 4 if none selected
+  let previews: { url: string; alt: string }[] = [];
+  if (data.featuredImageIds.length > 0) {
+    previews = data.featuredImageIds
+      .slice(0, 4)
+      .map((id) => imgMap.get(id))
+      .filter((x): x is { url: string; alt: string } => !!x);
+  }
+  if (previews.length === 0) {
+    for (const section of data.sections) {
+      for (const img of section.images) {
+        if (previews.length >= 4) break;
+        previews.push({ url: img.url, alt: img.alt || section.title });
+      }
+      if (previews.length >= 4) break;
+    }
+  }
 
   return (
     <section style={{ borderBottom: BORDER }}>

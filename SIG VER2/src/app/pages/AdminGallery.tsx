@@ -74,12 +74,6 @@ function PhotoUploadArea({
     setProgress(0);
   }
 
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
-  }
-
   return (
     <div>
       <input
@@ -95,12 +89,12 @@ function PhotoUploadArea({
         }}
       />
       <div
-        onDrop={handleDrop}
+        onDrop={(e) => { e.preventDefault(); handleFiles(Array.from(e.dataTransfer.files)); }}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => !uploading && inputRef.current?.click()}
         style={{
           border: `1px dashed ${uploading ? "#333" : "#2A2A2A"}`,
-          padding: "20px",
+          padding: "18px",
           textAlign: "center",
           cursor: uploading ? "default" : "pointer",
           marginBottom: "12px",
@@ -116,6 +110,107 @@ function PhotoUploadArea({
         </p>
       </div>
       {err && <p style={{ fontFamily: F, fontSize: "11px", color: "#FF5555", marginBottom: "8px" }}>{err}</p>}
+    </div>
+  );
+}
+
+// ─── Draggable image grid ──────────────────────────────────
+function DraggableImageGrid({
+  images,
+  onChange,
+  onRemove,
+}: {
+  images: GalleryImage[];
+  onChange: (reordered: GalleryImage[]) => void;
+  onRemove: (id: string) => void;
+}) {
+  const dragIdx = useRef<number | null>(null);
+  const [overIdx, setOverIdx] = useState<number | null>(null);
+
+  function handleDragStart(i: number) {
+    dragIdx.current = i;
+  }
+
+  function handleDragOver(e: React.DragEvent, i: number) {
+    e.preventDefault();
+    setOverIdx(i);
+  }
+
+  function handleDrop(e: React.DragEvent, targetIdx: number) {
+    e.preventDefault();
+    const from = dragIdx.current;
+    if (from === null || from === targetIdx) { setOverIdx(null); return; }
+    const arr = [...images];
+    const [removed] = arr.splice(from, 1);
+    arr.splice(targetIdx, 0, removed);
+    onChange(arr);
+    dragIdx.current = null;
+    setOverIdx(null);
+  }
+
+  function handleDragEnd() {
+    dragIdx.current = null;
+    setOverIdx(null);
+  }
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))",
+        gap: "8px",
+        marginTop: "4px",
+      }}
+    >
+      {images.map((img, i) => (
+        <div
+          key={img.id}
+          draggable
+          onDragStart={() => handleDragStart(i)}
+          onDragOver={(e) => handleDragOver(e, i)}
+          onDrop={(e) => handleDrop(e, i)}
+          onDragEnd={handleDragEnd}
+          style={{
+            position: "relative",
+            aspectRatio: "1",
+            overflow: "hidden",
+            background: "#111",
+            cursor: "grab",
+            outline: overIdx === i && dragIdx.current !== i ? "2px solid #FAFAFA" : "none",
+            opacity: dragIdx.current === i ? 0.4 : 1,
+            transition: "opacity 0.15s, outline 0.1s",
+          }}
+        >
+          <img
+            src={img.url}
+            alt=""
+            draggable={false}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }}
+            onError={(e) => (e.currentTarget.style.opacity = "0.2")}
+          />
+          {/* Drag handle indicator */}
+          <div style={{
+            position: "absolute", top: "4px", left: "4px",
+            color: "rgba(255,255,255,0.6)", fontSize: "10px", lineHeight: 1,
+            pointerEvents: "none", letterSpacing: "1px",
+          }}>
+            ⠿
+          </div>
+          {/* Delete */}
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); onRemove(img.id); }}
+            style={{
+              position: "absolute", top: "4px", right: "4px",
+              background: "rgba(0,0,0,0.7)", border: "none", cursor: "pointer",
+              color: "#FAFAFA", fontFamily: F, fontSize: "13px", lineHeight: 1,
+              width: "20px", height: "20px",
+            }}
+          >
+            ×
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
@@ -140,17 +235,9 @@ function SectionEditor({
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
-  function removeImage(imgId: string) {
-    onChange({ ...section, images: section.images.filter((i) => i.id !== imgId) });
-  }
-
-  function addImages(imgs: GalleryImage[]) {
-    onChange({ ...section, images: [...section.images, ...imgs] });
-  }
-
   return (
     <div style={{ background: "#0A0A0A", border: BORDER, marginBottom: "16px" }}>
-      {/* Section header row */}
+      {/* Header row */}
       <div
         style={{
           display: "flex", alignItems: "center", gap: "10px",
@@ -188,38 +275,111 @@ function SectionEditor({
         </div>
       </div>
 
-      {/* Section body */}
       {!collapsed && (
         <div style={{ padding: "20px" }}>
-          <PhotoUploadArea sectionId={section.id} onAdd={addImages} />
-
-          {/* Thumbnail grid */}
+          <PhotoUploadArea
+            sectionId={section.id}
+            onAdd={(imgs) => onChange({ ...section, images: [...section.images, ...imgs] })}
+          />
           {section.images.length > 0 && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "8px", marginTop: "4px" }}>
-              {section.images.map((img) => (
-                <div key={img.id} style={{ position: "relative", aspectRatio: "1", overflow: "hidden", background: "#111" }}>
-                  <img
-                    src={img.url}
-                    alt=""
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                    onError={(e) => (e.currentTarget.style.opacity = "0.2")}
-                  />
-                  <button
-                    onClick={() => removeImage(img.id)}
-                    style={{
-                      position: "absolute", top: "4px", right: "4px",
-                      background: "rgba(0,0,0,0.7)", border: "none", cursor: "pointer",
-                      color: "#FAFAFA", fontFamily: F, fontSize: "14px", lineHeight: 1,
-                      width: "22px", height: "22px",
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
+            <DraggableImageGrid
+              images={section.images}
+              onChange={(reordered) => onChange({ ...section, images: reordered })}
+              onRemove={(id) => onChange({ ...section, images: section.images.filter((i) => i.id !== id) })}
+            />
           )}
         </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Home Preview Picker ─────────────────────────────────
+function HomePreviewPicker({
+  sections,
+  featuredIds,
+  onChange,
+}: {
+  sections: GallerySection[];
+  featuredIds: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  const allImages: Array<{ img: GalleryImage; sectionTitle: string }> = [];
+  for (const s of sections) {
+    for (const img of s.images) {
+      allImages.push({ img, sectionTitle: s.title });
+    }
+  }
+
+  function toggle(id: string) {
+    if (featuredIds.includes(id)) {
+      onChange(featuredIds.filter((x) => x !== id));
+    } else {
+      if (featuredIds.length >= 4) return; // max 4
+      onChange([...featuredIds, id]);
+    }
+  }
+
+  if (allImages.length === 0) {
+    return (
+      <p style={{ fontFamily: F, fontSize: "12px", color: TEXT3, padding: "16px 0" }}>
+        섹션에 사진을 먼저 등록하세요.
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, marginBottom: "14px" }}>
+        사진을 클릭해 홈 프리뷰에 노출할 4장을 선택하세요. ({featuredIds.length}/4)
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: "8px" }}>
+        {allImages.map(({ img, sectionTitle }) => {
+          const pos = featuredIds.indexOf(img.id);
+          const selected = pos !== -1;
+          const maxed = featuredIds.length >= 4 && !selected;
+          return (
+            <div
+              key={img.id}
+              onClick={() => !maxed && toggle(img.id)}
+              style={{
+                position: "relative",
+                aspectRatio: "1",
+                overflow: "hidden",
+                cursor: maxed ? "default" : "pointer",
+                outline: selected ? "2px solid #FAFAFA" : "2px solid transparent",
+                opacity: maxed ? 0.35 : 1,
+                transition: "outline 0.15s, opacity 0.15s",
+              }}
+            >
+              <img
+                src={img.url}
+                alt={img.alt || sectionTitle}
+                draggable={false}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+              {selected && (
+                <div style={{
+                  position: "absolute", inset: 0,
+                  background: "rgba(0,0,0,0.45)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <span style={{ fontFamily: F, fontSize: "22px", fontWeight: 800, color: "#FAFAFA" }}>
+                    {pos + 1}
+                  </span>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {featuredIds.length > 0 && (
+        <button
+          onClick={() => onChange([])}
+          style={{ marginTop: "12px", background: "none", border: "none", cursor: "pointer", fontFamily: F, fontSize: "11px", color: TEXT3, padding: 0, textDecoration: "underline" }}
+        >
+          선택 초기화
+        </button>
       )}
     </div>
   );
@@ -250,17 +410,22 @@ export function AdminGallery() {
 
   function addSection() {
     const id = `sec-${Date.now()}`;
-    setDraft({ sections: [...draft.sections, { id, title: "", images: [] }] });
+    setDraft({ ...draft, sections: [...draft.sections, { id, title: "", images: [] }] });
   }
 
   function updateSection(idx: number, updated: GallerySection) {
     const sections = draft.sections.map((s, i) => (i === idx ? updated : s));
-    setDraft({ sections });
+    setDraft({ ...draft, sections });
   }
 
   function removeSection(idx: number) {
     if (!confirm("섹션을 삭제하시겠습니까? 사진도 모두 제거됩니다.")) return;
-    setDraft({ sections: draft.sections.filter((_, i) => i !== idx) });
+    // Remove any featured IDs that belonged to this section
+    const removedIds = new Set(draft.sections[idx].images.map((i) => i.id));
+    setDraft({
+      sections: draft.sections.filter((_, i) => i !== idx),
+      featuredImageIds: draft.featuredImageIds.filter((id) => !removedIds.has(id)),
+    });
   }
 
   function moveSection(idx: number, dir: -1 | 1) {
@@ -268,7 +433,7 @@ export function AdminGallery() {
     const target = idx + dir;
     if (target < 0 || target >= arr.length) return;
     [arr[idx], arr[target]] = [arr[target], arr[idx]];
-    setDraft({ sections: arr });
+    setDraft({ ...draft, sections: arr });
   }
 
   return (
@@ -280,7 +445,7 @@ export function AdminGallery() {
             갤러리 편집
           </p>
           <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3 }}>
-            섹션별로 사진을 관리합니다. 섹션 순서가 갤러리 페이지에 그대로 노출됩니다.
+            섹션별로 사진을 관리합니다. 이미지를 드래그해 순서를 변경할 수 있습니다.
           </p>
         </div>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -297,8 +462,18 @@ export function AdminGallery() {
         </div>
       </div>
 
-      {/* Section list */}
-      <div style={{ marginBottom: "24px" }}>
+      {/* ── 홈 프리뷰 4장 선택 ───────────────────────────── */}
+      <div style={{ marginBottom: "48px" }}>
+        <p style={sectionHead}>홈 프리뷰 사진 선택 (4장 고정)</p>
+        <HomePreviewPicker
+          sections={draft.sections}
+          featuredIds={draft.featuredImageIds}
+          onChange={(ids) => setDraft({ ...draft, featuredImageIds: ids })}
+        />
+      </div>
+
+      {/* ── 섹션 목록 ────────────────────────────────────── */}
+      <div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", paddingBottom: "12px", borderBottom: BORDER }}>
           <p style={{ ...sectionHead, margin: 0, border: "none", padding: 0 }}>
             갤러리 섹션 — {draft.sections.length}개
