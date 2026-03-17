@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useHomeContent, defaultHomeContent } from "../context/HomeContentContext";
-import type { HomeContent, HomeService } from "../context/HomeContentContext";
+import type { HomeContent, HomeClient } from "../context/HomeContentContext";
 import { supabase } from "../../lib/supabase";
 
 // ─── Design tokens (Admin 스타일 동일) ────────────────────
@@ -104,36 +104,90 @@ function ImageField({
   );
 }
 
-// ─── Single Service Card Editor ────────────────────────────
-function ServiceEditor({
-  svc,
-  idx,
+// ─── Logo upload (PNG/JPG) ────────────────────────────────
+function LogoField({
+  label,
+  value,
   onChange,
+  uploadKey,
 }: {
-  svc: HomeService;
-  idx: number;
-  onChange: (updated: HomeService) => void;
+  label: string;
+  value: string;
+  onChange: (url: string) => void;
+  uploadKey: string;
 }) {
-  const set = (key: keyof HomeService, val: string) => onChange({ ...svc, [key]: val });
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function handleFile(file: File) {
+    if (!file.type.match(/png|jpeg|jpg|webp|svg/)) { setErr("PNG/JPG/SVG 파일만 업로드 가능합니다."); return; }
+    if (!supabase) { setErr("Supabase 미연결 — URL 직접 입력"); return; }
+    setUploading(true); setErr(null);
+    const ext = file.name.split(".").pop() ?? "png";
+    const path = `clients/${uploadKey}-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("project-images")
+      .upload(path, file, { contentType: file.type, upsert: true });
+    if (error) { setErr(`업로드 실패: ${error.message}`); setUploading(false); return; }
+    const { data } = supabase.storage.from("project-images").getPublicUrl(path);
+    onChange(data.publicUrl);
+    setUploading(false);
+  }
 
   return (
-    <div style={{ background: "#0A0A0A", border: BORDER, padding: "20px", marginBottom: "12px" }}>
-      <p style={{ ...sectionHead, fontSize: "10px", marginBottom: "14px" }}>{idx + 1}번 카드 — {svc.id}</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
-        <Field label="제목 (줄바꿈: \\n)">
-          <input style={inputStyle} value={svc.title} onChange={(e) => set("title", e.target.value)} placeholder="BRANDING\n& IDENTITY" />
-        </Field>
-        <Field label="카운트">
-          <input style={inputStyle} value={svc.count} onChange={(e) => set("count", e.target.value)} placeholder="(12)" />
-        </Field>
+    <Field label={label}>
+      <input ref={inputRef} type="file" accept=".png,.jpg,.jpeg,.webp,.svg" style={{ display: "none" }}
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }} />
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <button onClick={() => inputRef.current?.click()} disabled={uploading}
+          style={{ background: "none", border: BORDER2, color: uploading ? TEXT3 : TEXT2, fontFamily: F, fontSize: "11px", padding: "0 14px", cursor: uploading ? "default" : "pointer", letterSpacing: "0.06em", height: "38px", whiteSpace: "nowrap", flexShrink: 0 }}>
+          {uploading ? "업로드 중…" : "PNG 업로드"}
+        </button>
+        <input style={{ ...inputStyle, flex: 1 }} value={value} onChange={(e) => onChange(e.target.value)} placeholder="또는 URL 직접 입력" />
+        {value && (
+          <img src={value} alt="" style={{ height: "36px", width: "60px", objectFit: "contain", background: "#fff", border: "1px solid #222", padding: "4px", flexShrink: 0 }}
+            onError={(e) => (e.currentTarget.style.display = "none")} />
+        )}
       </div>
-      <Field label="설명">
-        <textarea style={{ ...inputStyle, minHeight: "68px", resize: "vertical" }} value={svc.desc} onChange={(e) => set("desc", e.target.value)} />
-      </Field>
-      <ImageField label="카드 이미지" value={svc.image} onChange={(url) => set("image", url)} uploadKey={`service-${svc.id}`} />
+      {err && <p style={{ fontFamily: F, fontSize: "11px", color: "#FF5555", marginTop: "4px" }}>{err}</p>}
+    </Field>
+  );
+}
+
+// ─── Single Client Editor ─────────────────────────────────
+function ClientEditor({
+  client,
+  idx,
+  onChange,
+  onRemove,
+}: {
+  client: HomeClient;
+  idx: number;
+  onChange: (updated: HomeClient) => void;
+  onRemove: () => void;
+}) {
+  return (
+    <div style={{ background: "#0A0A0A", border: BORDER, padding: "16px 20px", marginBottom: "10px", display: "flex", gap: "12px", alignItems: "flex-start" }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "0 16px", alignItems: "end" }}>
+          <Field label="클라이언트명 (alt 텍스트)">
+            <input style={inputStyle} value={client.name} onChange={(e) => onChange({ ...client, name: e.target.value })} placeholder="Google" />
+          </Field>
+          <LogoField label="로고 PNG/SVG" value={client.logoUrl} onChange={(url) => onChange({ ...client, logoUrl: url })} uploadKey={`client-${idx}`} />
+        </div>
+      </div>
+      <button
+        onClick={onRemove}
+        style={{ background: "none", border: "none", cursor: "pointer", color: TEXT3, fontFamily: F, fontSize: "18px", lineHeight: 1, paddingTop: "28px", flexShrink: 0 }}
+        title="삭제"
+      >
+        ×
+      </button>
     </div>
   );
 }
+
 
 // ─── Main AdminHome Component ──────────────────────────────
 export function AdminHome() {
@@ -158,9 +212,18 @@ export function AdminHome() {
     showToast("초기화되었습니다");
   }
 
-  function setService(idx: number, updated: HomeService) {
-    const services = draft.services.map((s, i) => (i === idx ? updated : s));
-    setDraft({ ...draft, services });
+  function setClient(idx: number, updated: HomeClient) {
+    const clients = draft.clients.map((c, i) => (i === idx ? updated : c));
+    setDraft({ ...draft, clients });
+  }
+
+  function addClient() {
+    const id = `client-${Date.now()}`;
+    setDraft({ ...draft, clients: [...draft.clients, { id, name: "", logoUrl: "" }] });
+  }
+
+  function removeClient(idx: number) {
+    setDraft({ ...draft, clients: draft.clients.filter((_, i) => i !== idx) });
   }
 
   return (
@@ -172,7 +235,7 @@ export function AdminHome() {
             홈 콘텐츠 편집
           </p>
           <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3 }}>
-            WHAT WE DO 서비스 카드 및 About 섹션 내용을 수정합니다.
+            클라이언트 로고 및 About 섹션 내용을 수정합니다.
           </p>
         </div>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -200,11 +263,24 @@ export function AdminHome() {
         />
       </div>
 
-      {/* ── Section 1: WHAT WE DO ───────────────────────── */}
+      {/* ── Section 1: Clients ──────────────────────────── */}
       <div style={{ marginBottom: "48px" }}>
-        <p style={sectionHead}>WHAT WE DO — 서비스 카드 (4개)</p>
-        {draft.services.map((svc, idx) => (
-          <ServiceEditor key={svc.id} svc={svc} idx={idx} onChange={(updated) => setService(idx, updated)} />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", paddingBottom: "12px", borderBottom: BORDER }}>
+          <p style={{ ...sectionHead, margin: 0, border: "none", padding: 0 }}>클라이언트 로고 — 앞 6개가 메인 노출</p>
+          <button
+            onClick={addClient}
+            style={{ background: "none", border: BORDER2, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "6px 16px", cursor: "pointer", letterSpacing: "0.06em" }}
+          >
+            + 추가
+          </button>
+        </div>
+        {draft.clients.length === 0 && (
+          <p style={{ fontFamily: F, fontSize: "12px", color: TEXT3, textAlign: "center", padding: "24px 0" }}>
+            아직 등록된 클라이언트가 없습니다. + 추가를 눌러 로고를 등록하세요.
+          </p>
+        )}
+        {draft.clients.map((client, idx) => (
+          <ClientEditor key={client.id} client={client} idx={idx} onChange={(updated) => setClient(idx, updated)} onRemove={() => removeClient(idx)} />
         ))}
       </div>
 
