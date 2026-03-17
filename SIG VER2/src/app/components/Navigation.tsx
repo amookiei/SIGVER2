@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { LogoSymbol } from "./LogoSymbol";
+import mainLogo from "../../assets/images/mainlg.svg";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 
@@ -65,19 +66,17 @@ export function Navigation() {
               whileHover={{ opacity: 0.5 }}
               transition={{ duration: 0.2 }}
             >
-              <span
+              <img
+                src={mainLogo}
+                alt="STUDIO SIG"
                 style={{
-                  fontFamily: F,
-                  fontWeight: 800,
-                  fontSize: "15px",
-                  color: logoColor,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  transition: "color 0.3s",
+                  height: "28px",
+                  width: "auto",
+                  display: "block",
+                  filter: isTransparent ? "brightness(0) invert(1)" : "none",
+                  transition: "filter 0.3s",
                 }}
-              >
-                SIG STUDIO
-              </span>
+              />
             </motion.div>
           </Link>
 
@@ -234,7 +233,7 @@ export function Navigation() {
               transition={{ delay: 0.5 }}
             >
               <span style={{ fontFamily: F, fontSize: "12px", color: "#444444", letterSpacing: "0.05em" }}>
-                SIG STUDIO — SEOUL
+                STUDIO SIG — SEOUL
               </span>
               <div className="flex gap-5">
                 {["IG", "BE", "LI"].map((s) => (

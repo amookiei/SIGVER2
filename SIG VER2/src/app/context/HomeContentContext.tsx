@@ -54,7 +54,7 @@ export const defaultHomeContent: HomeContent = {
   ],
   aboutImage:
     "https://images.unsplash.com/photo-1765371513276-a74f1ecbcf7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-  aboutLine1: "SIG STUDIO는 디자인이 단순한 비주얼이 아닌, 비즈니스 전략이 되는 순간을 만듭니다.",
+  aboutLine1: "STUDIO SIG는 디자인이 단순한 비주얼이 아닌, 비즈니스 전략이 되는 순간을 만듭니다.",
   aboutLine2: "전문 디자인 파트너로서, 효율적인 예산 운용과 최대의 결과를 도출합니다.",
 };
 

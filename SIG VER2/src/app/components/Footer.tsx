@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { useAdmin } from "../context/AdminContext";
 import { LogoSymbol } from "./LogoSymbol";
+import mainLogo from "../../assets/images/mainlg.svg";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 
@@ -176,18 +177,16 @@ export function Footer() {
         {/* Top */}
         <div className="px-8 md:px-16 lg:px-28 pt-16 pb-0">
           <div className="flex items-start justify-between" style={{ borderBottom: "1px solid #1F1F1F", paddingBottom: "40px" }}>
-            <span
+            <img
+              src={mainLogo}
+              alt="STUDIO SIG"
               style={{
-                fontFamily: F,
-                fontWeight: 800,
-                fontSize: "15px",
-                color: "#FAFAFA",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
+                height: "26px",
+                width: "auto",
+                display: "block",
+                filter: "brightness(0) invert(1)",
               }}
-            >
-              SIG STUDIO
-            </span>
+            />
             <LogoSymbol
               style={{
                 color: "#333333",
@@ -301,7 +300,7 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-6 gap-4">
             <div style={{ display: "flex", alignItems: "center", gap: "0" }}>
               <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.02em" }}>
-                © 2025 SIG Studio. All rights reserved.
+                © 2025 STUDIO SIG. All rights reserved.
               </span>
               {/* Hidden admin trigger — barely visible on dark bg */}
               <span

@@ -42,7 +42,7 @@ export const defaultAboutData: AboutData = {
     headline1: "WE MAKE",
     headline2: "BRANDS MOVE.",
     description1:
-      "SIG Studio는 2024년 서울에서 시작된 디자인 에이전시입니다. 브랜드 아이덴티티, 디지털 경험, 마케팅 캠페인까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다.",
+      "STUDIO SIG는 2024년 서울에서 시작된 디자인 에이전시입니다. 브랜드 아이덴티티, 디지털 경험, 마케팅 캠페인까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다.",
     description2:
       "정부지원사업부터 대기업 리브랜딩까지 다양한 클라이언트와 협업하며, 문제를 해결하는 디자인을 만들어냅니다.",
   },
