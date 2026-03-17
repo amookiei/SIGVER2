@@ -7,10 +7,14 @@ import {
   AnimatePresence,
 } from "motion/react";
 import { LogoSymbol } from "../components/LogoSymbol";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAdmin } from "../context/AdminContext";
 import { useHomeContent } from "../context/HomeContentContext";
 import type { HomeService } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ─── Design tokens ───────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -20,6 +24,36 @@ const BG = "#FAFAFA";
 const CREAM = "#F5F3EF";
 const TEXT2 = "#666666";
 const TEXT3 = "#999999";
+
+// ─── Row layout grouping ──────────────────────────────────
+type RowConfig =
+  | { type: "A"; item: PortfolioItem }
+  | { type: "B"; item: PortfolioItem }
+  | { type: "C"; item: PortfolioItem }
+  | { type: "D"; items: [PortfolioItem, PortfolioItem] };
+
+function groupIntoRows(items: PortfolioItem[]): RowConfig[] {
+  const rows: RowConfig[] = [];
+  const pattern = ["A", "B", "C", "D"] as const;
+  let i = 0, p = 0;
+  while (i < items.length) {
+    const type = pattern[p % 4];
+    if (type === "D") {
+      if (i + 1 < items.length) {
+        rows.push({ type: "D", items: [items[i], items[i + 1]] as [PortfolioItem, PortfolioItem] });
+        i += 2;
+      } else {
+        rows.push({ type: "B", item: items[i] });
+        i++;
+      }
+    } else {
+      rows.push({ type, item: items[i] });
+      i++;
+    }
+    p++;
+  }
+  return rows;
+}
 
 // ─── Image cell with cursor-tracking hover button ─────────
 function ImageHoverCell({
@@ -123,125 +157,236 @@ function ImageHoverCell({
   );
 }
 
-// ─── SELECTED WORKS — editorial list row ──────────────────
-function WorkListRow({ item, index, total }: { item: PortfolioItem; index: number; total: number }) {
-  const [hovered, setHovered] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const imgX = useSpring(mouseX, { stiffness: 220, damping: 24 });
-  const imgY = useSpring(mouseY, { stiffness: 220, damping: 24 });
-
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const r = containerRef.current.getBoundingClientRect();
-    mouseX.set(e.clientX - r.left);
-    mouseY.set(e.clientY - r.top);
-  };
-
+// ─── Project info block ───────────────────────────────────
+function ProjectInfo({
+  item,
+  titleSize = "clamp(22px, 3vw, 40px)",
+  pad = "32px 32px",
+}: {
+  item: PortfolioItem;
+  titleSize?: string;
+  pad?: string;
+}) {
   return (
-    <Link to={`/work/${item.slug}`} data-cursor="hover-link">
-      <motion.div
-        ref={containerRef}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onMouseMove={onMouseMove}
-        className="px-8 md:px-16 lg:px-28"
-        style={{
-          borderBottom: index < total - 1 ? BORDER : "none",
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          gap: "clamp(16px, 2.5vw, 40px)",
-          paddingTop: "clamp(20px, 2.2vw, 32px)",
-          paddingBottom: "clamp(20px, 2.2vw, 32px)",
-          overflow: "visible",
-        }}
-        animate={{ backgroundColor: hovered ? CREAM : BG }}
-        transition={{ duration: 0.38 }}
-      >
-        {/* Index */}
-        <span style={{
-          fontFamily: F, fontSize: "11px", color: TEXT3,
-          letterSpacing: "0.08em", flexShrink: 0, width: "22px",
-        }}>
-          {String(index + 1).padStart(2, "0")}
-        </span>
-
-        {/* Title */}
-        <motion.h3
-          style={{
-            fontFamily: F, fontWeight: 700,
-            fontSize: "clamp(20px, 3.2vw, 48px)",
-            color: DARK, letterSpacing: "-0.03em",
-            textTransform: "uppercase", flex: 1,
-            lineHeight: 1, margin: 0,
-          }}
-          animate={{ x: hovered ? 10 : 0 }}
-          transition={{ duration: 0.38, ease: [0.25, 0.1, 0.25, 1] }}
-        >
-          {item.title}
-        </motion.h3>
-
-        {/* Meta */}
-        <div style={{ display: "flex", alignItems: "center", gap: "clamp(20px, 3vw, 48px)", flexShrink: 0 }}>
-          <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.09em", textTransform: "uppercase" }}>
-            {item.category}
-          </span>
-          <span style={{ fontFamily: F, fontSize: "11px", color: TEXT3 }}>
-            {item.year}
-          </span>
-          <motion.span
-            style={{ fontFamily: F, fontSize: "16px", color: DARK, lineHeight: 1 }}
-            animate={{ opacity: hovered ? 1 : 0, x: hovered ? 0 : -6 }}
+    <motion.div
+      style={{ padding: pad }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
+    >
+      {/* Title + Year */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+        <Link to={`/work/${item.slug}`} data-cursor="hover-link">
+          <motion.h3
+            whileHover={{ x: 6 }}
             transition={{ duration: 0.25 }}
+            style={{
+              fontFamily: F,
+              fontWeight: 700,
+              fontSize: titleSize,
+              color: DARK,
+              letterSpacing: "-0.03em",
+              lineHeight: 1.05,
+              textTransform: "uppercase",
+              maxWidth: "75%",
+            }}
           >
-            →
-          </motion.span>
-        </div>
+            {item.title}
+          </motion.h3>
+        </Link>
+        <span style={{ fontFamily: F, fontSize: "12px", color: TEXT3, paddingTop: "6px" }}>
+          {item.year}
+        </span>
+      </div>
 
-        {/* Floating thumbnail that follows cursor */}
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              style={{
-                position: "absolute",
-                left: imgX,
-                top: imgY,
-                translateX: "-50%",
-                translateY: "-110%",
-                width: "clamp(200px, 22vw, 300px)",
-                aspectRatio: "3/2",
-                pointerEvents: "none",
-                zIndex: 30,
-                overflow: "hidden",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
-              }}
-              initial={{ opacity: 0, scale: 0.86, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.86, y: 12 }}
-              transition={{ duration: 0.32, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              <img
-                src={item.heroImage}
-                alt={item.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </Link>
+      {/* Tagline — hover: grey → dark */}
+      <motion.p
+        whileHover={{ color: DARK }}
+        transition={{ duration: 0.22 }}
+        style={{
+          fontFamily: F, fontSize: "13px", color: TEXT3,
+          letterSpacing: "0.01em", lineHeight: 1.5,
+          marginBottom: "12px", cursor: "default",
+        }}
+      >
+        {item.tagline}
+      </motion.p>
+
+      {/* Description — hover: grey → dark, 3-line clamp */}
+      <motion.p
+        whileHover={{ color: DARK }}
+        transition={{ duration: 0.22 }}
+        style={{
+          fontFamily: F, fontSize: "12px", color: TEXT3,
+          lineHeight: 1.7, marginBottom: "16px",
+          display: "-webkit-box", WebkitLineClamp: 3,
+          WebkitBoxOrient: "vertical", overflow: "hidden",
+          cursor: "default",
+        } as React.CSSProperties}
+      >
+        {item.description}
+      </motion.p>
+
+      {/* Category badge */}
+      <span style={{
+        display: "inline-block",
+        fontFamily: F, fontSize: "10px", fontWeight: 600,
+        color: TEXT2, letterSpacing: "0.1em", textTransform: "uppercase",
+        border: `1px solid #D8D8D8`, padding: "4px 10px",
+      }}>
+        {item.category}
+      </span>
+    </motion.div>
+  );
+}
+
+// Row A — Full-width hero
+function RowA({ item }: { item: PortfolioItem }) {
+  return (
+    <div style={{ borderBottom: BORDER }}>
+      <ImageHoverCell item={item} aspectRatio="16/9" />
+      <div style={{ borderTop: BORDER }} className="px-8 md:px-16 lg:px-28">
+        <ProjectInfo item={item} titleSize="clamp(24px, 3.5vw, 48px)" pad="28px 0" />
+      </div>
+    </div>
+  );
+}
+
+// Row B — 40% text : 60% image
+function RowB({ item }: { item: PortfolioItem }) {
+  return (
+    <div
+      className="flex flex-col md:flex-row"
+      style={{ borderBottom: BORDER, minHeight: "400px" }}
+    >
+      <div
+        className="pl-8 md:pl-16 lg:pl-28"
+        style={{
+          flex: "0 0 40%",
+          borderRight: BORDER,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+        }}
+      >
+        <ProjectInfo item={item} titleSize="clamp(20px, 2.8vw, 36px)" pad="40px 24px 40px 0" />
+      </div>
+      <div style={{ flex: "0 0 60%", minHeight: "340px" }}>
+        <ImageHoverCell item={item} aspectRatio="4/3" />
+      </div>
+    </div>
+  );
+}
+
+// Row C — 30% text : 70% image
+function RowC({ item }: { item: PortfolioItem }) {
+  return (
+    <div
+      className="flex flex-col md:flex-row"
+      style={{ borderBottom: BORDER, minHeight: "360px" }}
+    >
+      <div
+        className="pl-8 md:pl-16 lg:pl-28"
+        style={{
+          flex: "0 0 30%",
+          borderRight: BORDER,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+        }}
+      >
+        <ProjectInfo item={item} titleSize="clamp(18px, 2.4vw, 30px)" pad="40px 24px 40px 0" />
+      </div>
+      <div style={{ flex: "0 0 70%", minHeight: "320px" }}>
+        <ImageHoverCell item={item} aspectRatio="16/10" />
+      </div>
+    </div>
+  );
+}
+
+// Row D — 2 equal columns
+function RowD({ items }: { items: [PortfolioItem, PortfolioItem] }) {
+  const [hoveredSide, setHoveredSide] = useState<number | null>(null);
+  return (
+    <div
+      className="grid grid-cols-1 md:grid-cols-2"
+      style={{ borderBottom: BORDER }}
+    >
+      {items.map((item, i) => (
+        <motion.div
+          key={item.id}
+          onMouseEnter={() => setHoveredSide(i)}
+          onMouseLeave={() => setHoveredSide(null)}
+          animate={{ opacity: hoveredSide !== null && hoveredSide !== i ? 0.45 : 1 }}
+          transition={{ duration: 0.35 }}
+          style={{
+            borderRight: i === 0 ? BORDER : "none",
+          }}
+        >
+          <ImageHoverCell item={item} aspectRatio="4/3" />
+          <div
+            style={{ borderTop: BORDER }}
+            className={i === 0 ? "pl-8 md:pl-16 lg:pl-28" : "pr-8 md:pr-16 lg:pr-28"}
+          >
+            <ProjectInfo
+              item={item}
+              titleSize="clamp(16px, 2vw, 26px)"
+              pad={i === 0 ? "24px 24px 24px 0" : "24px 0 24px 24px"}
+            />
+          </div>
+        </motion.div>
+      ))}
+    </div>
   );
 }
 
 // ─── SELECTED WORKS SECTION ───────────────────────────────
+const WORK_FILTERS = ["All", "Branding", "Web Design", "Campaign", "Government"] as const;
+
 function SelectedWorksSection() {
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+  const sectionRef = useRef<HTMLElement>(null);
   const { items } = useAdmin();
-  const displayItems = items.slice(0, 6);
+
+  const displayItems =
+    activeFilter === "All"
+      ? items.slice(0, 5)
+      : items.filter((p) => p.category === activeFilter);
+
+  const rows = groupIntoRows(displayItems);
+
+  // GSAP ScrollTrigger — clip-path image reveals
+  useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout>;
+
+    timerId = setTimeout(() => {
+      const reveals = document.querySelectorAll(".work-img-reveal");
+      reveals.forEach((el) => {
+        // Reset to clipped state first
+        gsap.set(el, { clipPath: "inset(0 0 100% 0)" });
+
+        gsap.to(el, {
+          clipPath: "inset(0 0 0% 0)",
+          duration: 0.95,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 82%",
+            once: true,
+          },
+        });
+      });
+    }, 380);
+
+    return () => {
+      clearTimeout(timerId);
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
+  }, [activeFilter]);
 
   return (
-    <section style={{ borderBottom: BORDER }}>
+    <section ref={sectionRef} style={{ borderBottom: BORDER }}>
       {/* Header */}
       <div
         className="px-8 md:px-16 lg:px-28 pt-16 pb-10 flex items-end justify-between"
@@ -253,43 +398,90 @@ function SelectedWorksSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.65 }}
           style={{
-            fontFamily: F, fontWeight: 700,
+            fontFamily: F,
+            fontWeight: 700,
             fontSize: "clamp(40px, 8vw, 100px)",
-            color: DARK, letterSpacing: "-0.04em",
-            lineHeight: 0.88, textTransform: "uppercase", margin: 0,
+            color: DARK,
+            letterSpacing: "-0.04em",
+            lineHeight: 0.88,
+            textTransform: "uppercase",
+            margin: 0,
           }}
         >
-          SELECTED<br />WORKS
+          SELECTED WORKS
         </motion.h2>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "12px" }}>
-          <span style={{ fontFamily: F, fontSize: "clamp(28px, 5vw, 64px)", color: "#EBEBEB", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>
-            {String(displayItems.length).padStart(2, "0")}
-          </span>
-          <Link to="/work" data-cursor="hover-link">
-            <motion.span
-              style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
+        <Link to="/work" data-cursor="hover-link">
+          <motion.span
+            style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
+            whileHover={{ color: DARK }}
+            transition={{ duration: 0.2 }}
+          >
+            VIEW ALL →
+          </motion.span>
+        </Link>
+      </div>
+
+      {/* Filter tabs — active item gets parentheses */}
+      <div
+        className="hidden md:flex items-center gap-0 px-8 md:px-16 lg:px-28"
+        style={{ borderBottom: BORDER }}
+      >
+        {WORK_FILTERS.map((f) => {
+          const isActive = activeFilter === f;
+          return (
+            <motion.button
+              key={f}
+              onClick={() => setActiveFilter(f)}
+              data-cursor="hover-button"
+              style={{
+                fontFamily: F,
+                fontSize: "12px",
+                fontWeight: isActive ? 700 : 400,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                padding: "12px 14px",
+                background: "none",
+                border: "none",
+                outline: "none",
+                borderRight: `1px solid #E0E0E0`,
+              }}
+              animate={{ color: isActive ? DARK : TEXT3 }}
               whileHover={{ color: DARK }}
               transition={{ duration: 0.2 }}
             >
-              VIEW ALL →
-            </motion.span>
-          </Link>
-        </div>
+              {isActive ? `(${f})` : f}
+            </motion.button>
+          );
+        })}
       </div>
 
-      {/* Editorial list */}
-      <div>
-        {displayItems.map((item, i) => (
-          <WorkListRow key={item.id} item={item} index={i} total={displayItems.length} />
-        ))}
-        {displayItems.length === 0 && (
-          <div className="py-24 text-center px-8">
-            <p style={{ fontFamily: F, fontSize: "14px", color: TEXT3 }}>
-              등록된 프로젝트가 없습니다.
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Rows */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeFilter}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {rows.map((row, i) => {
+            if (row.type === "A") return <RowA key={`A-${i}`} item={row.item} />;
+            if (row.type === "B") return <RowB key={`B-${i}`} item={row.item} />;
+            if (row.type === "C") return <RowC key={`C-${i}`} item={row.item} />;
+            if (row.type === "D") return <RowD key={`D-${i}`} items={row.items} />;
+            return null;
+          })}
+
+          {/* Empty state */}
+          {rows.length === 0 && (
+            <div className="py-24 text-center">
+              <p style={{ fontFamily: F, fontSize: "14px", color: TEXT3 }}>
+                해당 카테고리의 프로젝트가 없습니다.
+              </p>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 }
