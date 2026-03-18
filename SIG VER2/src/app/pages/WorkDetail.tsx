@@ -183,7 +183,7 @@ export function WorkDetail() {
           <div className="px-8 md:px-16 lg:px-28 py-14 grid grid-cols-1 md:grid-cols-2 gap-0">
             {item.challenge && (
               <motion.div
-                style={{ paddingRight: "48px", borderRight: "1px solid #EEEEEE" }}
+                className="pb-10 md:pb-0 md:pr-12 border-b border-[#EEEEEE] md:border-b-0 md:border-r"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -199,7 +199,7 @@ export function WorkDetail() {
             )}
             {item.solution && (
               <motion.div
-                style={{ paddingLeft: "48px" }}
+                className="pt-10 md:pt-0 md:pl-12"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

@@ -1,11 +1,16 @@
 import { Outlet, useLocation } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { CustomCursor } from "../components/CustomCursor";
 
 export function Root() {
   const location = useLocation();
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia("(hover: none)").matches);
+  }, []);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -13,8 +18,8 @@ export function Root() {
   }, [location.pathname]);
 
   return (
-    <div style={{ backgroundColor: "#FAFAFA", cursor: "none" }}>
-      <CustomCursor />
+    <div style={{ backgroundColor: "#FAFAFA", cursor: isTouchDevice ? "auto" : "none" }}>
+      {!isTouchDevice && <CustomCursor />}
       <Navigation />
       <main>
         <Outlet />
