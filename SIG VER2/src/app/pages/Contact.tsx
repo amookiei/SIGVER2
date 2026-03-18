@@ -163,7 +163,7 @@ export function Contact() {
 
       {/* ── Contact Info Row ── */}
       <div
-        className="grid grid-cols-2 md:grid-cols-4 px-8 md:px-16 lg:px-28"
+        className="grid grid-cols-1 md:grid-cols-4 px-8 md:px-16 lg:px-28"
         style={{ borderBottom: BORDER }}
       >
         {[
@@ -174,7 +174,8 @@ export function Contact() {
         ].map((item, i) => (
           <motion.div
             key={item.label}
-            style={{ padding: "28px 24px", borderRight: i < 3 ? BORDER : "none" }}
+            className={i < 3 ? "border-b md:border-b-0 md:border-r border-[#E0E0E0]" : ""}
+            style={{ padding: "28px 24px" }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 + i * 0.08 }}

@@ -15,7 +15,7 @@ export const defaultContactContent: ContactContent = {
   tagline: "프로젝트 문의, 협업 제안, 견적 요청 모두 환영합니다.",
   email: "hello@sigstudio.kr",
   phone: "010-7667-6013",
-  address: "서울특별시 서대문구\n홍제천로 6길 40 1층",
+  address: "서울 서대문구 수색로 43, 208호",
   hours: "월 – 금 / 09:00 – 18:00\n주말 및 공휴일 휴무",
 };
 
