@@ -32,12 +32,15 @@
 //
 // ── 기존 테이블에 thumbnail_hover 칼럼 추가 (이미 테이블이 있는 경우) ─────
 // ALTER TABLE portfolio_items ADD COLUMN IF NOT EXISTS thumbnail_hover TEXT;
+//
+// ── content_blocks 칼럼 추가 (contentBlocks 기능 추가 시) ─────────────────
+// ALTER TABLE portfolio_items ADD COLUMN IF NOT EXISTS content_blocks JSONB;
 // =============================================================================
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
 import { portfolioItems as defaultItems } from "../data/portfolio";
-import type { PortfolioItem, Category } from "../data/portfolio";
+import type { PortfolioItem, Category, ContentBlock } from "../data/portfolio";
 import { supabase, isSupabaseReady } from "../../lib/supabase";
 import {
   createSession,
@@ -83,6 +86,7 @@ interface DBRow {
   description: string;
   challenge: string | null;
   solution: string | null;
+  content_blocks: ContentBlock[] | null;
   role: string;
   duration: string;
   tags: string[];
@@ -113,6 +117,7 @@ function fromDB(row: DBRow): PortfolioItem {
     description: row.description,
     challenge: row.challenge ?? undefined,
     solution: row.solution ?? undefined,
+    contentBlocks: row.content_blocks ?? undefined,
     role: row.role,
     duration: row.duration,
     tags: row.tags ?? [],
@@ -139,6 +144,7 @@ function toDB(item: PortfolioItem): DBRow {
     description: item.description,
     challenge: item.challenge ?? null,
     solution: item.solution ?? null,
+    content_blocks: item.contentBlocks ?? null,
     role: item.role,
     duration: item.duration,
     tags: item.tags,
