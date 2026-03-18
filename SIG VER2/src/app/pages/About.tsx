@@ -144,7 +144,7 @@ export function About() {
       </section>
 
       {/* ── Team ── */}
-      <section style={{ borderBottom: BORDER, backgroundColor: DARK }}>
+      <section style={{ backgroundColor: DARK }}>
         <div
           className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"
           style={{ borderBottom: "1px solid #1F1F1F" }}
