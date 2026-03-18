@@ -38,6 +38,21 @@ const safeUrlField = z
     message: "안전하지 않거나 잘못된 URL입니다.",
   });
 
+// ─── Content block schema ─────────────────────────────────
+const contentBlockSchema = z.discriminatedUnion("type", [
+  z.object({
+    id: z.string(),
+    type: z.literal("text"),
+    title: z.string().max(200).trim(),
+    body: z.string().max(3000).trim(),
+  }),
+  z.object({
+    id: z.string(),
+    type: z.literal("image"),
+    images: z.array(z.string().max(500)).max(2),
+  }),
+]);
+
 // ─── Portfolio item schema ────────────────────────────────
 export const portfolioItemSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요.").max(200).trim(),
@@ -57,6 +72,7 @@ export const portfolioItemSchema = z.object({
   description: z.string().max(5000).trim(),
   challenge: z.string().max(2000).trim().nullable().optional(),
   solution: z.string().max(2000).trim().nullable().optional(),
+  contentBlocks: z.array(contentBlockSchema).max(30).nullable().optional(),
   role: z.string().max(200).trim(),
   duration: z.string().max(100).trim(),
   tags: z.array(z.string().max(50).trim()).max(20),

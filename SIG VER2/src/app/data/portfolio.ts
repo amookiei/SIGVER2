@@ -18,6 +18,11 @@ import { IMG } from "../../assets/images";
 
 export type Category = "Branding" | "Web Design" | "Campaign" | "Government";
 
+// ─── 커스텀 콘텐츠 블록 ────────────────────────────────────────────────────────
+export type ContentBlock =
+  | { id: string; type: "text"; title: string; body: string }
+  | { id: string; type: "image"; images: string[] }; // 최대 2장
+
 export interface PortfolioItem {
   // ── 기본 정보 ───────────────────────────────────────────────────────────────
   id: number;           // 고유 숫자 ID. 추가할 때 마지막 id + 1로 증가시키세요.
@@ -40,8 +45,9 @@ export interface PortfolioItem {
   // ── 텍스트 콘텐츠 ────────────────────────────────────────────────────────────
   tagline: string;      // 카드 하단 한 줄 요약. 40자 이내 권장.
   description: string;  // 상세 페이지 프로젝트 개요. 3~5문장 권장.
-  challenge?: string;   // (선택) 문제 정의 / 도전 과제 섹션 텍스트.
-  solution?: string;    // (선택) 해결 방법 / 접근 방식 섹션 텍스트.
+  challenge?: string;   // (선택) 레거시. contentBlocks 로 대체됩니다.
+  solution?: string;    // (선택) 레거시. contentBlocks 로 대체됩니다.
+  contentBlocks?: ContentBlock[]; // (선택) 커스텀 섹션 블록 배열 (텍스트 / 이미지)
 
   // ── 메타 정보 ────────────────────────────────────────────────────────────────
   role: string;         // SIG Studio가 수행한 역할. 쉼표 구분. (예: "Brand Strategy, Visual Identity")

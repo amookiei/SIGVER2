@@ -6,7 +6,7 @@ import { AdminHome } from "./AdminHome";
 import { AdminContact } from "./AdminContact";
 import { AdminGallery } from "./AdminGallery";
 import { AdminSpace } from "./AdminSpace";
-import type { PortfolioItem } from "../data/portfolio";
+import type { PortfolioItem, ContentBlock } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 
 // ─── Design tokens ────────────────────────────────────────
@@ -37,8 +37,7 @@ const blank: Omit<PortfolioItem, "id"> = {
   gallery: [],
   tagline: "",
   description: "",
-  challenge: "",
-  solution: "",
+  contentBlocks: [],
   role: "",
   duration: "",
   tags: [],
@@ -54,8 +53,16 @@ interface FormState extends Omit<PortfolioItem, "tags" | "gallery"> {
 
 function toForm(item: PortfolioItem): FormState {
   const { tags, gallery, ...rest } = item;
+  // challenge/solution → contentBlocks 자동 마이그레이션
+  let contentBlocks: ContentBlock[] = item.contentBlocks ?? [];
+  if (contentBlocks.length === 0 && (item.challenge || item.solution)) {
+    contentBlocks = [];
+    if (item.challenge) contentBlocks.push({ id: crypto.randomUUID(), type: "text", title: "Challenge", body: item.challenge });
+    if (item.solution) contentBlocks.push({ id: crypto.randomUUID(), type: "text", title: "Solution", body: item.solution });
+  }
   return {
     ...rest,
+    contentBlocks,
     tagsStr: tags.join(", "),
     galleryUrls: gallery.length ? [...gallery, ""] : [""],
   };
@@ -66,6 +73,7 @@ function blankForm(): FormState {
   return {
     id: 0,
     ...restBlank,
+    contentBlocks: [],
     tagsStr: "",
     galleryUrls: [""],
   };
@@ -86,8 +94,9 @@ function fromForm(form: FormState): Omit<PortfolioItem, "id"> {
     gallery: form.galleryUrls.map((u) => u.trim()).filter(Boolean),
     tagline: form.tagline.trim(),
     description: form.description.trim(),
-    challenge: form.challenge?.trim() || undefined,
-    solution: form.solution?.trim() || undefined,
+    contentBlocks: form.contentBlocks && form.contentBlocks.length > 0 ? form.contentBlocks : undefined,
+    challenge: undefined,
+    solution: undefined,
     role: form.role.trim(),
     duration: form.duration.trim(),
     tags: form.tagsStr
@@ -211,6 +220,310 @@ function ImageUploadField({
           onError={(e) => (e.currentTarget.style.display = "none")}
         />
       )}
+    </div>
+  );
+}
+
+// ─── Image slot (hook-safe 분리) ──────────────────────────
+function ImageSlot({
+  value,
+  uploadKey,
+  label,
+  uploading,
+  onUpload,
+  onChange,
+}: {
+  value: string;
+  uploadKey: string;
+  label: string;
+  uploading: boolean;
+  onUpload: (file: File) => void;
+  onChange: (url: string) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  return (
+    <div>
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".jpg,.jpeg"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onUpload(file);
+          e.target.value = "";
+        }}
+      />
+      <div style={{ display: "flex", gap: "4px", marginBottom: "4px" }}>
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+          style={{
+            background: "none",
+            border: "1px solid #2A2A2A",
+            color: uploading ? TEXT3 : TEXT2,
+            fontFamily: F,
+            fontSize: "10px",
+            padding: "5px 8px",
+            cursor: uploading ? "default" : "pointer",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {uploading ? "업로드중…" : "JPG 업로드"}
+        </button>
+        <input
+          type="text"
+          placeholder={`${label} URL`}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={{ ...inputStyle, fontSize: "11px" }}
+        />
+      </div>
+      {value && (
+        <img
+          src={value}
+          alt=""
+          style={{ width: "100%", height: "56px", objectFit: "cover", display: "block" }}
+          onError={(e) => (e.currentTarget.style.display = "none")}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── Content Block Editor ─────────────────────────────────
+function ContentBlocksEditor({
+  blocks,
+  onChange,
+  onUpload,
+  uploading,
+}: {
+  blocks: ContentBlock[];
+  onChange: (blocks: ContentBlock[]) => void;
+  onUpload: (file: File, key: string, onSuccess: (url: string) => void) => void;
+  uploading: Record<string, boolean>;
+}) {
+  const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
+  const [insertAt, setInsertAt] = useState<number | null>(null);
+  const isDragging = useRef(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const blockEls = useRef<(HTMLDivElement | null)[]>([]);
+  const activePointerId = useRef<number | null>(null);
+
+  const addText = () =>
+    onChange([...blocks, { id: crypto.randomUUID(), type: "text", title: "", body: "" }]);
+
+  const addImage = () =>
+    onChange([...blocks, { id: crypto.randomUUID(), type: "image", images: [] }]);
+
+  const removeBlock = (idx: number) => onChange(blocks.filter((_, i) => i !== idx));
+
+  const updateBlock = (idx: number, patch: Partial<ContentBlock>) => {
+    onChange(blocks.map((b, i) => (i === idx ? { ...b, ...patch } as ContentBlock : b)));
+  };
+
+  const getInsertIdx = (clientY: number) => {
+    for (let i = 0; i < blockEls.current.length; i++) {
+      const el = blockEls.current[i];
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      if (clientY < rect.top + rect.height / 2) return i;
+    }
+    return blocks.length;
+  };
+
+  const onHandleDown = (idx: number, e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const pid = e.pointerId;
+    activePointerId.current = pid;
+    longPressTimer.current = setTimeout(() => {
+      isDragging.current = true;
+      setDraggingIdx(idx);
+      setInsertAt(idx);
+      try { (e.currentTarget as HTMLElement).setPointerCapture(pid); } catch { /* ignore */ }
+    }, 280);
+  };
+
+  const onHandleMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current || draggingIdx === null) return;
+    e.preventDefault();
+    setInsertAt(getInsertIdx(e.clientY));
+  };
+
+  const onHandleUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
+    if (isDragging.current && draggingIdx !== null && insertAt !== null) {
+      const dest = insertAt > draggingIdx ? insertAt - 1 : insertAt;
+      if (dest !== draggingIdx) {
+        const next = [...blocks];
+        const [moved] = next.splice(draggingIdx, 1);
+        next.splice(dest, 0, moved);
+        onChange(next);
+      }
+    }
+    isDragging.current = false;
+    setDraggingIdx(null);
+    setInsertAt(null);
+    activePointerId.current = null;
+  };
+
+  const insertLine = (
+    <div style={{ height: "2px", background: "#FF4D00", borderRadius: "1px", margin: "0 0 4px" }} />
+  );
+
+  return (
+    <div>
+      {/* Add buttons */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+        {[
+          { label: "+ 텍스트 블록", fn: addText, color: "#FF4D00" },
+          { label: "+ 이미지 블록", fn: addImage, color: "#888" },
+        ].map(({ label, fn, color }) => (
+          <button
+            key={label}
+            type="button"
+            onClick={fn}
+            style={{
+              background: "none",
+              border: "1px solid #2A2A2A",
+              color,
+              fontFamily: F,
+              fontSize: "11px",
+              letterSpacing: "0.08em",
+              padding: "6px 12px",
+              cursor: "pointer",
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {blocks.length === 0 && (
+        <p style={{ fontFamily: F, fontSize: "12px", color: TEXT3, padding: "20px 0" }}>
+          블록을 추가해 콘텐츠를 구성하세요. ≡ 아이콘을 꾹 눌러 순서를 바꿀 수 있습니다.
+        </p>
+      )}
+
+      {/* Block list */}
+      <div>
+        {blocks.map((block, idx) => (
+          <div key={block.id}>
+            {insertAt === idx && draggingIdx !== null && draggingIdx !== idx && insertLine}
+
+            <div
+              ref={(el) => { blockEls.current[idx] = el; }}
+              style={{
+                display: "flex",
+                gap: "10px",
+                background: draggingIdx === idx ? "#0A0A0A" : "#111111",
+                border: `1px solid ${draggingIdx === idx ? "#FF4D00" : "#1F1F1F"}`,
+                padding: "12px",
+                marginBottom: "6px",
+                opacity: draggingIdx === idx ? 0.45 : 1,
+                transition: "opacity 0.15s",
+              }}
+            >
+              {/* Drag handle */}
+              <div
+                onPointerDown={(e) => onHandleDown(idx, e)}
+                onPointerMove={onHandleMove}
+                onPointerUp={onHandleUp}
+                onPointerCancel={onHandleUp}
+                style={{
+                  cursor: "grab",
+                  color: TEXT3,
+                  userSelect: "none",
+                  touchAction: "none",
+                  padding: "2px 4px 0",
+                  fontSize: "14px",
+                  flexShrink: 0,
+                  lineHeight: 1,
+                }}
+                title="꾹 눌러서 순서 변경"
+              >
+                ⠿
+              </div>
+
+              {/* Block content */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ marginBottom: "8px" }}>
+                  <span
+                    style={{
+                      fontFamily: F,
+                      fontSize: "9px",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: block.type === "text" ? "#FF4D00" : "#888",
+                      border: `1px solid ${block.type === "text" ? "#FF4D00" : "#333"}`,
+                      padding: "2px 6px",
+                    }}
+                  >
+                    {block.type === "text" ? "TEXT" : "IMAGE"}
+                  </span>
+                </div>
+
+                {block.type === "text" && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="섹션 제목 (예: Challenge, Overview, Process…)"
+                      value={block.title}
+                      onChange={(e) => updateBlock(idx, { title: e.target.value })}
+                      style={{ ...inputStyle, marginBottom: "6px" }}
+                    />
+                    <textarea
+                      placeholder="내용"
+                      value={block.body}
+                      onChange={(e) => updateBlock(idx, { body: e.target.value })}
+                      style={{ ...inputStyle, minHeight: "72px", resize: "vertical" }}
+                    />
+                  </>
+                )}
+
+                {block.type === "image" && (
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    {[0, 1].map((imgIdx) => (
+                      <ImageSlot
+                        key={imgIdx}
+                        value={block.images?.[imgIdx] ?? ""}
+                        uploadKey={`cb-${block.id}-${imgIdx}`}
+                        label={`이미지 ${imgIdx + 1}`}
+                        uploading={!!uploading[`cb-${block.id}-${imgIdx}`]}
+                        onUpload={(file) =>
+                          onUpload(file, `cb-${block.id}-${imgIdx}`, (url) => {
+                            const imgs = [...(block.images ?? [])];
+                            imgs[imgIdx] = url;
+                            updateBlock(idx, { images: imgs });
+                          })
+                        }
+                        onChange={(url) => {
+                          const imgs = [...(block.images ?? [])];
+                          imgs[imgIdx] = url;
+                          updateBlock(idx, { images: imgs });
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Delete */}
+              <button
+                type="button"
+                onClick={() => removeBlock(idx)}
+                style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: "18px", padding: "0 2px", flexShrink: 0, lineHeight: 1 }}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {/* Insert line at end */}
+        {insertAt === blocks.length && draggingIdx !== null && insertLine}
+      </div>
     </div>
   );
 }
@@ -702,22 +1015,19 @@ function EditModal({
                   placeholder="3~5문장으로 프로젝트를 설명합니다."
                 />
               </Field>
-              <Field label="도전 과제 (Challenge) — 선택">
-                <textarea
-                  style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }}
-                  value={form.challenge ?? ""}
-                  onChange={(e) => set("challenge", e.target.value)}
-                  placeholder="해결해야 했던 문제나 도전 과제를 설명합니다."
-                />
-              </Field>
-              <Field label="해결 방법 (Solution) — 선택">
-                <textarea
-                  style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }}
-                  value={form.solution ?? ""}
-                  onChange={(e) => set("solution", e.target.value)}
-                  placeholder="문제를 어떻게 해결했는지 설명합니다."
-                />
-              </Field>
+
+              {/* Divider */}
+              <div style={{ borderTop: "1px solid #1F1F1F", margin: "8px 0 20px" }} />
+
+              <div style={{ marginBottom: "10px" }}>
+                <label style={labelStyle}>콘텐츠 블록 — 텍스트·이미지를 자유롭게 배치</label>
+              </div>
+              <ContentBlocksEditor
+                blocks={form.contentBlocks ?? []}
+                onChange={(blocks) => set("contentBlocks", blocks)}
+                onUpload={handleUpload}
+                uploading={uploading}
+              />
             </>
           )}
 

@@ -177,8 +177,60 @@ export function WorkDetail() {
         </div>
       </div>
 
-      {/* Challenge & Solution */}
-      {(item.challenge || item.solution) && (
+      {/* Content Blocks (커스텀) — fallback: challenge / solution */}
+      {item.contentBlocks && item.contentBlocks.length > 0 ? (
+        <>
+          {item.contentBlocks.map((block, i) => (
+            <motion.div
+              key={block.id}
+              style={{ borderBottom: BORDER }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.05 }}
+            >
+              {block.type === "text" && (
+                <div className="px-8 md:px-16 lg:px-28 py-14">
+                  {block.title && (
+                    <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "16px" }}>
+                      — {block.title}
+                    </p>
+                  )}
+                  <p style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.8, maxWidth: "720px" }}>
+                    {block.body}
+                  </p>
+                </div>
+              )}
+
+              {block.type === "image" && block.images.length > 0 && (
+                <div
+                  className={block.images.length >= 2 ? "grid grid-cols-2" : ""}
+                >
+                  {block.images.filter(Boolean).map((src, j) => (
+                    <div
+                      key={j}
+                      style={{
+                        overflow: "hidden",
+                        aspectRatio: "4/3",
+                        backgroundColor: "#F0F0F0",
+                        borderRight: block.images.length >= 2 && j === 0 ? BORDER : "none",
+                      }}
+                    >
+                      <motion.img
+                        src={src}
+                        alt={`${item.title} block ${i + 1} img ${j + 1}`}
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.03 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </>
+      ) : (item.challenge || item.solution) && (
         <div style={{ borderBottom: BORDER }}>
           <div className="px-8 md:px-16 lg:px-28 py-14 grid grid-cols-1 md:grid-cols-2 gap-0">
             {item.challenge && (
