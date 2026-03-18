@@ -183,7 +183,7 @@ export function Contact() {
             <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "10px" }}>
               {item.label}
             </p>
-            <p style={{ fontFamily: F, fontSize: "14px", color: TEXT2, lineHeight: 1.6, whiteSpace: "pre-line" }}>
+            <p style={{ fontFamily: F, fontSize: "14px", color: TEXT2, lineHeight: 1.6, whiteSpace: "pre-line", overflowWrap: "anywhere" }}>
               {item.value}
             </p>
           </motion.div>
