@@ -675,17 +675,19 @@ function ClientLogo({ client }: { client: HomeClient }) {
 
   return (
     <div
+      className="client-logo-item"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "36px 28px", cursor: "default" }}
     >
       {client.logoUrl ? (
         <img
+          className="client-logo-img"
           src={client.logoUrl}
           alt={client.name}
           style={{
             maxHeight: "120px",
-            maxWidth: "200px",
+            maxWidth: "100%",
             objectFit: "contain",
             filter: hovered ? "none" : "grayscale(100%)",
             transition: "filter 0.4s ease",
@@ -710,10 +712,18 @@ function ClientsSection() {
 
   return (
     <section style={{ borderBottom: BORDER }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .clients-left { min-height: 0 !important; }
+          .clients-tagline { position: static !important; margin-top: 10px; }
+          .client-logo-item { padding: 16px 10px !important; }
+          .client-logo-img { max-height: 52px !important; }
+        }
+      `}</style>
       <div className="px-8 md:px-16 lg:px-28 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0">
           {/* Left */}
-          <div style={{ position: "relative", minHeight: "200px" }}>
+          <div className="clients-left" style={{ position: "relative", minHeight: "200px" }}>
             <div className="flex items-start justify-between md:flex-col md:items-start gap-4">
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
@@ -742,6 +752,7 @@ function ClientsSection() {
               </motion.div>
             </div>
             <motion.div
+              className="clients-tagline"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
