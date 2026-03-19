@@ -5,8 +5,6 @@ import {
   motion,
   useMotionValue,
   useSpring,
-  useScroll,
-  useTransform,
   AnimatePresence,
 } from "motion/react";
 import { LogoSymbol } from "../components/LogoSymbol";
@@ -534,6 +532,7 @@ function HeroSection() {
   const [soundOn, setSoundOn] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [introVisible, setIntroVisible] = useState(true);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -542,8 +541,12 @@ function HeroSection() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const { scrollY } = useScroll();
-  const overlayY = useTransform(scrollY, [0, typeof window !== "undefined" ? window.innerHeight : 800], ["0%", "-100%"]);
+  // 최초 1회만 표시 후 자동으로 사라짐
+  useEffect(() => {
+    if (!isMobile) return;
+    const t = setTimeout(() => setIntroVisible(false), 2400);
+    return () => clearTimeout(t);
+  }, [isMobile]);
 
   // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 완전 제거)
   useEffect(() => {
@@ -626,64 +629,39 @@ function HeroSection() {
           <source src={BG_VIDEO} type="video/mp4" />
         </video>
       )}
-      {/* 모바일: 로고 인트로 오버레이 — 스크롤 시 위로 슬라이드되며 영상 노출 */}
-      {BG_VIDEO && isMobile && (
-        <motion.div
-          style={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 5,
-            background: DARK,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            y: overlayY,
-            pointerEvents: "none",
-          }}
-        >
+      {/* 모바일: 로고 인트로 오버레이 — 최초 1회만 표시 후 위로 슬라이드 사라짐 */}
+      <AnimatePresence>
+        {BG_VIDEO && isMobile && introVisible && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <motion.div
-              animate={{ scale: [1, 1.07, 1] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            >
-              <LogoSymbol style={{ width: 72, height: 72, color: "#FFFFFF" }} />
-            </motion.div>
-          </motion.div>
-          {/* 스크롤 힌트 */}
-          <motion.div
+            key="mobile-intro"
             style={{
               position: "absolute",
-              bottom: 44,
+              inset: 0,
+              zIndex: 5,
+              background: DARK,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 8,
-              color: "rgba(255,255,255,0.4)",
-              fontFamily: F,
-              fontSize: 10,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
+              justifyContent: "center",
+              pointerEvents: "none",
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
+            exit={{ y: "-100%", transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } }}
           >
-            <motion.span
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              style={{ fontSize: 16, lineHeight: 1 }}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
-              ↓
-            </motion.span>
-            <span>SCROLL</span>
+              <motion.div
+                animate={{ scale: [1, 1.07, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              >
+                <LogoSymbol style={{ width: 72, height: 72, color: "#FFFFFF" }} />
+              </motion.div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* 배경 음악 */}
       {BG_SOUND && (
