@@ -756,10 +756,10 @@ function ClientsSection() {
           .clients-tagline { position: static !important; margin-top: 10px; }
         }
       `}</style>
-      <div className="px-8 md:px-16 lg:px-28 py-16 md:py-24">
+      <div className="px-8 md:px-16 lg:px-28 py-10 md:py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0">
           {/* Left */}
-          <div className="clients-left" style={{ position: "relative", minHeight: "200px" }}>
+          <div className="clients-left" style={{ position: "relative", minHeight: "140px" }}>
             <div className="flex items-start justify-between md:flex-col md:items-start gap-4">
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
