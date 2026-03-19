@@ -598,6 +598,7 @@ function HeroSection() {
           disablePictureInPicture
           preload="auto"
           poster=""
+          {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" } as any}
           style={{
             position: "absolute",
             inset: 0,
