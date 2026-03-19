@@ -22,12 +22,14 @@ body {
   background-color: #FAFAFA;
   overscroll-behavior: none;
   max-width: 100%;
+  overflow-x: hidden;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Admin 페이지: 커서 복원 */
