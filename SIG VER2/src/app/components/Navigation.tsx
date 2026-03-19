@@ -215,6 +215,18 @@ export function Navigation() {
             exit={{ clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
           >
+            {/* Close button */}
+            <button
+              className="absolute top-0 right-0 w-[72px] h-[72px] flex items-center justify-center md:hidden"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+              style={{ background: "none", border: "none", padding: 0 }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <motion.line x1="4" y1="4" x2="20" y2="20" stroke="#FAFAFA" strokeWidth="1.5" strokeLinecap="round" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
+                <motion.line x1="20" y1="4" x2="4" y2="20" stroke="#FAFAFA" strokeWidth="1.5" strokeLinecap="round" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
+              </svg>
+            </button>
             {/* Big nav links */}
             <div className="px-8 pb-16 flex flex-col gap-0">
               {[{ href: "/", label: "Home" }, ...navLinks, { href: "/contact", label: "Contact" }].map((link, i) => (
