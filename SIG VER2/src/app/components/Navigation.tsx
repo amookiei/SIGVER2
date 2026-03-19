@@ -43,7 +43,8 @@ export function Navigation() {
   return (
     <>
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 px-8 md:px-16 lg:px-28"
+        className="fixed top-0 left-0 right-0 px-8 md:px-16 lg:px-28"
+        style={{ zIndex: menuOpen ? 30 : 50 }}
         animate={{
           backgroundColor: menuOpen
             ? "rgba(0,0,0,0)"
