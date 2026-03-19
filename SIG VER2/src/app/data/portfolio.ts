@@ -35,6 +35,7 @@ export interface PortfolioItem {
   // ── 노출 설정 ────────────────────────────────────────────────────────────────
   featured: boolean;    // true 시 홈 페이지 Featured 섹션에 노출됩니다.
   order?: number;       // featured 항목 간 노출 순서 (낮을수록 먼저). 생략 시 id 순.
+  hidden?: boolean;     // true 시 Work/홈 등 모든 공개 페이지에서 숨겨집니다. (삭제 없이 임시 비공개)
 
   // ── 이미지 ──────────────────────────────────────────────────────────────────
   thumbnail: string;       // Work 리스트 카드에 보이는 썸네일 이미지 URL.
