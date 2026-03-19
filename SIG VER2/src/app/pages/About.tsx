@@ -243,7 +243,7 @@ export function About() {
       </section>
 
       {/* ── Client Showreel ── */}
-      <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0D0D0D" }}>
+      <section id="clients" style={{ position: "relative", overflow: "hidden", backgroundColor: "#0D0D0D" }}>
         {/* PARTNER 헤더 */}
         <div
           className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"

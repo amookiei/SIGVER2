@@ -528,7 +528,16 @@ const BG_SOUND: string = Object.values(bgSoundModules)[0] || "";
 
 function HeroSection() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [soundOn, setSoundOn] = useState(false);
+
+  // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 방지)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    video.play().catch(() => {});
+  }, []);
 
   // 오디오 자동 재생 시도 (뮤트 상태로 시작)
   useEffect(() => {
@@ -565,10 +574,12 @@ function HeroSection() {
       {/* 배경 영상 */}
       {BG_VIDEO && (
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
+          disablePictureInPicture
           style={{
             position: "absolute",
             inset: 0,
@@ -745,7 +756,7 @@ function ClientsSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Link to="/clients" data-cursor="hover-link">
+                <Link to="/about#clients" data-cursor="hover-link">
                   <motion.span
                     style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
                     whileHover={{ color: DARK }}
