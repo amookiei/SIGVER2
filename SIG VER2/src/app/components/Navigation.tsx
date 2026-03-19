@@ -217,7 +217,7 @@ export function Navigation() {
           >
             {/* Close button */}
             <button
-              className="absolute top-0 right-0 w-[72px] h-[72px] flex items-center justify-center md:hidden"
+              className="absolute top-0 right-8 w-10 h-[72px] flex items-center justify-center md:hidden"
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
               style={{ background: "none", border: "none", padding: 0 }}
