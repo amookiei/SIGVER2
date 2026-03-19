@@ -37,6 +37,14 @@ html {
   overflow-x: clip;
 }
 
+/* 모바일 전용: 가로 스크롤 방지 (PC 마우스 휠 영향 없음) */
+@media (pointer: coarse) {
+  html, body {
+    overflow-x: hidden;
+    touch-action: pan-y;
+  }
+}
+
 /* Admin 페이지: 커서 복원 */
 body.sig-admin * {
   cursor: auto !important;
