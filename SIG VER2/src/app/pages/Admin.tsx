@@ -307,7 +307,8 @@ function ContentBlocksEditor({
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
   const [insertAt, setInsertAt] = useState<number | null>(null);
   const isDragging = useRef(false);
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const draggingIdxRef = useRef<number | null>(null);
+  const insertAtRef = useRef<number | null>(null);
   const blockEls = useRef<(HTMLDivElement | null)[]>([]);
   const activePointerId = useRef<number | null>(null);
 
@@ -335,41 +336,46 @@ function ContentBlocksEditor({
 
   const onHandleDown = (idx: number, e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
+    const el = e.currentTarget;
     const pid = e.pointerId;
     activePointerId.current = pid;
-    longPressTimer.current = setTimeout(() => {
-      isDragging.current = true;
-      setDraggingIdx(idx);
-      setInsertAt(idx);
-      try { (e.currentTarget as HTMLElement).setPointerCapture(pid); } catch { /* ignore */ }
-    }, 280);
+    isDragging.current = true;
+    draggingIdxRef.current = idx;
+    insertAtRef.current = idx;
+    setDraggingIdx(idx);
+    setInsertAt(idx);
+    try { el.setPointerCapture(pid); } catch { /* ignore */ }
   };
 
   const onHandleMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging.current || draggingIdx === null) return;
+    if (!isDragging.current || draggingIdxRef.current === null) return;
     e.preventDefault();
-    setInsertAt(getInsertIdx(e.clientY));
+    const idx = getInsertIdx(e.clientY);
+    insertAtRef.current = idx;
+    setInsertAt(idx);
   };
 
-  const onHandleUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; }
-    if (isDragging.current && draggingIdx !== null && insertAt !== null) {
-      const dest = insertAt > draggingIdx ? insertAt - 1 : insertAt;
-      if (dest !== draggingIdx) {
+  const onHandleUp = () => {
+    if (isDragging.current && draggingIdxRef.current !== null && insertAtRef.current !== null) {
+      const from = draggingIdxRef.current;
+      const dest = insertAtRef.current > from ? insertAtRef.current - 1 : insertAtRef.current;
+      if (dest !== from) {
         const next = [...blocks];
-        const [moved] = next.splice(draggingIdx, 1);
+        const [moved] = next.splice(from, 1);
         next.splice(dest, 0, moved);
         onChange(next);
       }
     }
     isDragging.current = false;
+    draggingIdxRef.current = null;
+    insertAtRef.current = null;
     setDraggingIdx(null);
     setInsertAt(null);
     activePointerId.current = null;
   };
 
   const insertLine = (
-    <div style={{ height: "2px", background: "#FF4D00", borderRadius: "1px", margin: "0 0 4px" }} />
+    <div style={{ height: "2px", background: "#FF4D00", borderRadius: "2px", margin: "0 0 4px", boxShadow: "0 0 6px rgba(255,77,0,0.5)" }} />
   );
 
   return (
@@ -402,7 +408,7 @@ function ContentBlocksEditor({
 
       {blocks.length === 0 && (
         <p style={{ fontFamily: F, fontSize: "12px", color: TEXT3, padding: "20px 0" }}>
-          블록을 추가해 콘텐츠를 구성하세요. ≡ 아이콘을 꾹 눌러 순서를 바꿀 수 있습니다.
+          블록을 추가해 콘텐츠를 구성하세요. ≡ 아이콘을 드래그해 순서를 바꿀 수 있습니다.
         </p>
       )}
 
@@ -417,12 +423,13 @@ function ContentBlocksEditor({
               style={{
                 display: "flex",
                 gap: "10px",
-                background: draggingIdx === idx ? "#0A0A0A" : "#111111",
+                background: "#111111",
                 border: `1px solid ${draggingIdx === idx ? "#FF4D00" : "#1F1F1F"}`,
                 padding: "12px",
                 marginBottom: "6px",
-                opacity: draggingIdx === idx ? 0.45 : 1,
-                transition: "opacity 0.15s",
+                opacity: draggingIdx === idx ? 0.38 : 1,
+                transform: draggingIdx === idx ? "scale(0.985)" : "scale(1)",
+                transition: "opacity 0.1s, transform 0.1s, border-color 0.1s",
               }}
             >
               {/* Drag handle */}
@@ -432,16 +439,17 @@ function ContentBlocksEditor({
                 onPointerUp={onHandleUp}
                 onPointerCancel={onHandleUp}
                 style={{
-                  cursor: "grab",
-                  color: TEXT3,
+                  cursor: draggingIdx === idx ? "grabbing" : "grab",
+                  color: draggingIdx === idx ? "#FF4D00" : TEXT3,
                   userSelect: "none",
                   touchAction: "none",
-                  padding: "2px 4px 0",
+                  padding: "4px 6px",
                   fontSize: "14px",
                   flexShrink: 0,
                   lineHeight: 1,
+                  transition: "color 0.1s",
                 }}
-                title="꾹 눌러서 순서 변경"
+                title="드래그해서 순서 변경"
               >
                 ⠿
               </div>
