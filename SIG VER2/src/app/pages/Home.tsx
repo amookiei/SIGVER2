@@ -530,6 +530,7 @@ function HeroSection() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [soundOn, setSoundOn] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
   // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 완전 제거)
   useEffect(() => {
@@ -598,6 +599,7 @@ function HeroSection() {
           disablePictureInPicture
           preload="auto"
           poster=""
+          onPlay={() => setVideoPlaying(true)}
           {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" } as any}
           style={{
             position: "absolute",
@@ -610,6 +612,10 @@ function HeroSection() {
         >
           <source src={BG_VIDEO} type="video/mp4" />
         </video>
+      )}
+      {/* iOS 재생버튼 가리개 — 비디오 재생 시작 전까지만 표시 */}
+      {BG_VIDEO && !videoPlaying && (
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "#FAFAFA", pointerEvents: "none" }} />
       )}
 
       {/* 배경 음악 */}
