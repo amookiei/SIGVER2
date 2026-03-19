@@ -44,7 +44,12 @@ export function Navigation() {
     <>
       <motion.nav
         className="fixed top-0 left-0 right-0 px-8 md:px-16 lg:px-28"
-        style={{ zIndex: menuOpen ? 30 : 50 }}
+        style={{
+          zIndex: menuOpen ? 30 : 50,
+          borderBottom: isTransparent || menuOpen
+            ? "1px solid transparent"
+            : "1px solid #E0E0E0",
+        }}
         animate={{
           backgroundColor: menuOpen
             ? "rgba(0,0,0,0)"
@@ -56,11 +61,6 @@ export function Navigation() {
           backdropFilter: isTransparent || menuOpen ? "blur(18px)" : scrolled ? "blur(20px)" : "blur(0px)",
         }}
         transition={{ duration: 0.2 }}
-        style={{
-          borderBottom: isTransparent || menuOpen
-            ? "1px solid transparent"
-            : "1px solid #E0E0E0",
-        }}
       >
         <div className="flex items-center justify-between h-[72px]">
           {/* Logo */}
