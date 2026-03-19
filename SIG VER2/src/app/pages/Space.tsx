@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useSpace } from "../context/SpaceContext";
+import SigLoading from "../components/SigLoading";
 import type { SpaceSection } from "../context/SpaceContext";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -125,10 +126,11 @@ function SectionCard({ section, delay }: { section: SpaceSection; delay: number 
 
 // ─── Space Page ───────────────────────────────────────────
 export function Space() {
-  const { content } = useSpace();
+  const { content, loading } = useSpace();
 
   return (
     <div style={{ backgroundColor: BG, paddingTop: "72px" }}>
+      <AnimatePresence>{loading && <SigLoading />}</AnimatePresence>
 
       {/* ── Hero ──────────────────────────────────────── */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: "88vh", display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>

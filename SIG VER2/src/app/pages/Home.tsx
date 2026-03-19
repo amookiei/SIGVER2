@@ -693,7 +693,7 @@ function HeroSection() {
                 fontFamily: F,
                 fontSize: "13px",
                 fontWeight: 400,
-                color: "rgba(80,80,80,0.9)",
+                color: "#FFFFFF",
                 letterSpacing: "0.04em",
                 margin: 0,
               }}

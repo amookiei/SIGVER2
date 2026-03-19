@@ -45,6 +45,7 @@ interface GalleryContextType {
   data: GalleryData;
   saving: boolean;
   saveError: string | null;
+  loading: boolean;
   updateData: (data: GalleryData) => Promise<void>;
   resetData: () => Promise<void>;
 }
@@ -55,11 +56,13 @@ export function GalleryProvider({ children }: { children: ReactNode }) {
   const [data, setDataState] = useState<GalleryData>(loadCache);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(!!supabase);
 
   const setData = (d: GalleryData) => { setDataState(d); saveCache(d); };
 
   const fetchFromDB = useCallback(async () => {
     if (!supabase) return;
+    setLoading(true);
     try {
       const { data: row, error } = await supabase
         .from("site_settings")
@@ -73,6 +76,8 @@ export function GalleryProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       console.error("[GalleryDB fetch]", err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -103,7 +108,7 @@ export function GalleryProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <GalleryContext.Provider value={{ data, saving, saveError, updateData, resetData }}>
+    <GalleryContext.Provider value={{ data, saving, saveError, loading, updateData, resetData }}>
       {children}
     </GalleryContext.Provider>
   );

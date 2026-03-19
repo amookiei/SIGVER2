@@ -127,6 +127,7 @@ interface SpaceContextType {
   content: SpaceContent;
   saving: boolean;
   saveError: string | null;
+  loading: boolean;
   updateContent: (d: SpaceContent) => Promise<void>;
   resetContent: () => Promise<void>;
 }
@@ -137,11 +138,13 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
   const [content, setContentState] = useState<SpaceContent>(loadCache);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(!!supabase);
 
   const set = (d: SpaceContent) => { setContentState(d); saveCache(d); };
 
   const fetchFromDB = useCallback(async () => {
     if (!supabase) return;
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from("site_settings")
@@ -166,6 +169,8 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
       }
     } catch (err) {
       console.error("[SpaceDB fetch]", err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -194,7 +199,7 @@ export function SpaceProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <SpaceContext.Provider value={{ content, saving, saveError, updateContent, resetContent }}>
+    <SpaceContext.Provider value={{ content, saving, saveError, loading, updateContent, resetContent }}>
       {children}
     </SpaceContext.Provider>
   );
