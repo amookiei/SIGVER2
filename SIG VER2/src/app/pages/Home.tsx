@@ -745,7 +745,7 @@ function ClientsSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Link to="/clients" data-cursor="hover-link">
+                <Link to="/about#clients" data-cursor="hover-link">
                   <motion.span
                     style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
                     whileHover={{ color: DARK }}
