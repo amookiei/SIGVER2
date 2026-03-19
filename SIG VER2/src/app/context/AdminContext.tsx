@@ -375,14 +375,15 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const visibleItems = items.filter((i) => !i.hidden);
   const getBySlug = (slug: string) => items.find((i) => i.slug === slug);
   const getByCategory = (cat?: string) =>
-    !cat || cat === "All" ? items : items.filter((i) => i.category === cat);
+    !cat || cat === "All" ? visibleItems : visibleItems.filter((i) => i.category === cat);
   const getFeatured = () =>
-    items
+    visibleItems
       .filter((i) => i.featured)
       .sort((a, b) => (a.order ?? a.id) - (b.order ?? b.id));
-  const categories = ["All", ...Array.from(new Set(items.map((i) => i.category)))];
+  const categories = ["All", ...Array.from(new Set(visibleItems.map((i) => i.category)))];
 
   return (
     <AdminContext.Provider

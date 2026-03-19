@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useGallery } from "../context/GalleryContext";
+import SigLoading from "../components/SigLoading";
 import type { GalleryImage, GallerySection } from "../context/GalleryContext";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -292,7 +293,7 @@ function FilterBar({
 
 // ─── Gallery Page ──────────────────────────────────────────
 export function Gallery() {
-  const { data } = useGallery();
+  const { data, loading } = useGallery();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{
     images: GalleryImage[];
@@ -341,6 +342,7 @@ export function Gallery() {
 
   return (
     <div style={{ backgroundColor: BG, paddingTop: "72px" }}>
+      <AnimatePresence>{loading && <SigLoading />}</AnimatePresence>
       {/* ── Page Header ────────────────────────────────── */}
       <div className="px-8 md:px-16 lg:px-28 pt-16 pb-10" style={{ borderBottom: BORDER }}>
         <div className="flex items-end justify-between">

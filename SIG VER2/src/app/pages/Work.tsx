@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "motion/react";
 import { Link } from "react-router";
 import { useAdmin } from "../context/AdminContext";
+import SigLoading from "../components/SigLoading";
 import type { PortfolioItem } from "../data/portfolio";
 import { LogoSymbol } from "../components/LogoSymbol";
 
@@ -151,11 +152,12 @@ function WorkCell({
 export function Work() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const { getByCategory, categories: CATEGORIES } = useAdmin();
+  const { getByCategory, categories: CATEGORIES, loading } = useAdmin();
   const filtered = getByCategory(activeCategory);
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
+      <AnimatePresence>{loading && <SigLoading />}</AnimatePresence>
       {/* Hero */}
       <div style={{ borderBottom: BORDER, paddingTop: "72px" }}>
         <div className="px-8 md:px-16 lg:px-28 pt-14 pb-0">

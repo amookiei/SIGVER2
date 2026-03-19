@@ -31,6 +31,7 @@ const blank: Omit<PortfolioItem, "id"> = {
   year: new Date().getFullYear(),
   featured: false,
   order: undefined,
+  hidden: false,
   thumbnail: "",
   thumbnailHover: "",
   heroImage: "",
@@ -88,6 +89,7 @@ function fromForm(form: FormState): Omit<PortfolioItem, "id"> {
     year: Number(form.year),
     featured: form.featured,
     order: form.featured && form.order ? Number(form.order) : undefined,
+    hidden: form.hidden ?? false,
     thumbnail: form.thumbnail.trim(),
     thumbnailHover: form.thumbnailHover?.trim() || undefined,
     heroImage: form.heroImage.trim(),
@@ -654,17 +656,57 @@ function EditModal({
             flexShrink: 0,
           }}
         >
-          <span
-            style={{
-              fontFamily: F,
-              fontSize: "13px",
-              fontWeight: 700,
-              color: TEXT,
-              letterSpacing: "0.08em",
-            }}
-          >
-            {isAdding ? "새 프로젝트 추가" : "프로젝트 수정"}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <span
+              style={{
+                fontFamily: F,
+                fontSize: "13px",
+                fontWeight: 700,
+                color: TEXT,
+                letterSpacing: "0.08em",
+              }}
+            >
+              {isAdding ? "새 프로젝트 추가" : "프로젝트 수정"}
+            </span>
+            {!isAdding && (
+              <label
+                style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", userSelect: "none" }}
+                title="숨김 처리 시 Work / 홈 등 공개 페이지에서 보이지 않습니다"
+              >
+                {/* 토글 트랙 */}
+                <span
+                  style={{
+                    position: "relative",
+                    display: "inline-block",
+                    width: "36px",
+                    height: "20px",
+                    background: form.hidden ? "#E53E3E" : "#D0D0D0",
+                    borderRadius: "10px",
+                    transition: "background 0.2s",
+                    flexShrink: 0,
+                  }}
+                  onClick={() => setForm({ ...form, hidden: !form.hidden })}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "3px",
+                      left: form.hidden ? "19px" : "3px",
+                      width: "14px",
+                      height: "14px",
+                      borderRadius: "50%",
+                      background: "#FFFFFF",
+                      transition: "left 0.2s",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                    }}
+                  />
+                </span>
+                <span style={{ fontFamily: F, fontSize: "11px", color: form.hidden ? "#E53E3E" : TEXT3, fontWeight: form.hidden ? 700 : 400, letterSpacing: "0.06em" }}>
+                  {form.hidden ? "숨김" : "공개"}
+                </span>
+              </label>
+            )}
+          </div>
           <div style={{ display: "flex", gap: "10px" }}>
             <button
               onClick={onCancel}
@@ -1489,6 +1531,21 @@ export function Admin() {
                       }}
                     >
                       Featured {item.order ? `#${item.order}` : ""}
+                    </span>
+                  )}
+                  {item.hidden && (
+                    <span
+                      style={{
+                        background: "rgba(229,62,62,0.12)",
+                        border: "1px solid rgba(229,62,62,0.35)",
+                        color: "#E53E3E",
+                        fontSize: "9px",
+                        padding: "2px 8px",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      숨김
                     </span>
                   )}
                 </div>
