@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useSpace } from "../context/SpaceContext";
 import SigLoading from "../components/SigLoading";
 import type { SpaceSection } from "../context/SpaceContext";
+import { useSEO } from "../hooks/useSEO";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const DARK = "#0D0D0D";
@@ -126,6 +127,12 @@ function SectionCard({ section, delay }: { section: SpaceSection; delay: number 
 
 // ─── Space Page ───────────────────────────────────────────
 export function Space() {
+  useSEO({
+    title: "Space | Studio SIG — 스튜디오 공간",
+    description: "Studio SIG의 서울 홍대 스튜디오 공간을 소개합니다. 창의적인 작업 공간과 협업 환경을 확인하세요.",
+    canonical: "https://studiosig.com/space",
+  });
+
   const { content, loading } = useSpace();
 
   return (

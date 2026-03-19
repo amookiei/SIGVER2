@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 import { useAbout } from "../context/AboutContext";
 import { LogoSymbol } from "../components/LogoSymbol";
+import { useSEO } from "../hooks/useSEO";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -13,6 +14,12 @@ const TEXT3 = "#999999";
 export function About() {
   const { about } = useAbout();
   const { studio, stats, values, team } = about;
+
+  useSEO({
+    title: "About | Studio SIG — 서울 홍대 브랜딩 에이전시",
+    description: "Studio SIG는 서울 마포구 홍대 기반의 브랜딩·마케팅 에이전시입니다. 디자인 구독 서비스, 브랜드 아이덴티티, 퍼포먼스 마케팅, UI/UX 디자인을 제공합니다.",
+    canonical: "https://studiosig.com/about",
+  });
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>

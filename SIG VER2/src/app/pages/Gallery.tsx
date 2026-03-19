@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useGallery } from "../context/GalleryContext";
 import SigLoading from "../components/SigLoading";
 import type { GalleryImage, GallerySection } from "../context/GalleryContext";
+import { useSEO } from "../hooks/useSEO";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const DARK = "#0D0D0D";
@@ -293,6 +294,12 @@ function FilterBar({
 
 // ─── Gallery Page ──────────────────────────────────────────
 export function Gallery() {
+  useSEO({
+    title: "Gallery | Studio SIG — 디자인 작업 갤러리",
+    description: "Studio SIG의 브랜딩, 마케팅, UI/UX 디자인 작업 갤러리입니다. 다양한 프로젝트 비주얼을 확인하세요.",
+    canonical: "https://studiosig.com/gallery",
+  });
+
   const { data, loading } = useGallery();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{

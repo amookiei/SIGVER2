@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle } from "lucide-react";
 import { contactSchema } from "../../lib/security/validation";
 import { LogoSymbol } from "../components/LogoSymbol";
 import { useContact } from "../context/ContactContext";
+import { useSEO } from "../hooks/useSEO";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -31,6 +32,12 @@ const budgets = [
 ];
 
 export function Contact() {
+  useSEO({
+    title: "Contact | Studio SIG — 디자인 구독 문의하기",
+    description: "Studio SIG에 문의하세요. 디자인 구독 서비스, 브랜딩, 퍼포먼스 마케팅 등 프로젝트 문의를 받습니다.",
+    canonical: "https://studiosig.com/contact",
+  });
+
   const { contact } = useContact();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedBudget, setSelectedBudget] = useState("");

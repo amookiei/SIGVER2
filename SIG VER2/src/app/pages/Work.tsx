@@ -5,6 +5,7 @@ import { useAdmin } from "../context/AdminContext";
 import SigLoading from "../components/SigLoading";
 import type { PortfolioItem } from "../data/portfolio";
 import { LogoSymbol } from "../components/LogoSymbol";
+import { useSEO } from "../hooks/useSEO";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -154,6 +155,12 @@ export function Work() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const { getByCategory, categories: CATEGORIES, loading } = useAdmin();
   const filtered = getByCategory(activeCategory);
+
+  useSEO({
+    title: "Work | Studio SIG 포트폴리오 — 브랜딩·마케팅·UI/UX",
+    description: "Studio SIG의 포트폴리오를 확인하세요. 현대자동차, 삼성, 카카오 등 다양한 브랜딩·마케팅·UI/UX 프로젝트를 소개합니다.",
+    canonical: "https://studiosig.com/work",
+  });
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
