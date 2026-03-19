@@ -36,4 +36,4 @@ User-agent: Applebot-Extended
 Allow: /
 
 # ─── 사이트맵 ──────────────────────────────────────────────────────────────
-Sitemap: https://sigstudio.kr/sitemap.xml
+Sitemap: https://studiosig.com/sitemap.xml

@@ -1,7 +1,8 @@
 import { useParams, Link, Navigate } from "react-router";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useAdmin } from "../context/AdminContext";
+import { useSEO } from "../hooks/useSEO";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -19,6 +20,41 @@ export function WorkDetail() {
 
   const { getBySlug } = useAdmin();
   const item = getBySlug(slug ?? "");
+
+  useSEO({
+    title: item ? `${item.title} | Studio SIG` : "Work | Studio SIG",
+    description: item
+      ? `${item.tagline ?? item.description?.slice(0, 120)} — Studio SIG ${item.category} 프로젝트`
+      : undefined,
+    canonical: item ? `https://studiosig.com/work/${item.slug}` : undefined,
+  });
+
+  // CreativeWork 구조화 데이터 (GEO: AI 검색 인용 최적화)
+  useEffect(() => {
+    if (!item) return;
+    const id = "ld-creative-work";
+    document.getElementById(id)?.remove();
+    const script = document.createElement("script");
+    script.id = id;
+    script.type = "application/ld+json";
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "@id": `https://studiosig.com/work/${item.slug}`,
+      "name": item.title,
+      "description": item.description ?? item.tagline,
+      "creator": { "@type": "Organization", "name": "Studio SIG", "url": "https://studiosig.com" },
+      "dateCreated": String(item.year),
+      "genre": item.category,
+      "keywords": item.tags?.join(", "),
+      "url": `https://studiosig.com/work/${item.slug}`,
+      ...(item.heroImage ? { "image": item.heroImage } : {}),
+      ...(item.client ? { "contributor": { "@type": "Organization", "name": item.client } } : {}),
+    });
+    document.head.appendChild(script);
+    return () => { document.getElementById(id)?.remove(); };
+  }, [item]);
+
   if (!item) return <Navigate to="/work" replace />;
 
   const nextItem = item.nextProject ? getBySlug(item.nextProject) : null;
@@ -218,7 +254,7 @@ export function WorkDetail() {
                     >
                       <motion.img
                         src={src}
-                        alt={`${item.title} block ${i + 1} img ${j + 1}`}
+                        alt={`${item.title} ${item.category} — 상세 이미지 ${j + 1}`}
                         className="w-full h-full object-cover"
                         whileHover={{ scale: 1.03 }}
                         transition={{ duration: 0.5 }}
@@ -290,7 +326,7 @@ export function WorkDetail() {
               >
                 <motion.img
                   src={img}
-                  alt={`${item.title} ${i + 1}`}
+                  alt={`${item.title} ${item.category} 프로젝트 이미지 ${i + 1}`}
                   className="w-full h-full object-cover"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.5 }}
@@ -312,7 +348,7 @@ export function WorkDetail() {
           >
             <motion.img
               src={img}
-              alt={`${item.title} ${i + 3}`}
+              alt={`${item.title} ${item.category} 프로젝트 이미지 ${i + 3}`}
               className="w-full h-full object-cover"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.6 }}
