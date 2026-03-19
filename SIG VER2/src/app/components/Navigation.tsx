@@ -60,8 +60,8 @@ export function Navigation() {
         }}
       >
         <div className="flex items-center justify-between h-[72px]">
-          {/* Logo */}
-          <Link to="/" data-cursor="hover-link">
+          {/* Logo — 모바일에서 숨김 */}
+          <Link to="/" data-cursor="hover-link" className="hidden md:block">
             <motion.div
               className="flex items-center"
               whileHover={{ opacity: 0.5 }}
@@ -149,31 +149,54 @@ export function Navigation() {
             </Link>
           </div>
 
-          {/* Mobile toggle — ✱ symbol */}
+          {/* Mobile toggle — hamburger / X */}
           <button
-            className="md:hidden w-8 h-8 flex items-center justify-center"
+            className="md:hidden w-10 h-10 flex items-center justify-center"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
+            style={{ background: "none", border: "none", padding: 0 }}
           >
-              {menuOpen ? (
-              <motion.span style={{ fontSize: "22px", color: "#0D0D0D", lineHeight: 1, display: "block" }}>
-                ×
-              </motion.span>
-            ) : (
-              <LogoSymbol
-                style={{
-                  color: mobileToggleColor,
-                  width: "20px",
-                  height: "20px",
-                  display: "block",
-                  animationName: "sigSpin",
-                  animationDuration: "8s",
-                  animationTimingFunction: "linear",
-                  animationIterationCount: "infinite",
-                  transition: "color 0.3s",
-                }}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              {/* Top line: slides up → rotates to X */}
+              <motion.line
+                x1="3" y1="7" x2="21" y2="7"
+                stroke={menuOpen ? "#FAFAFA" : mobileToggleColor}
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                animate={menuOpen
+                  ? { rotate: 45, y: 5, stroke: "#FAFAFA" }
+                  : { rotate: 0, y: 0, stroke: mobileToggleColor }
+                }
+                style={{ originX: "12px", originY: "7px" }}
+                transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
               />
-            )}
+              {/* Middle line: fades out */}
+              <motion.line
+                x1="3" y1="12" x2="21" y2="12"
+                stroke={menuOpen ? "#FAFAFA" : mobileToggleColor}
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                animate={menuOpen
+                  ? { opacity: 0, scaleX: 0 }
+                  : { opacity: 1, scaleX: 1 }
+                }
+                style={{ originX: "12px", originY: "12px" }}
+                transition={{ duration: 0.2 }}
+              />
+              {/* Bottom line: slides down → rotates to X */}
+              <motion.line
+                x1="3" y1="17" x2="21" y2="17"
+                stroke={menuOpen ? "#FAFAFA" : mobileToggleColor}
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                animate={menuOpen
+                  ? { rotate: -45, y: -5, stroke: "#FAFAFA" }
+                  : { rotate: 0, y: 0, stroke: mobileToggleColor }
+                }
+                style={{ originX: "12px", originY: "17px" }}
+                transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
+              />
+            </svg>
           </button>
         </div>
       </motion.nav>
