@@ -11,6 +11,8 @@ body {
   background-color: #FAFAFA;
   overscroll-behavior: none;
   max-width: 100%;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 html {

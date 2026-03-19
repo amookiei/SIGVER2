@@ -249,7 +249,7 @@ function FilterBar({
       style={{
         position: "sticky",
         top: "72px",
-        zIndex: 40,
+        zIndex: 30,
         backgroundColor: "rgba(250,250,250,0.95)",
         backdropFilter: "blur(12px)",
         borderBottom: BORDER,
