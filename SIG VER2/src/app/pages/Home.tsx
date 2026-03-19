@@ -531,12 +531,28 @@ function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [soundOn, setSoundOn] = useState(false);
 
-  // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 방지)
+  // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 완전 제거)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    video.play().catch(() => {});
+
+    const tryPlay = () => { video.muted = true; video.play().catch(() => {}); };
+
+    // 로드되는 즉시 재생
+    video.addEventListener("loadeddata", tryPlay);
+    video.addEventListener("canplay", tryPlay);
+    tryPlay();
+
+    // iOS가 autoplay 막을 경우 첫 터치에 재생
+    const onTouch = () => tryPlay();
+    document.addEventListener("touchstart", onTouch, { once: true });
+
+    return () => {
+      video.removeEventListener("loadeddata", tryPlay);
+      video.removeEventListener("canplay", tryPlay);
+      document.removeEventListener("touchstart", onTouch);
+    };
   }, []);
 
   // 오디오 자동 재생 시도 (뮤트 상태로 시작)
@@ -580,6 +596,8 @@ function HeroSection() {
           loop
           playsInline
           disablePictureInPicture
+          preload="auto"
+          poster=""
           style={{
             position: "absolute",
             inset: 0,

@@ -2,6 +2,17 @@
 @import './tailwind.css';
 @import './theme.css';
 
+/* iOS Safari 비디오 재생 버튼 오버레이 완전 제거 */
+video::-webkit-media-controls,
+video::-webkit-media-controls-overlay-play-button,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-panel {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  -webkit-appearance: none !important;
+}
+
 /* SIG Studio v2 — Editorial Minimal */
 * {
   cursor: none !important;
