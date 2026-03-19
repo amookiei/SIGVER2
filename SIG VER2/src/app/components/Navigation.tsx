@@ -45,23 +45,25 @@ export function Navigation() {
       <motion.nav
         className="fixed top-0 left-0 right-0 z-50 px-8 md:px-16 lg:px-28"
         animate={{
-          backgroundColor: isTransparent
+          backgroundColor: menuOpen
+            ? "rgba(0,0,0,0)"
+            : isTransparent
             ? "rgba(0,0,0,0)"
             : scrolled
             ? "rgba(250,250,250,0.92)"
             : "#FAFAFA",
-          backdropFilter: isTransparent ? "blur(18px)" : scrolled ? "blur(20px)" : "blur(0px)",
+          backdropFilter: isTransparent || menuOpen ? "blur(18px)" : scrolled ? "blur(20px)" : "blur(0px)",
         }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.2 }}
         style={{
-          borderBottom: isTransparent
-            ? "1px solid rgba(255,255,255,0.12)"
+          borderBottom: isTransparent || menuOpen
+            ? "1px solid transparent"
             : "1px solid #E0E0E0",
         }}
       >
         <div className="flex items-center justify-between h-[72px]">
           {/* Logo */}
-          <Link to="/" data-cursor="hover-link">
+          <Link to="/" data-cursor="hover-link" className="md:block" style={{ visibility: menuOpen ? "hidden" : "visible" }}>
             <motion.div
               className="flex items-center"
               whileHover={{ opacity: 0.5 }}
