@@ -817,9 +817,9 @@ function ClientLogo({ client }: { client: HomeClient }) {
           alt={client.name}
           style={{
             width: "100%",
-            height: "auto",
+            height: "100%",
             maxWidth: "100%",
-            maxHeight: "60px",
+            maxHeight: "100%",
             objectFit: "contain",
             filter: hovered ? "none" : "grayscale(100%)",
             transition: "filter 0.4s ease",
