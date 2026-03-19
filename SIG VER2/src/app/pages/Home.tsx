@@ -561,6 +561,9 @@ function HeroSection() {
     video.addEventListener("canplay", tryPlay);
     tryPlay();
 
+    // iOS가 pause시킬 때마다 즉시 재개 (저전력 모드, 스크롤 등)
+    video.addEventListener("pause", tryPlay);
+
     // iOS가 autoplay 막을 경우 첫 터치에 재생
     const onTouch = () => tryPlay();
     document.addEventListener("touchstart", onTouch, { once: true });
@@ -568,6 +571,7 @@ function HeroSection() {
     return () => {
       video.removeEventListener("loadeddata", tryPlay);
       video.removeEventListener("canplay", tryPlay);
+      video.removeEventListener("pause", tryPlay);
       document.removeEventListener("touchstart", onTouch);
     };
   }, []);
@@ -613,10 +617,11 @@ function HeroSection() {
           loop
           playsInline
           disablePictureInPicture
+          disableRemotePlayback
           preload="auto"
-          poster=""
+          controlsList="nodownload nofullscreen noremoteplayback"
           onPlay={() => setVideoPlaying(true)}
-          {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" } as any}
+          {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny", "playsinline": "true" } as any}
           style={{
             position: "absolute",
             inset: 0,
