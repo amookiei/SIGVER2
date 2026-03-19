@@ -60,8 +60,8 @@ export function Navigation() {
         }}
       >
         <div className="flex items-center justify-between h-[72px]">
-          {/* Logo — 모바일에서 숨김 */}
-          <Link to="/" data-cursor="hover-link" className="hidden md:block">
+          {/* Logo */}
+          <Link to="/" data-cursor="hover-link">
             <motion.div
               className="flex items-center"
               whileHover={{ opacity: 0.5 }}
