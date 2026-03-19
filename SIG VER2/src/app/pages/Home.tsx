@@ -774,9 +774,9 @@ function ClientLogo({ client }: { client: HomeClient }) {
           src={client.logoUrl}
           alt={client.name}
           style={{
-            width: "auto",
+            width: "100%",
             height: "auto",
-            maxWidth: "120px",
+            maxWidth: "100%",
             maxHeight: "60px",
             objectFit: "contain",
             filter: hovered ? "none" : "grayscale(100%)",
@@ -858,8 +858,10 @@ function ClientsSection() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "16px",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: "8px",
+                maxWidth: "100%",
+                overflow: "hidden",
               }}
             >
               {displayClients.map((client, i) => (
