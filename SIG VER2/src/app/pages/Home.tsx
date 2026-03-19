@@ -695,7 +695,7 @@ function ClientLogo({ client }: { client: HomeClient }) {
         alignItems: "center",
         justifyContent: "center",
         cursor: "default",
-        padding: "18%",
+        padding: "12px",
       }}
     >
       {client.logoUrl ? (
@@ -704,8 +704,10 @@ function ClientLogo({ client }: { client: HomeClient }) {
           src={client.logoUrl}
           alt={client.name}
           style={{
-            width: "100%",
-            height: "100%",
+            width: "auto",
+            height: "auto",
+            maxWidth: "72px",
+            maxHeight: "36px",
             objectFit: "contain",
             filter: hovered ? "none" : "grayscale(100%)",
             transition: "filter 0.4s ease",
