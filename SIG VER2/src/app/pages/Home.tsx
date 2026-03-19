@@ -678,7 +678,17 @@ function ClientLogo({ client }: { client: HomeClient }) {
       className="client-logo-item"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "36px 28px", cursor: "default" }}
+      style={{
+        aspectRatio: "1 / 1",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "default",
+        border: "1px solid #E0E0E0",
+        borderRadius: "4px",
+        overflow: "hidden",
+        padding: "16%",
+      }}
     >
       {client.logoUrl ? (
         <img
@@ -686,8 +696,8 @@ function ClientLogo({ client }: { client: HomeClient }) {
           src={client.logoUrl}
           alt={client.name}
           style={{
-            maxHeight: "120px",
-            maxWidth: "100%",
+            width: "100%",
+            height: "100%",
             objectFit: "contain",
             filter: hovered ? "none" : "grayscale(100%)",
             transition: "filter 0.4s ease",
@@ -716,8 +726,6 @@ function ClientsSection() {
         @media (max-width: 767px) {
           .clients-left { min-height: 0 !important; }
           .clients-tagline { position: static !important; margin-top: 10px; }
-          .client-logo-item { padding: 16px 10px !important; }
-          .client-logo-img { max-height: 52px !important; }
         }
       `}</style>
       <div className="px-8 md:px-16 lg:px-28 py-16 md:py-24">
@@ -771,7 +779,7 @@ function ClientsSection() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap: "24px",
+                gap: "16px",
               }}
             >
               {displayClients.map((client, i) => (
