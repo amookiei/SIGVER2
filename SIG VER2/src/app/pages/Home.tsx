@@ -684,10 +684,7 @@ function ClientLogo({ client }: { client: HomeClient }) {
         alignItems: "center",
         justifyContent: "center",
         cursor: "default",
-        border: "1px solid #E0E0E0",
-        borderRadius: "4px",
-        overflow: "hidden",
-        padding: "16%",
+        padding: "18%",
       }}
     >
       {client.logoUrl ? (
@@ -778,7 +775,7 @@ function ClientsSection() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "repeat(3, 1fr)",
                 gap: "16px",
               }}
             >
