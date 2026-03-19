@@ -217,7 +217,7 @@ export function Navigation() {
           >
             {/* Close button */}
             <button
-              className="absolute top-0 right-0 w-[72px] h-[72px] flex items-center justify-center md:hidden"
+              className="absolute top-0 right-8 w-10 h-[72px] flex items-center justify-center md:hidden"
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
               style={{ background: "none", border: "none", padding: 0 }}
@@ -228,7 +228,7 @@ export function Navigation() {
               </svg>
             </button>
             {/* Big nav links */}
-            <div className="px-8 pb-16 flex flex-col gap-0">
+            <div className="px-8 pb-16 pt-20 flex flex-col gap-0">
               {[{ href: "/", label: "Home" }, ...navLinks, { href: "/contact", label: "Contact" }].map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -248,7 +248,7 @@ export function Navigation() {
                         style={{
                           fontFamily: F,
                           fontWeight: 700,
-                          fontSize: "clamp(36px, 10vw, 64px)",
+                          fontSize: "clamp(28px, 7vw, 48px)",
                           color: location.pathname === link.href ? "#FAFAFA" : "#444444",
                           letterSpacing: "-0.02em",
                           textTransform: "uppercase",
