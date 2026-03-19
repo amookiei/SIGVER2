@@ -228,7 +228,7 @@ export function Navigation() {
               </svg>
             </button>
             {/* Big nav links */}
-            <div className="px-8 pb-16 flex flex-col gap-0">
+            <div className="px-8 pb-16 pt-20 flex flex-col gap-0">
               {[{ href: "/", label: "Home" }, ...navLinks, { href: "/contact", label: "Contact" }].map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -248,7 +248,7 @@ export function Navigation() {
                         style={{
                           fontFamily: F,
                           fontWeight: 700,
-                          fontSize: "clamp(36px, 10vw, 64px)",
+                          fontSize: "clamp(28px, 7vw, 48px)",
                           color: location.pathname === link.href ? "#FAFAFA" : "#444444",
                           letterSpacing: "-0.02em",
                           textTransform: "uppercase",
