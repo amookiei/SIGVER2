@@ -645,7 +645,7 @@ function HeroSection() {
               justifyContent: "center",
               pointerEvents: "none",
             }}
-            exit={{ y: "-100%", transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 1.0, ease: "easeInOut" } }}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
