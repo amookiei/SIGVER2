@@ -544,7 +544,7 @@ function HeroSection() {
   // 최초 1회만 표시 후 자동으로 사라짐
   useEffect(() => {
     if (!isMobile) return;
-    const t = setTimeout(() => setIntroVisible(false), 2400);
+    const t = setTimeout(() => setIntroVisible(false), 2000);
     return () => clearTimeout(t);
   }, [isMobile]);
 
@@ -629,36 +629,72 @@ function HeroSection() {
           <source src={BG_VIDEO} type="video/mp4" />
         </video>
       )}
-      {/* 모바일: 로고 인트로 오버레이 — 최초 1회만 표시 후 위로 슬라이드 사라짐 */}
+      {/* 모바일: 로딩 인트로 오버레이 */}
       <AnimatePresence>
-        {BG_VIDEO && isMobile && introVisible && (
+        {isMobile && introVisible && (
           <motion.div
             key="mobile-intro"
             style={{
               position: "absolute",
               inset: 0,
               zIndex: 5,
-              background: DARK,
+              background: "rgba(220,220,220,0.45)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               pointerEvents: "none",
+              gap: "18px",
             }}
-            exit={{ opacity: 0, transition: { duration: 0.45, ease: "easeInOut" } }}
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.6, ease: "easeInOut" } }}
           >
+            {/* 스피너 */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              style={{ position: "relative", width: 56, height: 56 }}
             >
-              <motion.div
-                animate={{ scale: [1, 1.07, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              <svg
+                width="56" height="56" viewBox="0 0 56 56"
+                style={{ position: "absolute", inset: 0 }}
               >
-                <LogoSymbol style={{ width: 72, height: 72, color: "#FFFFFF" }} />
-              </motion.div>
+                {/* 배경 원 */}
+                <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+                {/* 스피너 호 */}
+                <motion.circle
+                  cx="28" cy="28" r="24"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.85)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeDasharray="150.796"
+                  strokeDashoffset="113"
+                  style={{ transformOrigin: "28px 28px" }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
+                />
+              </svg>
             </motion.div>
+            {/* 텍스트 */}
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+              style={{
+                fontFamily: F,
+                fontSize: "13px",
+                fontWeight: 400,
+                color: "rgba(80,80,80,0.9)",
+                letterSpacing: "0.04em",
+                margin: 0,
+              }}
+            >
+              Standard of Innovation, Global Leader
+            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
