@@ -5,62 +5,86 @@
   <!-- ─── 메인 페이지 ──────────────────────────────────────────────────── -->
   <url>
     <loc>https://sigstudio.kr/</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ko" href="https://sigstudio.kr/"/>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/work</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/about</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://sigstudio.kr/contact</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://sigstudio.kr/contact</loc>
-    <changefreq>yearly</changefreq>
+    <loc>https://sigstudio.kr/gallery</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://sigstudio.kr/space</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- ─── 프로젝트 상세 페이지 ─────────────────────────────────────────── -->
   <url>
     <loc>https://sigstudio.kr/work/hyundai-rebrand</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/work/M3AT</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/work/samsung-galaxy-campaign</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/work/kakao-brand-kit</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/work/seoul-city-portal</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://sigstudio.kr/work/krafton-editorial</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
