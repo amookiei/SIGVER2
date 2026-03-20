@@ -175,15 +175,17 @@ export function WorkDetail() {
               transition={{ duration: 0.6, delay: i * 0.04 }}
             >
               {block.type === "text" && (
-                <div className="px-8 md:px-16 lg:px-28 py-14">
-                  {block.title && (
-                    <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "18px" }}>
-                      — {block.title}
+                <div className="py-16 md:py-20" style={{ display: "flex", justifyContent: "center" }}>
+                  <div style={{ width: "100%", maxWidth: "680px", padding: "0 32px" }}>
+                    {block.title && (
+                      <p style={{ fontFamily: F, fontSize: "13px", fontWeight: 700, color: DARK, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "20px" }}>
+                        {block.title}
+                      </p>
+                    )}
+                    <p style={{ fontFamily: F, fontWeight: 400, fontSize: "14px", color: TEXT2, lineHeight: 1.9 }}>
+                      {block.body}
                     </p>
-                  )}
-                  <p style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.85, maxWidth: "720px" }}>
-                    {block.body}
-                  </p>
+                  </div>
                 </div>
               )}
 
@@ -236,34 +238,40 @@ export function WorkDetail() {
 
       {/* fallback: challenge / solution (레거시) */}
       {(!item.contentBlocks || item.contentBlocks.length === 0) && (item.challenge || item.solution) && (
-        <div style={{ borderBottom: BORDER }}>
-          <div className="px-8 md:px-16 lg:px-28 py-14 grid grid-cols-1 md:grid-cols-2 gap-0">
-            {item.challenge && (
-              <motion.div
-                className="pb-10 md:pb-0 md:pr-12 border-b border-[#EEEEEE] md:border-b-0 md:border-r"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "16px" }}>— Challenge</p>
-                <p style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.8 }}>{item.challenge}</p>
-              </motion.div>
-            )}
-            {item.solution && (
-              <motion.div
-                className="pt-10 md:pt-0 md:pl-12"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.15 }}
-              >
-                <p style={{ fontFamily: F, fontSize: "10px", color: TEXT3, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "16px" }}>— Solution</p>
-                <p style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.8 }}>{item.solution}</p>
-              </motion.div>
-            )}
-          </div>
-        </div>
+        <>
+          {item.challenge && (
+            <motion.div
+              style={{ borderBottom: BORDER }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="py-16 md:py-20" style={{ display: "flex", justifyContent: "center" }}>
+                <div style={{ width: "100%", maxWidth: "680px", padding: "0 32px" }}>
+                  <p style={{ fontFamily: F, fontSize: "13px", fontWeight: 700, color: DARK, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "20px" }}>Challenge</p>
+                  <p style={{ fontFamily: F, fontWeight: 400, fontSize: "14px", color: TEXT2, lineHeight: 1.9 }}>{item.challenge}</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          {item.solution && (
+            <motion.div
+              style={{ borderBottom: BORDER }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="py-16 md:py-20" style={{ display: "flex", justifyContent: "center" }}>
+                <div style={{ width: "100%", maxWidth: "680px", padding: "0 32px" }}>
+                  <p style={{ fontFamily: F, fontSize: "13px", fontWeight: 700, color: DARK, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "20px" }}>Solution</p>
+                  <p style={{ fontFamily: F, fontWeight: 400, fontSize: "14px", color: TEXT2, lineHeight: 1.9 }}>{item.solution}</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </>
       )}
 
       {/* ─── Work Scope ──────────────────────────────────── */}
