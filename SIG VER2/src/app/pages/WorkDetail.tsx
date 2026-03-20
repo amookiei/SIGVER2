@@ -209,26 +209,24 @@ export function WorkDetail() {
                     />
                   </div>
                 ) : (
-                  /* 두 장: 모바일 풀와이드 / PC 화면 2/3 중앙 정렬 */
-                  <div className="flex justify-center">
-                    <div className="w-full md:w-2/3">
-                      <div className="grid grid-cols-2">
-                        {show.map((src, j) => (
-                          <div
-                            key={j}
-                            className="overflow-hidden bg-[#F0F0F0] h-[35vw] md:h-[28vw]"
-                            style={{ borderRight: j === 0 ? BORDER : "none" }}
-                          >
-                            <motion.img
-                              src={src}
-                              alt={`${item.title} — 이미지 ${j + 1}`}
-                              className="w-full h-full object-cover"
-                              whileHover={{ scale: 1.03 }}
-                              transition={{ duration: 0.5 }}
-                            />
-                          </div>
-                        ))}
-                      </div>
+                  /* 두 장: 모바일 풀와이드 / PC 네비 패딩 맞춰 정렬 */
+                  <div className="md:px-16 lg:px-28">
+                    <div className="grid grid-cols-2">
+                      {show.map((src, j) => (
+                        <div
+                          key={j}
+                          className="overflow-hidden bg-[#F0F0F0] h-[35vw] md:h-[28vw]"
+                          style={{ borderRight: j === 0 ? BORDER : "none" }}
+                        >
+                          <motion.img
+                            src={src}
+                            alt={`${item.title} — 이미지 ${j + 1}`}
+                            className="w-full h-full object-cover"
+                            whileHover={{ scale: 1.03 }}
+                            transition={{ duration: 0.5 }}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 );
