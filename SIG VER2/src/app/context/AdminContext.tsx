@@ -35,6 +35,10 @@
 //
 // ── content_blocks 칼럼 추가 (contentBlocks 기능 추가 시) ─────────────────
 // ALTER TABLE portfolio_items ADD COLUMN IF NOT EXISTS content_blocks JSONB;
+//
+// ── work_scope, additional_info 칼럼 추가 ────────────────────────────────
+// ALTER TABLE portfolio_items ADD COLUMN IF NOT EXISTS work_scope TEXT[];
+// ALTER TABLE portfolio_items ADD COLUMN IF NOT EXISTS additional_info JSONB;
 // =============================================================================
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
@@ -92,6 +96,8 @@ interface DBRow {
   tags: string[];
   live_url: string | null;
   next_project: string | null;
+  work_scope: string[] | null;
+  additional_info: { label: string; value: string }[] | null;
 }
 
 function fixStorageUrl(url: string): string {
@@ -123,6 +129,8 @@ function fromDB(row: DBRow): PortfolioItem {
     tags: row.tags ?? [],
     liveUrl: row.live_url ?? undefined,
     nextProject: row.next_project ?? undefined,
+    workScope: row.work_scope ?? undefined,
+    additionalInfo: row.additional_info ?? undefined,
   };
 }
 
@@ -150,6 +158,8 @@ function toDB(item: PortfolioItem): DBRow {
     tags: item.tags,
     live_url: item.liveUrl ?? null,
     next_project: item.nextProject ?? null,
+    work_scope: item.workScope ?? null,
+    additional_info: item.additionalInfo ?? null,
   };
 }
 
