@@ -196,17 +196,17 @@ export function WorkDetail() {
                 const isSingle = show.length === 1;
 
                 return isSingle ? (
-                  /* 한 장: 모바일 적정 높이 / PC 풀스크린 */
-                  <div
-                    className="overflow-hidden bg-[#F0F0F0] h-[55vw] md:h-screen"
-                  >
-                    <motion.img
-                      src={show[0]}
-                      alt={`${item.title} — 이미지`}
-                      className="w-full h-full object-cover"
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.6 }}
-                    />
+                  /* 한 장: 모바일 적정 높이 / PC 네비 패딩 맞춰 정렬 */
+                  <div className="md:px-16 lg:px-28">
+                    <div className="overflow-hidden bg-[#F0F0F0] h-[55vw] md:h-screen">
+                      <motion.img
+                        src={show[0]}
+                        alt={`${item.title} — 이미지`}
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.6 }}
+                      />
+                    </div>
                   </div>
                 ) : (
                   /* 두 장: 모바일 풀와이드 / PC 네비 패딩 맞춰 정렬 */
