@@ -936,8 +936,7 @@ function EditModal({
                   <span style={{ color: TEXT2, letterSpacing: "0.08em", fontSize: "10px" }}>권장 규격 — JPG 형식</span><br />
                   썸네일 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;800 × 600 px &nbsp;·&nbsp; 4:3 &nbsp;·&nbsp; 300 KB 이하<br />
                   썸네일(호버) &nbsp;800 × 600 px &nbsp;·&nbsp; 4:3 &nbsp;·&nbsp; 300 KB 이하 (선택)<br />
-                  히어로 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1920 × 1080 px &nbsp;·&nbsp; 16:9 &nbsp;·&nbsp; 800 KB 이하<br />
-                  갤러리 &nbsp;&nbsp;1200 × 800 px &nbsp;·&nbsp; 3:2 &nbsp;·&nbsp; 400 KB 이하
+                  히어로 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1920 × 1080 px &nbsp;·&nbsp; 16:9 &nbsp;·&nbsp; 800 KB 이하
                 </p>
               </div>
 
@@ -991,100 +990,10 @@ function EditModal({
                 previewHeight={90}
               />
 
-              {/* 갤러리 */}
-              <div style={fieldStyle}>
-                <label style={labelStyle}>갤러리 이미지 (1200 × 800)</label>
-                {form.galleryUrls.map((url, idx) => (
-                  <div key={idx} style={{ marginBottom: "12px" }}>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <label
-                        style={{
-                          background: "none",
-                          border: BORDER2,
-                          color: uploading[`gallery-${idx}`] ? TEXT3 : TEXT2,
-                          fontFamily: F,
-                          fontSize: "11px",
-                          padding: "0 14px",
-                          cursor: uploading[`gallery-${idx}`] ? "default" : "pointer",
-                          letterSpacing: "0.06em",
-                          height: "38px",
-                          display: "flex",
-                          alignItems: "center",
-                          whiteSpace: "nowrap",
-                          flexShrink: 0,
-                        }}
-                      >
-                        <input
-                          type="file"
-                          accept=".jpg,.jpeg"
-                          style={{ display: "none" }}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file)
-                              handleUpload(file, `gallery-${idx}`, (uploadedUrl) =>
-                                setGallery(idx, uploadedUrl)
-                              );
-                            e.target.value = "";
-                          }}
-                        />
-                        {uploading[`gallery-${idx}`] ? "업로드 중…" : "JPG 업로드"}
-                      </label>
-                      <input
-                        style={{ ...inputStyle, flex: 1 }}
-                        value={url}
-                        onChange={(e) => setGallery(idx, e.target.value)}
-                        placeholder="또는 URL 직접 입력"
-                      />
-                      {form.galleryUrls.length > 1 && (
-                        <button
-                          onClick={() => removeGalleryRow(idx)}
-                          style={{
-                            background: "none",
-                            border: BORDER2,
-                            color: TEXT3,
-                            fontFamily: F,
-                            fontSize: "12px",
-                            padding: "0 10px",
-                            cursor: "pointer",
-                            flexShrink: 0,
-                          }}
-                        >
-                          ×
-                        </button>
-                      )}
-                    </div>
-                    {url && (
-                      <img
-                        src={url}
-                        alt={`gallery-${idx + 1} preview`}
-                        style={{
-                          marginTop: "6px",
-                          height: "60px",
-                          objectFit: "cover",
-                          display: "block",
-                          width: "100%",
-                        }}
-                        onError={(e) => (e.currentTarget.style.display = "none")}
-                      />
-                    )}
-                  </div>
-                ))}
-                <button
-                  onClick={addGalleryRow}
-                  style={{
-                    background: "none",
-                    border: BORDER2,
-                    color: TEXT2,
-                    fontFamily: F,
-                    fontSize: "11px",
-                    padding: "6px 12px",
-                    cursor: "pointer",
-                    letterSpacing: "0.06em",
-                    marginTop: "4px",
-                  }}
-                >
-                  + 이미지 추가
-                </button>
+              <div style={{ background: "#0A0A0A", border: BORDER, padding: "12px 16px" }}>
+                <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, margin: 0, lineHeight: 1.8 }}>
+                  상세 콘텐츠 이미지는 <span style={{ color: TEXT2 }}>콘텐츠 탭 → 이미지 블록</span>에서 추가하세요.
+                </p>
               </div>
             </>
           )}
