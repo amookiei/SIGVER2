@@ -484,9 +484,9 @@ function SelectedWorksSection() {
         >
           SELECTED WORKS
         </motion.h2>
-        <Link to="/work" data-cursor="hover-link">
+        <Link to="/work" data-cursor="hover-link" style={{ flexShrink: 0 }}>
           <motion.span
-            style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase" }}
+            style={{ fontFamily: F, fontSize: "13px", color: TEXT3, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap" }}
             whileHover={{ color: DARK }}
             transition={{ duration: 0.2 }}
           >

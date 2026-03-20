@@ -44,6 +44,8 @@ const blank: Omit<PortfolioItem, "id"> = {
   tags: [],
   liveUrl: "",
   nextProject: "",
+  workScope: [],
+  additionalInfo: [],
 };
 
 // ─── Form state (flat, with string versions for tags/gallery) ──
@@ -107,6 +109,8 @@ function fromForm(form: FormState): Omit<PortfolioItem, "id"> {
       .filter(Boolean),
     liveUrl: form.liveUrl?.trim() || undefined,
     nextProject: form.nextProject?.trim() || undefined,
+    workScope: form.workScope && form.workScope.length > 0 ? form.workScope.filter(Boolean) : undefined,
+    additionalInfo: form.additionalInfo && form.additionalInfo.length > 0 ? form.additionalInfo.filter(i => i.label || i.value) : undefined,
   };
 }
 
@@ -493,28 +497,59 @@ function ContentBlocksEditor({
                 )}
 
                 {block.type === "image" && (
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-                    {[0, 1].map((imgIdx) => (
-                      <ImageSlot
-                        key={imgIdx}
-                        value={block.images?.[imgIdx] ?? ""}
-                        uploadKey={`cb-${block.id}-${imgIdx}`}
-                        label={`이미지 ${imgIdx + 1}`}
-                        uploading={!!uploading[`cb-${block.id}-${imgIdx}`]}
-                        onUpload={(file) =>
-                          onUpload(file, `cb-${block.id}-${imgIdx}`, (url) => {
+                  <div>
+                    {/* 1장 / 2장 토글 */}
+                    <div style={{ display: "flex", gap: "6px", marginBottom: "10px" }}>
+                      {([1, 2] as const).map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => {
+                            const imgs = [...(block.images ?? [])];
+                            updateBlock(idx, { imageCount: n, images: imgs });
+                          }}
+                          style={{
+                            background: (block.imageCount ?? 2) === n ? "#FAFAFA" : "none",
+                            border: "1px solid #2A2A2A",
+                            color: (block.imageCount ?? 2) === n ? "#0D0D0D" : TEXT3,
+                            fontFamily: F,
+                            fontSize: "10px",
+                            padding: "4px 12px",
+                            cursor: "pointer",
+                            letterSpacing: "0.08em",
+                            fontWeight: (block.imageCount ?? 2) === n ? 700 : 400,
+                          }}
+                        >
+                          {n}장
+                        </button>
+                      ))}
+                      <span style={{ fontFamily: F, fontSize: "10px", color: TEXT3, alignSelf: "center", marginLeft: "4px" }}>
+                        {(block.imageCount ?? 2) === 1 ? "풀와이드" : "나란히 (높이 축소)"}
+                      </span>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: (block.imageCount ?? 2) === 1 ? "1fr" : "1fr 1fr", gap: "8px" }}>
+                      {Array.from({ length: block.imageCount ?? 2 }, (_, imgIdx) => (
+                        <ImageSlot
+                          key={imgIdx}
+                          value={block.images?.[imgIdx] ?? ""}
+                          uploadKey={`cb-${block.id}-${imgIdx}`}
+                          label={`이미지 ${imgIdx + 1}`}
+                          uploading={!!uploading[`cb-${block.id}-${imgIdx}`]}
+                          onUpload={(file) =>
+                            onUpload(file, `cb-${block.id}-${imgIdx}`, (url) => {
+                              const imgs = [...(block.images ?? [])];
+                              imgs[imgIdx] = url;
+                              updateBlock(idx, { images: imgs });
+                            })
+                          }
+                          onChange={(url) => {
                             const imgs = [...(block.images ?? [])];
                             imgs[imgIdx] = url;
                             updateBlock(idx, { images: imgs });
-                          })
-                        }
-                        onChange={(url) => {
-                          const imgs = [...(block.images ?? [])];
-                          imgs[imgIdx] = url;
-                          updateBlock(idx, { images: imgs });
-                        }}
-                      />
-                    ))}
+                          }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1078,6 +1113,94 @@ function EditModal({
                 onUpload={handleUpload}
                 uploading={uploading}
               />
+
+              {/* Divider */}
+              <div style={{ borderTop: "1px solid #1F1F1F", margin: "24px 0 20px" }} />
+
+              {/* Work Scope */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={labelStyle}>Work Scope — 작업 범위 항목</label>
+                {(form.workScope ?? []).map((scope, i) => (
+                  <div key={i} style={{ display: "flex", gap: "6px", marginBottom: "6px" }}>
+                    <input
+                      type="text"
+                      value={scope}
+                      onChange={(e) => {
+                        const next = [...(form.workScope ?? [])];
+                        next[i] = e.target.value;
+                        set("workScope", next);
+                      }}
+                      placeholder="예: Brand Strategy"
+                      style={{ ...inputStyle, flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = (form.workScope ?? []).filter((_, j) => j !== i);
+                        set("workScope", next);
+                      }}
+                      style={{ background: "none", border: BORDER2, color: TEXT3, fontFamily: F, fontSize: "12px", padding: "0 10px", cursor: "pointer" }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => set("workScope", [...(form.workScope ?? []), ""])}
+                  style={{ background: "none", border: BORDER2, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "6px 12px", cursor: "pointer", letterSpacing: "0.06em", marginTop: "4px" }}
+                >
+                  + 항목 추가
+                </button>
+              </div>
+
+              {/* Additional Info */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={labelStyle}>추가 정보 (Additional Info) — 하단 키-값 표시</label>
+                {(form.additionalInfo ?? []).map((info, i) => (
+                  <div key={i} style={{ display: "flex", gap: "6px", marginBottom: "6px" }}>
+                    <input
+                      type="text"
+                      value={info.label}
+                      onChange={(e) => {
+                        const next = [...(form.additionalInfo ?? [])];
+                        next[i] = { ...next[i], label: e.target.value };
+                        set("additionalInfo", next);
+                      }}
+                      placeholder="레이블 (예: Client)"
+                      style={{ ...inputStyle, flex: "0 0 140px" }}
+                    />
+                    <input
+                      type="text"
+                      value={info.value}
+                      onChange={(e) => {
+                        const next = [...(form.additionalInfo ?? [])];
+                        next[i] = { ...next[i], value: e.target.value };
+                        set("additionalInfo", next);
+                      }}
+                      placeholder="값 (예: 현대자동차)"
+                      style={{ ...inputStyle, flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = (form.additionalInfo ?? []).filter((_, j) => j !== i);
+                        set("additionalInfo", next);
+                      }}
+                      style={{ background: "none", border: BORDER2, color: TEXT3, fontFamily: F, fontSize: "12px", padding: "0 10px", cursor: "pointer" }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => set("additionalInfo", [...(form.additionalInfo ?? []), { label: "", value: "" }])}
+                  style={{ background: "none", border: BORDER2, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "6px 12px", cursor: "pointer", letterSpacing: "0.06em", marginTop: "4px" }}
+                >
+                  + 항목 추가
+                </button>
+              </div>
             </>
           )}
 

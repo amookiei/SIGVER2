@@ -21,7 +21,7 @@ export type Category = "Branding" | "Web Design" | "Campaign" | "Government";
 // ─── 커스텀 콘텐츠 블록 ────────────────────────────────────────────────────────
 export type ContentBlock =
   | { id: string; type: "text"; title: string; body: string }
-  | { id: string; type: "image"; images: string[] }; // 최대 2장
+  | { id: string; type: "image"; images: string[]; imageCount?: 1 | 2 }; // imageCount: 1=풀와이드, 2=나란히
 
 export interface PortfolioItem {
   // ── 기본 정보 ───────────────────────────────────────────────────────────────
@@ -60,6 +60,10 @@ export interface PortfolioItem {
 
   // ── 네비게이션 ───────────────────────────────────────────────────────────────
   nextProject?: string; // (선택) 다음 프로젝트의 slug. 상세 하단 "Next Project"에 사용.
+
+  // ── 하단 Work Scope & 추가 정보 ──────────────────────────────────────────────
+  workScope?: string[];                              // (선택) 작업 범위 항목 배열. 예: ["Brand Strategy", "Visual Identity"]
+  additionalInfo?: { label: string; value: string }[]; // (선택) 추가 키-값 정보 배열. 예: [{label:"Credits", value:"..."}]
 }
 
 // =============================================================================
