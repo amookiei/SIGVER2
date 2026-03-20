@@ -196,8 +196,10 @@ export function WorkDetail() {
                 const isSingle = show.length === 1;
 
                 return isSingle ? (
-                  /* 한 장: 풀와이드, 높이 크게 */
-                  <div style={{ overflow: "hidden", height: "clamp(320px, 60vw, 720px)", backgroundColor: "#F0F0F0" }}>
+                  /* 한 장: 모바일 적정 높이 / PC 풀스크린 */
+                  <div
+                    className="overflow-hidden bg-[#F0F0F0] h-[55vw] md:h-screen"
+                  >
                     <motion.img
                       src={show[0]}
                       alt={`${item.title} — 이미지`}
@@ -207,27 +209,27 @@ export function WorkDetail() {
                     />
                   </div>
                 ) : (
-                  /* 두 장: 나란히, 높이 줄여서 */
-                  <div className="grid grid-cols-2">
-                    {show.map((src, j) => (
-                      <div
-                        key={j}
-                        style={{
-                          overflow: "hidden",
-                          height: "clamp(200px, 35vw, 500px)",
-                          backgroundColor: "#F0F0F0",
-                          borderRight: j === 0 ? BORDER : "none",
-                        }}
-                      >
-                        <motion.img
-                          src={src}
-                          alt={`${item.title} — 이미지 ${j + 1}`}
-                          className="w-full h-full object-cover"
-                          whileHover={{ scale: 1.03 }}
-                          transition={{ duration: 0.5 }}
-                        />
+                  /* 두 장: 모바일 풀와이드 / PC 화면 2/3 중앙 정렬 */
+                  <div className="flex justify-center">
+                    <div className="w-full md:w-2/3">
+                      <div className="grid grid-cols-2">
+                        {show.map((src, j) => (
+                          <div
+                            key={j}
+                            className="overflow-hidden bg-[#F0F0F0] h-[35vw] md:h-[28vw]"
+                            style={{ borderRight: j === 0 ? BORDER : "none" }}
+                          >
+                            <motion.img
+                              src={src}
+                              alt={`${item.title} — 이미지 ${j + 1}`}
+                              className="w-full h-full object-cover"
+                              whileHover={{ scale: 1.03 }}
+                              transition={{ duration: 0.5 }}
+                            />
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 );
               })()}
