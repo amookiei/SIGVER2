@@ -18,11 +18,24 @@ export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
+  const isHome = location.pathname === "/";
+  const isWorkDetail = /^\/work\/.+/.test(location.pathname);
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
+    const handleScroll = () => {
+      if (isWorkDetail) {
+        // 히어로 높이(clamp 300~700px) 기준으로 전환
+        const heroH = Math.min(Math.max(300, window.innerWidth * 0.55), 700);
+        setScrolled(window.scrollY > heroH - 100);
+      } else {
+        setScrolled(window.scrollY > 60);
+      }
+    };
+    setScrolled(false);
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [location.pathname, isWorkDetail]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -33,9 +46,9 @@ export function Navigation() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  // 홈 히어로(영상 배경)에서는 투명 + 블러 + 흰 텍스트
-  const isHome = location.pathname === "/";
+  // 홈: 투명 + 흰 텍스트 / 워크 상세: 유리효과 + 어두운 텍스트 / 나머지: 흰 배경
   const isTransparent = isHome && !scrolled;
+  const isGlass = isWorkDetail && !scrolled;
 
   const logoColor = isTransparent ? "#FFFFFF" : "#0D0D0D";
   const mobileToggleColor = isTransparent ? "#FFFFFF" : "#0D0D0D";
@@ -46,8 +59,8 @@ export function Navigation() {
         className="fixed top-0 left-0 right-0 px-8 md:px-16 lg:px-28"
         style={{
           zIndex: menuOpen ? 30 : 50,
-          borderBottom: isTransparent || menuOpen
-            ? "1px solid transparent"
+          borderBottom: isTransparent || isGlass || menuOpen
+            ? "1px solid rgba(255,255,255,0.15)"
             : "1px solid #E0E0E0",
         }}
         animate={{
@@ -55,12 +68,19 @@ export function Navigation() {
             ? "rgba(0,0,0,0)"
             : isTransparent
             ? "rgba(0,0,0,0)"
+            : isGlass
+            ? "rgba(255,255,255,0.14)"
             : scrolled
             ? "rgba(250,250,250,0.92)"
             : "#FAFAFA",
-          backdropFilter: isTransparent || menuOpen ? "blur(18px)" : scrolled ? "blur(20px)" : "blur(0px)",
+          backdropFilter:
+            isTransparent || isGlass || menuOpen
+              ? "blur(18px)"
+              : scrolled
+              ? "blur(20px)"
+              : "blur(0px)",
         }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.35 }}
       >
         <div className="flex items-center justify-between h-[72px]">
           {/* Logo */}
@@ -77,7 +97,7 @@ export function Navigation() {
                   height: "28px",
                   width: "auto",
                   display: "block",
-                  filter: isTransparent ? "brightness(0) invert(1)" : "none",
+                  filter: isTransparent ? "brightness(0) invert(1)" : "brightness(0)",
                   transition: "filter 0.3s",
                 }}
               />

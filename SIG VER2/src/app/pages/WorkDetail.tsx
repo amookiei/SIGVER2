@@ -58,27 +58,34 @@ export function WorkDetail() {
 
   return (
     <div style={{ backgroundColor: BG, minHeight: "100vh" }}>
-      {/* Back nav */}
-      <div className="px-8 md:px-16 lg:px-28 pt-24 pb-6" style={{ borderBottom: BORDER }}>
-        <Link to="/work" data-cursor="hover-link">
-          <motion.div
-            className="inline-flex items-center gap-3"
-            whileHover={{ x: -4 }}
-            transition={{ duration: 0.2 }}
-          >
-            <span style={{ fontFamily: F, fontSize: "16px", color: TEXT3 }}>←</span>
-            <span style={{ fontFamily: F, fontSize: "12px", color: TEXT3, letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              Work
-            </span>
-          </motion.div>
-        </Link>
-      </div>
-
-      {/* ─── Hero Image ─────────────────────────────────── */}
+      {/* ─── Hero Image (full bleed, nav 아래로) ─────────── */}
       <div
         ref={heroRef}
-        style={{ overflow: "hidden", height: "clamp(300px, 55vw, 700px)", backgroundColor: "#F0F0F0" }}
+        style={{ overflow: "hidden", height: "clamp(300px, 55vw, 700px)", backgroundColor: "#F0F0F0", position: "relative" }}
       >
+        {/* ← WORK 오버레이 버튼 */}
+        <div className="absolute z-10 px-8 md:px-16 lg:px-28" style={{ top: "84px" }}>
+          <Link to="/work" data-cursor="hover-link">
+            <motion.div
+              className="inline-flex items-center gap-3"
+              style={{
+                background: "rgba(255,255,255,0.18)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                padding: "6px 14px 6px 10px",
+                border: "1px solid rgba(255,255,255,0.3)",
+              }}
+              whileHover={{ x: -4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <span style={{ fontFamily: F, fontSize: "15px", color: "#0D0D0D" }}>←</span>
+              <span style={{ fontFamily: F, fontSize: "11px", color: "#0D0D0D", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 500 }}>
+                Work
+              </span>
+            </motion.div>
+          </Link>
+        </div>
+
         <motion.img
           src={item.heroImage}
           alt={item.title}
