@@ -243,14 +243,14 @@ export function Footer() {
               >
                 Contact
               </p>
-              <a href="mailto:hello@sigstudio.kr" data-cursor="hover-link">
+              <a href="mailto:duwhz1226@studiosig.com" data-cursor="hover-link">
                 <motion.div
                   style={{ marginBottom: "12px" }}
                   whileHover={{ x: 4 }}
                   transition={{ duration: 0.2 }}
                 >
                   <span style={{ fontFamily: F, fontSize: "14px", color: "#555555" }}>
-                    hello@sigstudio.kr
+                    duwhz1226@studiosig.com
                   </span>
                 </motion.div>
               </a>
@@ -261,7 +261,7 @@ export function Footer() {
               </div>
               <div>
                 <span style={{ fontFamily: F, fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>
-                  서울특별시 서대문구<br />홍제천로 6길 40 1층
+                  서울시 마포구 양화로 136,<br />SVC Seoul 402호
                 </span>
               </div>
             </div>

@@ -13,9 +13,9 @@ export interface ContactContent {
 
 export const defaultContactContent: ContactContent = {
   tagline: "프로젝트 문의, 협업 제안, 견적 요청 모두 환영합니다.",
-  email: "hello@sigstudio.kr",
+  email: "duwhz1226@studiosig.com",
   phone: "010-7667-6013",
-  address: "서울 서대문구 수색로 43, 208호",
+  address: "서울시 마포구 양화로 136, SVC Seoul 402호",
   hours: "월 – 금 / 09:00 – 18:00\n주말 및 공휴일 휴무",
 };
 
