@@ -135,7 +135,7 @@ export function AdminContact() {
             type="email"
             value={draft.email}
             onChange={(e) => set("email", e.target.value)}
-            placeholder="hello@sigstudio.kr"
+            placeholder="duwhz1226@studiosig.com"
           />
         </Field>
         <Field label="전화번호">
@@ -152,7 +152,7 @@ export function AdminContact() {
             style={{ ...inputStyle, minHeight: "72px", resize: "vertical" }}
             value={draft.address}
             onChange={(e) => set("address", e.target.value)}
-            placeholder={"서울특별시 서대문구\n홍제천로 6길 40 1층"}
+            placeholder={"서울시 마포구 양화로 136,\nSVC Seoul 402호"}
           />
         </Field>
         <Field label="운영 시간 (줄바꿈: Enter)">
