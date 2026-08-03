@@ -58,7 +58,8 @@ AS $$
 DECLARE
   result jsonb;
 BEGIN
-  IF query_sql !~* '^\s*(select|with)\b' THEN
+  -- 주의: Postgres 정규식에서 단어 경계는 \b가 아니라 \y
+  IF query_sql !~* '^\s*(select|with)\y' THEN
     RAISE EXCEPTION 'SELECT 또는 WITH로 시작하는 읽기 쿼리만 실행할 수 있습니다';
   END IF;
   IF query_sql ~ ';' THEN

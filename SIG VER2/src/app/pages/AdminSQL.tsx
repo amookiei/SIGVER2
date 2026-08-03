@@ -119,7 +119,7 @@ CREATE OR REPLACE FUNCTION run_admin_query(query_sql text)
 RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE result jsonb;
 BEGIN
-  IF query_sql !~* '^\\s*(select|with)\\b' OR query_sql ~ ';' THEN
+  IF query_sql !~* '^\\s*(select|with)\\y' OR query_sql ~ ';' THEN
     RAISE EXCEPTION 'SELECT 단일 쿼리만 실행할 수 있습니다';
   END IF;
   EXECUTE format('SELECT coalesce(jsonb_agg(t), ''[]''::jsonb) FROM (%s) t', query_sql)
