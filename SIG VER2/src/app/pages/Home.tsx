@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useGallery } from "../context/GalleryContext";
 import { useSEO } from "../hooks/useSEO";
+import { useExperiment } from "../hooks/useExperiment";
 import {
   motion,
   useMotionValue,
@@ -1047,6 +1048,8 @@ function GalleryPreviewSection() {
 
 // ─── CTA SECTION ─────────────────────────────────────────
 function CTASection() {
+  // A/B 실험: 홈 CTA 문구 (관리자 → A/B 실험 탭에서 관리)
+  const { variant, payload: ctaLabel, trackGoal } = useExperiment("home-cta-copy", "GET IN TOUCH");
   return (
     <section style={{ backgroundColor: DARK, position: "relative", overflow: "hidden" }}>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -1084,13 +1087,14 @@ function CTASection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
-            <Link to="/contact" data-cursor="hover-button">
+            <Link to="/contact" data-cursor="hover-button" onClick={() => trackGoal("cta_click", { placement: "home_bottom", label: ctaLabel })}>
               <motion.button
                 style={{ fontFamily: F, fontWeight: 700, fontSize: "12px", color: DARK, letterSpacing: "0.1em", textTransform: "uppercase", padding: "18px 44px", background: "#FAFAFA", border: "1px solid #FAFAFA" }}
                 whileHover={{ background: "rgba(250,250,250,0)", color: "#FAFAFA" }}
                 transition={{ duration: 0.25 }}
+                data-variant={variant}
               >
-                GET IN TOUCH
+                {ctaLabel}
               </motion.button>
             </Link>
           </motion.div>
