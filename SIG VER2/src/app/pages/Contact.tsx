@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { contactSchema } from "../../lib/security/validation";
+import { track } from "../../lib/analytics/tracker";
 import { LogoSymbol } from "../components/LogoSymbol";
 import { useContact } from "../context/ContactContext";
 import { useSEO } from "../hooks/useSEO";
@@ -114,6 +115,11 @@ export function Contact() {
             sessionStorage.setItem(CONTACT_RL_KEY, JSON.stringify({ count: 1, firstAt: now }));
           }
         } catch { /* ignore */ }
+        // PM Analytics — 핵심 전환 이벤트 (A/B 실험 goalEvent와 연동)
+        track("contact_submit", {
+          services: parsed.data.services ?? [],
+          budget: parsed.data.budget ?? "",
+        });
         setSubmitted(true);
       } else {
         setError("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.");

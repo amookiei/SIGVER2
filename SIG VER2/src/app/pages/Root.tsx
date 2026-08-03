@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { CustomCursor } from "../components/CustomCursor";
+import { FeedbackWidget } from "../components/FeedbackWidget";
+import { trackPageView } from "../../lib/analytics/tracker";
 
 export function Root() {
   const location = useLocation();
@@ -11,6 +13,11 @@ export function Root() {
   useEffect(() => {
     setIsTouchDevice(window.matchMedia("(hover: none)").matches);
   }, []);
+
+  // PM Analytics — 라우트 변경마다 페이지뷰 수집
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   // Scroll to top on route change, or to hash element if present
   useEffect(() => {
@@ -32,6 +39,7 @@ export function Root() {
         <Outlet />
       </main>
       <Footer />
+      <FeedbackWidget />
     </div>
   );
 }

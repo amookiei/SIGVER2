@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { useRef, useEffect } from "react";
 import { useAdmin } from "../context/AdminContext";
 import { useSEO } from "../hooks/useSEO";
+import { track } from "../../lib/analytics/tracker";
 
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
 const BORDER = "1px solid #E0E0E0";
@@ -28,6 +29,11 @@ export function WorkDetail() {
       : undefined,
     canonical: item ? `https://studiosig.com/work/${item.slug}` : undefined,
   });
+
+  // PM Analytics — 프로젝트 상세 조회 이벤트
+  useEffect(() => {
+    if (item) track("work_view", { slug: item.slug, category: item.category, title: item.title });
+  }, [item?.slug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!item) return;

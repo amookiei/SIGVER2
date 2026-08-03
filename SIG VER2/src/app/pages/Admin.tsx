@@ -6,6 +6,10 @@ import { AdminHome } from "./AdminHome";
 import { AdminContact } from "./AdminContact";
 import { AdminGallery } from "./AdminGallery";
 import { AdminSpace } from "./AdminSpace";
+import { AdminDashboard } from "./AdminDashboard";
+import { AdminExperiments } from "./AdminExperiments";
+import { AdminResearch } from "./AdminResearch";
+import { AdminSQL } from "./AdminSQL";
 import type { PortfolioItem, ContentBlock } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 
@@ -1198,7 +1202,9 @@ export function Admin() {
   const navigate = useNavigate();
   const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
 
-  const [adminPage, setAdminPage] = useState<"portfolio" | "about" | "home" | "gallery" | "space" | "contact">("portfolio");
+  const [adminPage, setAdminPage] = useState<
+    "dashboard" | "experiments" | "research" | "sql" | "portfolio" | "about" | "home" | "gallery" | "space" | "contact"
+  >("dashboard");
   const [editForm, setEditForm] = useState<FormState | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState<FormState>(blankForm());
@@ -1281,6 +1287,10 @@ export function Admin() {
           {/* 페이지 탭 */}
           <div style={{ display: "flex", gap: "2px", background: "#0A0A0A", padding: "3px", border: BORDER }}>
             {([
+              { id: "dashboard", label: "📊 지표" },
+              { id: "experiments", label: "🧪 A/B 실험" },
+              { id: "research", label: "🎧 리서치" },
+              { id: "sql", label: "SQL" },
               { id: "portfolio", label: "포트폴리오" },
               { id: "home", label: "홈 콘텐츠" },
               { id: "gallery", label: "갤러리" },
@@ -1412,6 +1422,18 @@ export function Admin() {
           </div>
         </div>
       )}
+
+      {/* ─── PM 지표 대시보드 탭 ──────────────────────────── */}
+      {adminPage === "dashboard" && <AdminDashboard />}
+
+      {/* ─── A/B 실험 탭 ─────────────────────────────────── */}
+      {adminPage === "experiments" && <AdminExperiments />}
+
+      {/* ─── UX 리서치 탭 ────────────────────────────────── */}
+      {adminPage === "research" && <AdminResearch />}
+
+      {/* ─── SQL 콘솔 탭 ─────────────────────────────────── */}
+      {adminPage === "sql" && <AdminSQL />}
 
       {/* ─── About 탭 ────────────────────────────────────── */}
       {adminPage === "about" && <AdminAbout />}
