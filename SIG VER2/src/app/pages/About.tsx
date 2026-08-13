@@ -16,9 +16,9 @@ export function About() {
   const { studio, stats, values, team } = about;
 
   useSEO({
-    title: "About | Studio SIG — 서울 홍대 브랜딩 에이전시",
-    description: "Studio SIG는 서울 마포구 홍대 기반의 브랜딩·마케팅 에이전시입니다. 디자인 구독 서비스, 브랜드 아이덴티티, 퍼포먼스 마케팅, UI/UX 디자인을 제공합니다.",
-    canonical: "https://studiosig.com/about",
+    title: "About | 스튜디오 시그 Studio SIG — 서울 홍대 브랜딩 에이전시",
+    description: "스튜디오 시그(Studio SIG, 법인명 시그코퍼레이션)는 서울 마포구 홍대 기반의 브랜딩·마케팅 에이전시입니다. 디자인 구독 서비스, 브랜드 아이덴티티, 퍼포먼스 마케팅, UI/UX 디자인을 제공합니다.",
+    canonical: "https://www.studiosig.com/about",
   });
 
   return (

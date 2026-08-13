@@ -34,9 +34,9 @@ const budgets = [
 
 export function Contact() {
   useSEO({
-    title: "Contact | Studio SIG — 디자인 구독 문의하기",
-    description: "Studio SIG에 문의하세요. 디자인 구독 서비스, 브랜딩, 퍼포먼스 마케팅 등 프로젝트 문의를 받습니다.",
-    canonical: "https://studiosig.com/contact",
+    title: "Contact | 스튜디오 시그 Studio SIG — 디자인 구독 문의하기",
+    description: "스튜디오 시그(Studio SIG)에 문의하세요. 디자인 구독 서비스, 브랜딩, 퍼포먼스 마케팅 등 프로젝트 문의를 받습니다.",
+    canonical: "https://www.studiosig.com/contact",
   });
 
   const { contact } = useContact();

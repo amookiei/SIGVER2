@@ -296,11 +296,18 @@ export function Footer() {
             </div>
           </div>
 
+          {/* 사업자 정보 — 브랜드 검색(스튜디오 시그·시그코퍼레이션) 노출용 */}
+          <div className="pt-6">
+            <span style={{ fontFamily: F, fontSize: "12px", color: "#444444", letterSpacing: "0.02em", lineHeight: 1.7 }}>
+              스튜디오 시그 (Studio SIG) · 법인명 시그코퍼레이션 | 서울특별시 마포구 (홍대) | 디자인 구독 · 브랜딩 · 마케팅 에이전시
+            </span>
+          </div>
+
           {/* Bottom bar */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-6 gap-4">
             <div style={{ display: "flex", alignItems: "center", gap: "0" }}>
               <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.02em" }}>
-                © 2025 STUDIO SIG. All rights reserved.
+                © 2026 시그코퍼레이션 (Studio SIG). All rights reserved.
               </span>
               {/* Hidden admin trigger — barely visible on dark bg */}
               <span

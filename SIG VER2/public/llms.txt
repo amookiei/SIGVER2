@@ -1,11 +1,11 @@
-# SIG Studio
+# 스튜디오 시그 Studio SIG
 
-> SIG Studio는 브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업 전략을 제공하는 서울 홍대의 디자인 에이전시입니다.
+> 스튜디오 시그(Studio SIG, 법인명 시그코퍼레이션)는 브랜드 아이덴티티, 퍼포먼스 마케팅, 정부 지원사업 전략을 제공하는 서울 홍대의 디자인 에이전시입니다.
 > 스타트업부터 대기업까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다.
 
 ## 에이전시 소개
 
-SIG Studio는 2024년 서울에서 설립된 디자인 에이전시입니다. 단순한 비주얼 제작을 넘어 브랜드의 본질을 이해하고, 그것을 가장 직관적인 방식으로 표현합니다. 정부지원사업부터 대기업 리브랜딩까지 다양한 클라이언트와 협업하며, 문제를 해결하는 디자인을 만들어냅니다.
+스튜디오 시그(Studio SIG)는 2024년 서울에서 설립된 디자인 에이전시로, 법인명은 시그코퍼레이션입니다. 단순한 비주얼 제작을 넘어 브랜드의 본질을 이해하고, 그것을 가장 직관적인 방식으로 표현합니다. 정부지원사업부터 대기업 리브랜딩까지 다양한 클라이언트와 협업하며, 문제를 해결하는 디자인을 만들어냅니다.
 
 ## 주요 서비스
 
@@ -33,19 +33,19 @@ SIG Studio는 2024년 서울에서 설립된 디자인 에이전시입니다. �
 
 ## 연락처
 
-- **웹사이트**: https://sigstudio.kr
-- **포트폴리오**: https://sigstudio.kr/work
+- **웹사이트**: https://www.studiosig.com
+- **포트폴리오**: https://www.studiosig.com/work
 - **위치**: 서울 마포구 홍대
 
 ## 사이트 페이지
 
-- [홈](https://sigstudio.kr/): 스튜디오 소개 및 주요 프로젝트
-- [Work](https://sigstudio.kr/work): 전체 포트폴리오
-- [About](https://sigstudio.kr/about): 스튜디오 스토리, 팀, 핵심 가치
-- [Contact](https://sigstudio.kr/contact): 프로젝트 문의
+- [홈](https://www.studiosig.com/): 스튜디오 소개 및 주요 프로젝트
+- [Work](https://www.studiosig.com/work): 전체 포트폴리오
+- [About](https://www.studiosig.com/about): 스튜디오 스토리, 팀, 핵심 가치
+- [Contact](https://www.studiosig.com/contact): 프로젝트 문의
 
 ## 개별 프로젝트 페이지
 
-- [M3AT 브랜딩](https://sigstudio.kr/work/M3AT)
-- [서울시 시민 포털](https://sigstudio.kr/work/seoul-city-portal)
-- [크래프톤 에디토리얼](https://sigstudio.kr/work/krafton-editorial)
+- [M3AT 브랜딩](https://www.studiosig.com/work/m3at)
+- [서울시 시민 포털](https://www.studiosig.com/work/seoul-city-portal)
+- [크래프톤 에디토리얼](https://www.studiosig.com/work/krafton-editorial)
