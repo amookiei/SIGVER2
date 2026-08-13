@@ -610,6 +610,11 @@ function HeroSection() {
         borderBottom: BORDER,
       }}
     >
+      {/* SEO: 화면에는 보이지 않는 메인 헤딩 (스크린리더·검색엔진용) */}
+      <h1 className="sr-only">
+        스튜디오 시그 Studio SIG — 디자인 구독 서비스 · 브랜딩·마케팅 에이전시 서울 (시그코퍼레이션)
+      </h1>
+
       {/* 배경 영상 */}
       {BG_VIDEO && (
         <video
@@ -1111,9 +1116,9 @@ function CTASection() {
 // ─── HOME PAGE ────────────────────────────────────────────
 export function Home() {
   useSEO({
-    title: "Studio SIG | 디자인 구독 서비스 · 브랜딩·마케팅 에이전시 서울",
-    description: "Studio SIG는 월정액 디자인 구독 서비스를 제공하는 서울의 브랜딩 에이전시입니다. 디자이너 구독, 무제한 디자인 요청, 브랜드 아이덴티티, 퍼포먼스 마케팅까지 스타트업부터 대기업까지 함께합니다.",
-    canonical: "https://studiosig.com/",
+    title: "스튜디오 시그 Studio SIG | 디자인 구독 서비스 · 브랜딩·마케팅 에이전시 서울",
+    description: "스튜디오 시그(Studio SIG, 시그코퍼레이션)는 월정액 디자인 구독 서비스를 제공하는 서울의 브랜딩 에이전시입니다. 디자이너 구독, 무제한 디자인 요청, 브랜드 아이덴티티, 퍼포먼스 마케팅까지 스타트업부터 대기업까지 함께합니다.",
+    canonical: "https://www.studiosig.com/",
   });
 
   return (

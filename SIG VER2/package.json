@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "dev": "vite",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -76,6 +76,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@sparticuz/chromium": "^131.0.0",
     "@tailwindcss/vite": "4.1.12",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

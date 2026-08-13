@@ -26,7 +26,7 @@ export type ContentBlock =
 export interface PortfolioItem {
   // ── 기본 정보 ───────────────────────────────────────────────────────────────
   id: number;           // 고유 숫자 ID. 추가할 때 마지막 id + 1로 증가시키세요.
-  slug: string;         // URL에 사용되는 영문 식별자. 소문자·하이픈만 사용. (예: "kakao-brand-kit")
+  slug: string;         // URL에 사용되는 영문 식별자. 소문자·하이픈만 사용. (예: "seoul-city-portal")
   title: string;        // 카드·상세 헤딩에 표시되는 프로젝트명. 보통 모두 대문자.
   client: string;       // 클라이언트 이름 (한국어 또는 영문)
   category: Category;   // 필터 카테고리. 위 Category 타입 중 하나를 선택.
@@ -71,37 +71,6 @@ export interface PortfolioItem {
 // =============================================================================
 
 export const portfolioItems: PortfolioItem[] = [
-  // ── 1 ───────────────────────────────────────────────────────────────────────
-  {
-    id: 1,
-    slug: "hyundai-rebrand",
-    title: "HYUNDAI REBRAND",
-    client: "현대자동차",
-    category: "Branding",
-    year: 2025,
-    featured: true,
-    order: 1,
-
-    thumbnail: IMG["hyundai-rebrand"].thumbnail,
-    heroImage: IMG["hyundai-rebrand"].heroImage,
-    gallery: IMG["hyundai-rebrand"].gallery,
-
-    tagline: "글로벌 모빌리티 브랜드의 새로운 정체성",
-    description:
-      "현대자동차의 글로벌 리브랜딩 프로젝트. 브랜드 DNA를 재정립하고 디지털 시대에 맞는 새로운 비주얼 아이덴티티를 구축했습니다. 로고 리뉴얼부터 전사 UI 가이드라인까지 일관된 브랜드 경험을 설계했습니다.",
-    challenge:
-      "100년 가까운 역사를 가진 레거시 브랜드를 EV 중심 미래 모빌리티 기업으로 재포지셔닝하는 것이 핵심 과제였습니다. 기존 팬층의 친숙함을 유지하면서도 MZ 세대에게 혁신적으로 다가가야 했습니다.",
-    solution:
-      "브랜드 아키타입 분석을 통해 '진보적 레거시(Progressive Legacy)'를 핵심 컨셉으로 도출했습니다. 기하학적 정밀함과 유기적 곡선을 결합한 새로운 심볼 시스템과, 다크·라이트 양면에서 작동하는 컬러 팔레트를 개발했습니다.",
-
-    role: "Brand Strategy, Visual Identity, Motion Guidelines, UI Design System",
-    duration: "2024.09 – 2025.02 (6개월)",
-    tags: ["브랜드 전략", "아이덴티티 디자인", "모션 가이드라인", "UI 시스템"],
-    liveUrl: "https://www.hyundai.com",
-
-    nextProject: "m3at",
-  },
-
   // ── 2 ───────────────────────────────────────────────────────────────────────
   {
     id: 2,
@@ -111,7 +80,7 @@ export const portfolioItems: PortfolioItem[] = [
     category: "Branding",
     year: 2024,
     featured: true,
-    order: 2,
+    order: 1,
 
     thumbnail: IMG["M3AT"].thumbnail,
     heroImage: IMG["M3AT"].heroImage,
@@ -128,61 +97,6 @@ export const portfolioItems: PortfolioItem[] = [
     duration: "2024.03 – 2024.10 (8개월)",
     tags: ["브랜딩", "UI/UX", "Figma", "React", "Design Token"],
 
-    nextProject: "samsung-galaxy-campaign",
-  },
-
-  // ── 3 ───────────────────────────────────────────────────────────────────────
-  {
-    id: 3,
-    slug: "samsung-galaxy-campaign",
-    title: "SAMSUNG GALAXY CAMPAIGN",
-    client: "삼성전자",
-    category: "Campaign",
-    year: 2025,
-    featured: true,
-    order: 3,
-
-    thumbnail: IMG["samsung-galaxy-campaign"].thumbnail,
-    heroImage: IMG["samsung-galaxy-campaign"].heroImage,
-    gallery: IMG["samsung-galaxy-campaign"].gallery,
-
-    tagline: "Galaxy S25 글로벌 런칭 통합 캠페인",
-    description:
-      "삼성 갤럭시 S25 시리즈 글로벌 런칭 캠페인. 감성적 스토리텔링과 최신 트렌드를 결합한 통합 마케팅 커뮤니케이션을 기획했습니다. 디지털, 오프라인, 옥외 광고까지 통합된 캠페인 경험을 구현했습니다.",
-    challenge:
-      "성숙한 스마트폰 시장에서 S25의 AI 기능이 단순한 스펙이 아닌 '삶의 변화'로 느껴지도록 해야 했습니다.",
-    solution:
-      "실제 사용자 인터뷰를 바탕으로 한 감성 다큐멘터리 형식의 필름을 제작하고, OOH·디지털·SNS 채널별로 최적화된 에셋을 개발했습니다.",
-
-    role: "Campaign Planning, Creative Direction, Brand Experience",
-    duration: "2024.11 – 2025.01 (3개월)",
-    tags: ["캠페인 기획", "크리에이티브 디렉션", "브랜드 경험", "OOH"],
-
-    nextProject: "kakao-brand-kit",
-  },
-
-  // ── 4 ───────────────────────────────────────────────────────────────────────
-  {
-    id: 4,
-    slug: "kakao-brand-kit",
-    title: "KAKAO BRAND KIT",
-    client: "카카오",
-    category: "Branding",
-    year: 2024,
-    featured: false,
-
-    thumbnail: IMG["kakao-brand-kit"].thumbnail,
-    heroImage: IMG["kakao-brand-kit"].heroImage,
-    gallery: IMG["kakao-brand-kit"].gallery,
-
-    tagline: "카카오 계열사를 하나로 묶는 브랜드 키트",
-    description:
-      "카카오 계열사 통합 브랜드 가이드라인 및 키트 제작. 다양한 서비스에 걸쳐 일관된 브랜드 보이스와 비주얼 톤을 정립했습니다. 브랜드 에셋, 모션 가이드, 사진 스타일까지 종합적인 브랜드 시스템을 구축했습니다.",
-
-    role: "Brand Guidelines, Asset Production, Motion Design",
-    duration: "2024.01 – 2024.05 (5개월)",
-    tags: ["브랜드 가이드라인", "에셋 제작", "모션 디자인"],
-
     nextProject: "seoul-city-portal",
   },
 
@@ -194,7 +108,8 @@ export const portfolioItems: PortfolioItem[] = [
     client: "서울특별시",
     category: "Government",
     year: 2024,
-    featured: false,
+    featured: true,
+    order: 2,
 
     thumbnail: IMG["seoul-city-portal"].thumbnail,
     heroImage: IMG["seoul-city-portal"].heroImage,
@@ -223,7 +138,8 @@ export const portfolioItems: PortfolioItem[] = [
     client: "크래프톤",
     category: "Campaign",
     year: 2025,
-    featured: false,
+    featured: true,
+    order: 3,
 
     thumbnail: IMG["krafton-editorial"].thumbnail,
     heroImage: IMG["krafton-editorial"].heroImage,
@@ -237,7 +153,7 @@ export const portfolioItems: PortfolioItem[] = [
     duration: "2025.01 – 2025.03 (3개월)",
     tags: ["에디토리얼", "IP 브랜딩", "비주얼 스토리텔링", "아트 디렉션"],
 
-    nextProject: "hyundai-rebrand",
+    nextProject: "m3at",
   },
 ];
 

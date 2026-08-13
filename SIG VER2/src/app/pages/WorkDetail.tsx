@@ -23,11 +23,22 @@ export function WorkDetail() {
   const item = getBySlug(slug ?? "");
 
   useSEO({
-    title: item ? `${item.title} | Studio SIG` : "Work | Studio SIG",
+    title: item ? `${item.title} | 스튜디오 시그 Studio SIG` : "Work | 스튜디오 시그 Studio SIG",
     description: item
-      ? `${item.tagline ?? item.description?.slice(0, 120)} — Studio SIG ${item.category} 프로젝트`
+      ? `${item.tagline ?? item.description?.slice(0, 120)} — 스튜디오 시그(Studio SIG) ${item.category} 프로젝트`
       : undefined,
-    canonical: item ? `https://studiosig.com/work/${item.slug}` : undefined,
+    canonical: item ? `https://www.studiosig.com/work/${item.slug}` : undefined,
+    jsonLd: item
+      ? {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "홈", item: "https://www.studiosig.com/" },
+            { "@type": "ListItem", position: 2, name: "Work", item: "https://www.studiosig.com/work" },
+            { "@type": "ListItem", position: 3, name: item.title, item: `https://www.studiosig.com/work/${item.slug}` },
+          ],
+        }
+      : undefined,
   });
 
   // PM Analytics — 프로젝트 상세 조회 이벤트
@@ -45,14 +56,14 @@ export function WorkDetail() {
     script.text = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "CreativeWork",
-      "@id": `https://studiosig.com/work/${item.slug}`,
+      "@id": `https://www.studiosig.com/work/${item.slug}`,
       "name": item.title,
       "description": item.description ?? item.tagline,
-      "creator": { "@type": "Organization", "name": "Studio SIG", "url": "https://studiosig.com" },
+      "creator": { "@type": "Organization", "name": "스튜디오 시그 Studio SIG", "url": "https://www.studiosig.com" },
       "dateCreated": String(item.year),
       "genre": item.category,
       "keywords": item.tags?.join(", "),
-      "url": `https://studiosig.com/work/${item.slug}`,
+      "url": `https://www.studiosig.com/work/${item.slug}`,
       ...(item.heroImage ? { "image": item.heroImage } : {}),
       ...(item.client ? { "contributor": { "@type": "Organization", "name": item.client } } : {}),
     });
