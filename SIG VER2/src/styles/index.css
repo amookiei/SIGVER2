@@ -23,6 +23,14 @@ video::-webkit-media-controls-fullscreen-button {
   cursor: none !important;
 }
 
+/* 한글 줄바꿈: 단어 중간에서 끊지 않고(keep-all), 마지막 줄 고아 단어를 피함 */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p, li {
+  text-wrap: pretty;
+}
+
 body {
   background-color: #FAFAFA;
   overscroll-behavior: none;

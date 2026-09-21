@@ -15,12 +15,12 @@ const TEXT2 = "#666666";
 const TEXT3 = "#999999";
 
 const services = [
-  "브랜딩 & 아이덴티티",
-  "웹 & 앱 디자인",
-  "상세페이지 디자인",
-  "패키지 디자인",
-  "촬영",
-  "디자인 구독제",
+  "브랜드·패키지 설계",
+  "칼선·3D 목업",
+  "인쇄 감리",
+  "생산 파트너 연결",
+  "해외 협력·수출 검수",
+  "siging 도입",
   "기타",
 ];
 
@@ -34,8 +34,8 @@ const budgets = [
 
 export function Contact() {
   useSEO({
-    title: "Contact | 스튜디오 시그 Studio SIG — 디자인 구독 문의하기",
-    description: "스튜디오 시그(Studio SIG)에 문의하세요. 디자인 구독 서비스, 브랜딩, 퍼포먼스 마케팅 등 프로젝트 문의를 받습니다.",
+    title: "Contact | 스튜디오 시그 Studio SIG — 패키지 설계·감리·생산 문의",
+    description: "스튜디오 시그(Studio SIG, 시그코퍼레이션)에 문의하세요. 패키지 설계, 인쇄 감리, 생산 파트너 연결, 해외 협력, siging 도입 문의를 받습니다.",
     canonical: "https://www.studiosig.com/contact",
   });
 
@@ -169,7 +169,7 @@ export function Contact() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            style={{ fontFamily: F, fontSize: "17px", color: TEXT2, lineHeight: 1.8, maxWidth: "480px" }}
+            style={{ fontFamily: F, fontSize: "17px", color: TEXT2, lineHeight: 1.8, maxWidth: "480px", whiteSpace: "pre-line" }}
           >
             {contact.tagline}
           </motion.p>

@@ -9,7 +9,7 @@ import { useAdmin } from "../context/AdminContext";
 import { useHomeContent } from "../context/HomeContentContext";
 import type { HomeClient } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
-import { capabilities, processSteps, sigingFeatures, SIGING_URL } from "../data/capabilities";
+import { capabilities, processSteps, sigingHighlights, SIGING_URL } from "../data/capabilities";
 import { DielineArt } from "../components/DielineArt";
 import { getIntroDelay } from "../components/LogoIntro";
 import sigingMark from "../../assets/images/siging-mark.svg";
@@ -516,7 +516,7 @@ function CapabilitiesSection() {
                 <p style={{ fontFamily: F, fontSize: "13px", color: on ? "#9A9A9A" : TEXT3, letterSpacing: "0.02em", margin: 0 }}>{c.titleKo}</p>
               </motion.div>
               <div>
-                <p style={{ fontFamily: F, fontSize: "14px", color: on ? "#BDBDBD" : TEXT2, lineHeight: 1.75, margin: "0 0 18px" }}>{c.desc}</p>
+                <p style={{ fontFamily: F, fontSize: "14px", color: on ? "#BDBDBD" : TEXT2, lineHeight: 1.75, margin: "0 0 18px", whiteSpace: "pre-line" }}>{c.desc}</p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {c.items.map((it) => (
                     <li key={it} style={{ fontFamily: F, fontSize: "12.5px", color: on ? "#8A8A8A" : TEXT3, lineHeight: 1.9, display: "flex", gap: "10px" }}>
@@ -560,8 +560,11 @@ function ProcessSection() {
             transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
             style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.85, margin: 0, maxWidth: "620px" }}
           >
-            디자인이 끝나는 곳에서 우리 일이 시작됩니다. 규격과 칼선은 생산 기준으로 잡고, 색은 제판 전에 시뮬레이션하고,
-            현장에서는 측색값으로 판정합니다. 해외 파트너와 일할 때도 같은 문서와 같은 기준을 씁니다.
+            디자인이 끝나는 곳에서 우리 일이 시작됩니다.
+            <br />
+            규격은 생산 기준으로, 색은 숫자로,
+            <br />
+            해외 파트너와도 같은 문서로.
           </motion.p>
         </div>
 
@@ -606,7 +609,7 @@ function ProcessSection() {
                   {step.num}
                 </div>
                 <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: "20px", color: DARK, letterSpacing: "-0.02em", margin: "0 0 10px" }}>{step.title}</h3>
-                <p style={{ fontFamily: F, fontSize: "13.5px", color: TEXT2, lineHeight: 1.7, margin: "0 0 14px" }}>{step.desc}</p>
+                <p style={{ fontFamily: F, fontSize: "13.5px", color: TEXT2, lineHeight: 1.7, margin: "0 0 14px", whiteSpace: "pre-line" }}>{step.desc}</p>
                 {step.tool && (
                   <span style={{ fontFamily: F, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: BG, background: SIGING_GRAD, padding: "5px 9px", display: "inline-block" }}>
                     {step.tool}
@@ -655,13 +658,16 @@ function SigingSection() {
             transition={{ duration: 0.6, delay: 0.15 }}
             style={{ fontFamily: F, fontSize: "15px", color: "#9A9A9A", lineHeight: 1.85, margin: "0 0 30px", maxWidth: "520px" }}
           >
-            siging은 시그코퍼레이션이 직접 현장 감리에 쓰기 위해 만든 웹 패키지 스튜디오입니다. 샘플을 만들기 전에 화면에서
-            검증하고, 상세페이지 이미지·적재 계획·그라비아 인쇄 감리까지 한 곳에서 끝냅니다. 기본 기능은 무료입니다.
+            시그가 직접 감리에 쓰려고 만든 웹 패키지 스튜디오.
+            <br />
+            봉지·박스·병 3D 목업, 적재 시뮬레이션,
+            <br />
+            수출 표기 검수, 그라비아 감리까지 한 곳에서.
           </motion.p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0 0 36px", borderTop: "1px solid #262626" }}>
-            {sigingFeatures.slice(0, 4).map((f, i) => (
+            {sigingHighlights.map((f, i) => (
               <motion.li
-                key={f.title}
+                key={f}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -669,7 +675,7 @@ function SigingSection() {
                 style={{ display: "flex", gap: "14px", alignItems: "baseline", padding: "13px 0", borderBottom: "1px solid #262626" }}
               >
                 <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: SIGING_GRAD, flexShrink: 0, transform: "translateY(-2px)" }} />
-                <span style={{ fontFamily: F, fontSize: "14.5px", color: "#DADADA", lineHeight: 1.5 }}>{f.title}</span>
+                <span style={{ fontFamily: F, fontSize: "14.5px", color: "#DADADA", lineHeight: 1.5 }}>{f}</span>
               </motion.li>
             ))}
           </ul>
@@ -902,7 +908,7 @@ function HeroSection() {
           Brand · Package · Production · Global
         </motion.p>
         <h1 style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(34px, 6.4vw, 92px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.98, margin: 0 }}>
-          {["브랜드에서 생산까지,", "한 팀이 끝까지 책임집니다."].map((line, i) => (
+          {["브랜드에서 생산까지,", "한 팀이 끝까지."].map((line, i) => (
             <span key={i} style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}>
               <motion.span
                 initial={{ y: "110%" }}
@@ -921,8 +927,9 @@ function HeroSection() {
           transition={{ duration: 0.7, delay: introDelay + 0.55 }}
           style={{ fontFamily: F, fontSize: "clamp(13px, 1.3vw, 16px)", color: "rgba(250,250,250,0.72)", lineHeight: 1.7, maxWidth: "560px", marginTop: "22px" }}
         >
-          스튜디오 시그(시그코퍼레이션)는 브랜드·패키지 설계, 그라비아 인쇄 감리, 제조 파트너 생산, 해외 협력을
-          하나의 흐름으로 연결합니다. 자체 개발 패키지 스튜디오 <em style={{ fontStyle: "normal", color: "#FAFAFA" }}>siging</em>으로 시안이 실물이 되는 과정을 검증합니다.
+          설계부터 감리, 생산, 해외 협력까지 한 흐름으로.
+          <br />
+          자체 개발 툴 <em style={{ fontStyle: "normal", color: "#FAFAFA" }}>siging</em>으로 실물이 되기 전에 검증합니다.
         </motion.p>
       </div>
 
