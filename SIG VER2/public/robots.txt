@@ -1,5 +1,5 @@
 # SIG Studio — robots.txt
-# https://sigstudio.kr
+# https://www.studiosig.com
 
 # ─── 일반 검색 엔진 ────────────────────────────────────────────────────────
 User-agent: *
@@ -36,4 +36,4 @@ User-agent: Applebot-Extended
 Allow: /
 
 # ─── 사이트맵 ──────────────────────────────────────────────────────────────
-Sitemap: https://studiosig.com/sitemap.xml
+Sitemap: https://www.studiosig.com/sitemap.xml

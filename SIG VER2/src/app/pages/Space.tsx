@@ -128,9 +128,9 @@ function SectionCard({ section, delay }: { section: SpaceSection; delay: number 
 // ─── Space Page ───────────────────────────────────────────
 export function Space() {
   useSEO({
-    title: "Space | Studio SIG — 스튜디오 공간",
+    title: "Space | 스튜디오 시그 Studio SIG — 스튜디오 공간",
     description: "Studio SIG의 서울 홍대 스튜디오 공간을 소개합니다. 창의적인 작업 공간과 협업 환경을 확인하세요.",
-    canonical: "https://studiosig.com/space",
+    canonical: "https://www.studiosig.com/space",
   });
 
   const { content, loading } = useSpace();

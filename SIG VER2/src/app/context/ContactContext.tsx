@@ -12,7 +12,7 @@ export interface ContactContent {
 }
 
 export const defaultContactContent: ContactContent = {
-  tagline: "프로젝트 문의, 협업 제안, 견적 요청 모두 환영합니다.",
+  tagline: "패키지 설계, 인쇄 감리, 생산, 해외 협력.\n무엇이든 문의하세요.",
   email: "duwhz1226@studiosig.com",
   phone: "010-7667-6013",
   address: "서울시 마포구 양화로 136, SVC Seoul 402호",

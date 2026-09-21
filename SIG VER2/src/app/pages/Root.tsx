@@ -4,6 +4,7 @@ import { Navigation } from "../components/Navigation";
 import { Footer } from "../components/Footer";
 import { CustomCursor } from "../components/CustomCursor";
 import { FeedbackWidget } from "../components/FeedbackWidget";
+import { LogoIntro } from "../components/LogoIntro";
 import { trackPageView } from "../../lib/analytics/tracker";
 
 export function Root() {
@@ -33,6 +34,7 @@ export function Root() {
 
   return (
     <div style={{ backgroundColor: "#FAFAFA", cursor: isTouchDevice ? "auto" : "none" }}>
+      <LogoIntro />
       {!isTouchDevice && <CustomCursor />}
       <Navigation />
       <main>

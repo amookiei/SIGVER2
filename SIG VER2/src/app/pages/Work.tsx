@@ -157,9 +157,9 @@ export function Work() {
   const filtered = getByCategory(activeCategory);
 
   useSEO({
-    title: "Work | Studio SIG 포트폴리오 — 브랜딩·마케팅·UI/UX",
-    description: "Studio SIG의 포트폴리오를 확인하세요. 다양한 브랜딩·마케팅·UI/UX 프로젝트를 소개합니다.",
-    canonical: "https://studiosig.com/work",
+    title: "Work | 스튜디오 시그 Studio SIG 포트폴리오 — 브랜딩·마케팅·UI/UX",
+    description: "스튜디오 시그(Studio SIG)의 포트폴리오를 확인하세요. 다양한 브랜딩·마케팅·UI/UX 프로젝트를 소개합니다.",
+    canonical: "https://www.studiosig.com/work",
   });
 
   return (

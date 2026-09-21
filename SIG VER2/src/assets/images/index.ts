@@ -21,48 +21,6 @@ export const IMG: Record<
   string,
   { thumbnail: string; heroImage: string; gallery: string[] }
 > = {
-  // ─── 1. hyundai-rebrand ───────────────────────────────────────────────────
-  "hyundai-rebrand": {
-    thumbnail: "/images/projects/hyundai-rebrand/thumb.jpg",
-    heroImage:  "/images/projects/hyundai-rebrand/hero.jpg",
-    gallery: [
-      "/images/projects/hyundai-rebrand/gallery-1.jpg",
-      "/images/projects/hyundai-rebrand/gallery-2.jpg",
-      "/images/projects/hyundai-rebrand/gallery-3.jpg",
-    ],
-  },
-
-  // ─── 2. naver-design-system ──────────────────────────────────────────────
-  "naver-design-system": {
-    thumbnail: "/images/projects/naver-design-system/thumb.jpg",
-    heroImage:  "/images/projects/naver-design-system/hero.jpg",
-    gallery: [
-      "/images/projects/naver-design-system/gallery-1.jpg",
-      "/images/projects/naver-design-system/gallery-2.jpg",
-      "/images/projects/naver-design-system/gallery-3.jpg",
-    ],
-  },
-
-  // ─── 3. samsung-galaxy-campaign ──────────────────────────────────────────
-  "samsung-galaxy-campaign": {
-    thumbnail: "/images/projects/samsung-galaxy-campaign/thumb.jpg",
-    heroImage:  "/images/projects/samsung-galaxy-campaign/hero.jpg",
-    gallery: [
-      "/images/projects/samsung-galaxy-campaign/gallery-1.jpg",
-      "/images/projects/samsung-galaxy-campaign/gallery-2.jpg",
-    ],
-  },
-
-  // ─── 4. kakao-brand-kit ──────────────────────────────────────────────────
-  "kakao-brand-kit": {
-    thumbnail: "/images/projects/kakao-brand-kit/thumb.jpg",
-    heroImage:  "/images/projects/kakao-brand-kit/hero.jpg",
-    gallery: [
-      "/images/projects/kakao-brand-kit/gallery-1.jpg",
-      "/images/projects/kakao-brand-kit/gallery-2.jpg",
-    ],
-  },
-
   // ─── 5. seoul-city-portal ────────────────────────────────────────────────
   "seoul-city-portal": {
     thumbnail: "/images/projects/seoul-city-portal/thumb.jpg",

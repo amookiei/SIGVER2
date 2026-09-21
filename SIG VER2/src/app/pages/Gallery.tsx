@@ -295,9 +295,9 @@ function FilterBar({
 // ─── Gallery Page ──────────────────────────────────────────
 export function Gallery() {
   useSEO({
-    title: "Gallery | Studio SIG — 디자인 작업 갤러리",
+    title: "Gallery | 스튜디오 시그 Studio SIG — 디자인 작업 갤러리",
     description: "Studio SIG의 브랜딩, 마케팅, UI/UX 디자인 작업 갤러리입니다. 다양한 프로젝트 비주얼을 확인하세요.",
-    canonical: "https://studiosig.com/gallery",
+    canonical: "https://www.studiosig.com/gallery",
   });
 
   const { data, loading } = useGallery();

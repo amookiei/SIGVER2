@@ -12,6 +12,7 @@ import { AdminResearch } from "./AdminResearch";
 import { AdminSQL } from "./AdminSQL";
 import type { PortfolioItem, ContentBlock } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
+import { useSEO } from "../hooks/useSEO";
 
 // ─── Design tokens ────────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -1201,6 +1202,8 @@ function EditModal({
 export function Admin() {
   const navigate = useNavigate();
   const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
+
+  useSEO({ title: "SIG Admin", noindex: true });
 
   const [adminPage, setAdminPage] = useState<
     "dashboard" | "experiments" | "research" | "sql" | "portfolio" | "about" | "home" | "gallery" | "space" | "contact"

@@ -4,9 +4,17 @@ interface SEOProps {
   title: string;
   description?: string;
   canonical?: string;
+  /** 페이지별 JSON-LD 구조화 데이터 (예: BreadcrumbList, CreativeWork) */
+  jsonLd?: Record<string, unknown>;
+  /** true 시 검색엔진 인덱스 제외 (관리자 페이지 등) */
+  noindex?: boolean;
 }
 
-export function useSEO({ title, description, canonical }: SEOProps) {
+const JSONLD_ID = "page-jsonld";
+
+export function useSEO({ title, description, canonical, jsonLd, noindex }: SEOProps) {
+  const jsonLdStr = jsonLd ? JSON.stringify(jsonLd) : undefined;
+
   useEffect(() => {
     document.title = title;
 
@@ -30,6 +38,23 @@ export function useSEO({ title, description, canonical }: SEOProps) {
     if (canonical) {
       const link = document.querySelector('link[rel="canonical"]');
       if (link) link.setAttribute("href", canonical);
+
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute("content", canonical);
     }
-  }, [title, description, canonical]);
+
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots) robots.setAttribute("content", noindex ? "noindex, nofollow" : "index, follow");
+
+    // 페이지별 JSON-LD: 기존 것 제거 후 새로 주입
+    const prev = document.getElementById(JSONLD_ID);
+    if (prev) prev.remove();
+    if (jsonLdStr) {
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.id = JSONLD_ID;
+      script.textContent = jsonLdStr;
+      document.head.appendChild(script);
+    }
+  }, [title, description, canonical, jsonLdStr, noindex]);
 }

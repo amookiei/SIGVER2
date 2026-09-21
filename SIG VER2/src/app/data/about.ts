@@ -40,11 +40,11 @@ export interface AboutData {
 export const defaultAboutData: AboutData = {
   studio: {
     headline1: "WE MAKE",
-    headline2: "BRANDS MOVE.",
+    headline2: "BRANDS REAL.",
     description1:
-      "STUDIO SIG는 2024년 서울에서 시작된 디자인 에이전시입니다. 브랜드 아이덴티티, 디지털 경험, 마케팅 캠페인까지 브랜드가 살아 숨쉬는 순간을 만들어냅니다.",
+      "스튜디오 시그(STUDIO SIG, 법인명 시그코퍼레이션)는 브랜드와 패키지 설계를 생산의 언어로 번역합니다. 규격은 생산 기준으로 잡고, 색은 제판 전에 시뮬레이션하고, 현장에서는 측색값으로 판정합니다.",
     description2:
-      "정부지원사업부터 대기업 리브랜딩까지 다양한 클라이언트와 협업하며, 문제를 해결하는 디자인을 만들어냅니다.",
+      "공정별 제조 파트너, 해외 생산 파트너와 같은 문서·같은 기준으로 일합니다. 이 과정에서 반복된 문제를 풀기 위해 웹 패키지 스튜디오 siging을 직접 만들었습니다.",
   },
   stats: [
     { num: "8+",   label: "Years"    },
@@ -56,46 +56,21 @@ export const defaultAboutData: AboutData = {
     {
       id: "v1",
       num: "01",
-      title: "본질에 집중",
-      desc: "우리는 비주얼만 만드는 게 아닙니다. 브랜드의 본질을 깊이 이해하고 그것을 가장 직관적인 방식으로 표현합니다.",
+      title: "설계가 생산을 안다",
+      desc: "예쁜 시안이 아니라 만들어지는 시안을 그립니다. 칼선·실링·거싯·블리드를 규격에서 출발해 설계하고, 3D 목업으로 실물을 먼저 확인합니다.",
     },
     {
       id: "v2",
       num: "02",
-      title: "경험을 설계",
-      desc: "모든 터치포인트가 하나의 경험으로 연결되도록 설계합니다. 로고부터 디지털 프로덕트까지 일관된 브랜드 세계를 구축합니다.",
+      title: "감리로 증명한다",
+      desc: "색은 감이 아니라 숫자로 판정합니다. 색판을 계획하고 핀트와 라미 변화를 제판 전에 시뮬레이션하며, 현장에서는 ΔE 측색으로 합격을 결정합니다.",
     },
     {
       id: "v3",
       num: "03",
-      title: "함께 성장",
-      desc: "클라이언트와의 파트너십을 중시합니다. 단순한 용역이 아닌, 장기적인 브랜드 성장을 함께 만들어 갑니다.",
+      title: "국경 없는 기준",
+      desc: "규격·색 기준·감리 절차를 문서로 시스템화해 해외 파트너와도 같은 품질을 재현합니다. 수출 표기 검수와 적재 계획까지 한 흐름으로 잇습니다.",
     },
   ],
-  team: [
-    {
-      id: "t1",
-      name: "김지훈",
-      role: "Creative Director",
-      desc: "10년 경력의 브랜드 디자이너. 삼성, 현대 등 대형 클라이언트와 협업.",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-    },
-    {
-      id: "t2",
-      name: "박서연",
-      role: "UX Lead",
-      desc: "사용자 중심 디자인의 전문가. 복잡한 서비스를 단순하게 만드는 것이 특기.",
-      image:
-        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-    },
-    {
-      id: "t3",
-      name: "이민우",
-      role: "Motion Designer",
-      desc: "인터랙션과 모션 디자인 전문. GSAP, After Effects 고수.",
-      image:
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-    },
-  ],
+  team: [],
 };

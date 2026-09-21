@@ -7,6 +7,7 @@ import { WorkDetail } from "./pages/WorkDetail";
 import { About } from "./pages/About";
 import { Gallery } from "./pages/Gallery";
 import { Space } from "./pages/Space";
+import { Siging } from "./pages/Siging";
 import { Contact } from "./pages/Contact";
 import { Admin } from "./pages/Admin";
 
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
       { path: "about", Component: About },
       { path: "gallery", Component: Gallery },
       { path: "space", Component: Space },
+      { path: "siging", Component: Siging },
       { path: "contact", Component: Contact },
     ],
   },
