@@ -16,8 +16,8 @@ export function About() {
   const { studio, stats, values, team } = about;
 
   useSEO({
-    title: "About | 스튜디오 시그 Studio SIG — 서울 홍대 브랜딩 에이전시",
-    description: "스튜디오 시그(Studio SIG, 법인명 시그코퍼레이션)는 서울 마포구 홍대 기반의 브랜딩·마케팅 에이전시입니다. 디자인 구독 서비스, 브랜드 아이덴티티, 퍼포먼스 마케팅, UI/UX 디자인을 제공합니다.",
+    title: "About | 스튜디오 시그 Studio SIG — 패키지 설계·인쇄 감리·생산 파트너",
+    description: "스튜디오 시그(Studio SIG, 법인명 시그코퍼레이션)는 브랜드·패키지 설계, 그라비아 인쇄 감리, 제조 파트너 생산, 해외 협력을 연결하는 서울의 패키지 솔루션 회사입니다. 자체 패키지 스튜디오 siging을 개발·운영합니다.",
     canonical: "https://www.studiosig.com/about",
   });
 
@@ -151,6 +151,7 @@ export function About() {
       </section>
 
       {/* ── Team ── */}
+      {team.length > 0 && (
       <section style={{ backgroundColor: DARK }}>
         <div
           className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between"
@@ -248,6 +249,7 @@ export function About() {
           </div>
         )}
       </section>
+      )}
 
       {/* ── Client Showreel ── */}
       <section id="clients" style={{ position: "relative", overflow: "hidden", backgroundColor: "#0D0D0D" }}>

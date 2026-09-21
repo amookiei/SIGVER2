@@ -220,7 +220,7 @@ export function Footer() {
               >
                 Services
               </p>
-              {["Branding & Identity", "Web & Digital Design", "Marketing Campaign", "Government Support"].map((item) => (
+              {["Brand & Package Design", "Prepress & Print Supervision", "Production Partners", "Global Cooperation", "Siging — Package Studio"].map((item) => (
                 <div key={item} style={{ marginBottom: "12px" }}>
                   <span style={{ fontFamily: F, fontSize: "14px", color: "#555555" }}>
                     {item}
@@ -299,7 +299,7 @@ export function Footer() {
           {/* 사업자 정보 — 브랜드 검색(스튜디오 시그·시그코퍼레이션) 노출용 */}
           <div className="pt-6">
             <span style={{ fontFamily: F, fontSize: "12px", color: "#444444", letterSpacing: "0.02em", lineHeight: 1.7 }}>
-              스튜디오 시그 (Studio SIG) · 법인명 시그코퍼레이션 | 서울특별시 마포구 (홍대) | 디자인 구독 · 브랜딩 · 마케팅 에이전시
+              스튜디오 시그 (Studio SIG) · 법인명 시그코퍼레이션 | 서울특별시 마포구 (홍대) | 브랜드·패키지 설계 · 인쇄 감리 · 생산 파트너 · 해외 협력
             </span>
           </div>
 

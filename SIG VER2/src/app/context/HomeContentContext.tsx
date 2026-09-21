@@ -33,37 +33,37 @@ export const defaultHomeContent: HomeContent = {
   services: [
     {
       id: "01",
-      title: "BRANDING\n& IDENTITY",
-      desc: "브랜드 전략 수립부터 시각 아이덴티티까지, 기업의 본질을 정제된 언어로 시각화합니다.",
-      count: "(12)",
+      title: "BRAND &\nPACKAGE",
+      desc: "브랜드 아이덴티티에서 패키지 구조까지. 규격·칼선·소재를 처음부터 생산 기준으로 설계합니다.",
+      count: "(01)",
       image: "https://images.unsplash.com/photo-1658863025658-4a259cc68fc9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
     },
     {
       id: "02",
-      title: "WEB &\nDIGITAL",
-      desc: "반응형 웹, 앱 UI/UX, 인터랙티브 경험 설계. 사용자 중심의 디지털 프로덕트를 만듭니다.",
-      count: "(08)",
+      title: "PREPRESS &\nSUPERVISION",
+      desc: "색판·핀트·라미네이션 변화를 제판 전에 검증하고 현장에서 측색으로 확인하는 인쇄 감리.",
+      count: "(02)",
       image: "https://images.unsplash.com/photo-1750056393331-82e69d28c9d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
     },
     {
       id: "03",
-      title: "MARKETING\nCAMPAIGN",
-      desc: "캠페인, 콘텐츠 제작, 퍼포먼스 마케팅. 브랜드 메시지를 세상에 효과적으로 전달합니다.",
-      count: "(15)",
+      title: "PRODUCTION\nPARTNERS",
+      desc: "연포장·박스·라벨 등 공정별 제조 파트너와 사양서 기준으로 샘플부터 양산까지 관리합니다.",
+      count: "(03)",
       image: "https://images.unsplash.com/photo-1759308553474-ce2c768a6b7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
     },
     {
       id: "04",
-      title: "GOVERNMENT\nSUPPORT",
-      desc: "정부지원사업 기반 예산 디자인 실행 최적화.",
-      count: "(21)",
+      title: "GLOBAL\nCOOPERATION",
+      desc: "규격·색 기준·감리 절차를 문서화해 해외 파트너와도 같은 품질을 재현합니다.",
+      count: "(04)",
       image: "https://images.unsplash.com/photo-1758384077411-6a06e201a177?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
     },
   ],
   aboutImage:
     "https://images.unsplash.com/photo-1765371513276-a74f1ecbcf7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-  aboutLine1: "STUDIO SIG는 디자인이 단순한 비주얼이 아닌, 비즈니스 전략이 되는 순간을 만듭니다.",
-  aboutLine2: "전문 디자인 파트너로서, 효율적인 예산 운용과 최대의 결과를 도출합니다.",
+  aboutLine1: "스튜디오 시그는 브랜드와 패키지 설계를 생산 현장의 언어로 번역합니다.",
+  aboutLine2: "인쇄 감리와 제조 파트너 네트워크로, 시안이 실물이 되는 순간까지 책임집니다.",
 };
 
 const CACHE_KEY = "sig_home_content";

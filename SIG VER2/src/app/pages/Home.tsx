@@ -3,17 +3,16 @@ import { Link } from "react-router";
 import { useGallery } from "../context/GalleryContext";
 import { useSEO } from "../hooks/useSEO";
 import { useExperiment } from "../hooks/useExperiment";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  AnimatePresence,
-} from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import { LogoSymbol } from "../components/LogoSymbol";
 import { useAdmin } from "../context/AdminContext";
 import { useHomeContent } from "../context/HomeContentContext";
 import type { HomeClient } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
+import { capabilities, processSteps, sigingFeatures, SIGING_URL } from "../data/capabilities";
+import { DielineArt } from "../components/DielineArt";
+import { getIntroDelay } from "../components/LogoIntro";
+import sigingMark from "../../assets/images/siging-mark.svg";
 
 // ─── Design tokens ───────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -23,6 +22,8 @@ const BG = "#FAFAFA";
 const CREAM = "#F5F3EF";
 const TEXT2 = "#666666";
 const TEXT3 = "#999999";
+const EASE = [0.76, 0, 0.24, 1] as const;
+const SIGING_GRAD = "linear-gradient(135deg, #f78f4e 0%, #ef4c90 50%, #7a59a6 100%)";
 
 // ─── Row layout grouping ──────────────────────────────────
 type RowConfig =
@@ -463,6 +464,286 @@ function HomeWorkCard({ item, index }: { item: PortfolioItem; index: number }) {
   );
 }
 
+// ─── CAPABILITIES ─────────────────────────────────────────
+function CapabilitiesSection() {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <section id="capabilities" style={{ borderBottom: BORDER }}>
+      <div className="px-8 md:px-16 lg:px-28 py-10 flex items-center justify-between" style={{ borderBottom: BORDER }}>
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(20px, 3vw, 36px)", color: DARK, letterSpacing: "-0.02em", textTransform: "uppercase", margin: 0 }}
+        >
+          What we connect
+        </motion.h2>
+        <span style={{ fontFamily: F, fontSize: "12px", color: TEXT3, letterSpacing: "0.1em" }}>({String(capabilities.length).padStart(2, "0")})</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        {capabilities.map((c, i) => {
+          const on = active === c.id;
+          return (
+            <motion.div
+              key={c.id}
+              className="px-8 md:px-10 py-12"
+              onMouseEnter={() => setActive(c.id)}
+              onMouseLeave={() => setActive(null)}
+              data-cursor="hover-link"
+              animate={{ backgroundColor: on ? DARK : BG }}
+              transition={{ duration: 0.35 }}
+              style={{
+                borderRight: BORDER,
+                borderBottom: BORDER,
+                minHeight: "400px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: "40px",
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.55, delay: i * 0.08 }}
+              >
+                <p style={{ fontFamily: F, fontSize: "11px", color: on ? "#777" : TEXT3, letterSpacing: "0.12em", marginBottom: "22px" }}>{c.num}</p>
+                <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(24px, 2.2vw, 30px)", color: on ? BG : DARK, letterSpacing: "-0.03em", lineHeight: 1.0, margin: "0 0 12px", whiteSpace: "pre-line", textTransform: "uppercase" }}>
+                  {c.title}
+                </h3>
+                <p style={{ fontFamily: F, fontSize: "13px", color: on ? "#9A9A9A" : TEXT3, letterSpacing: "0.02em", margin: 0 }}>{c.titleKo}</p>
+              </motion.div>
+              <div>
+                <p style={{ fontFamily: F, fontSize: "14px", color: on ? "#BDBDBD" : TEXT2, lineHeight: 1.75, margin: "0 0 18px" }}>{c.desc}</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {c.items.map((it) => (
+                    <li key={it} style={{ fontFamily: F, fontSize: "12.5px", color: on ? "#8A8A8A" : TEXT3, lineHeight: 1.9, display: "flex", gap: "10px" }}>
+                      <span style={{ color: on ? "#555" : "#CCC" }}>—</span>
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+// ─── PROCESS ──────────────────────────────────────────────
+function ProcessSection() {
+  return (
+    <section id="process" style={{ borderBottom: BORDER, backgroundColor: CREAM }}>
+      <div className="px-8 md:px-16 lg:px-28 py-20 md:py-28">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
+          <div>
+            <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px" }}>Process</p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: EASE }}
+              style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(28px, 3.8vw, 48px)", color: DARK, letterSpacing: "-0.03em", lineHeight: 1.05, margin: 0 }}
+            >
+              시안이 실물이 되기까지,<br />다섯 번의 검증.
+            </motion.h2>
+          </div>
+          <motion.p
+            className="md:col-span-2"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
+            style={{ fontFamily: F, fontSize: "15px", color: TEXT2, lineHeight: 1.85, margin: 0, maxWidth: "620px" }}
+          >
+            디자인이 끝나는 곳에서 우리 일이 시작됩니다. 규격과 칼선은 생산 기준으로 잡고, 색은 제판 전에 시뮬레이션하고,
+            현장에서는 측색값으로 판정합니다. 해외 파트너와 일할 때도 같은 문서와 같은 기준을 씁니다.
+          </motion.p>
+        </div>
+
+        <div style={{ position: "relative" }}>
+          <div className="hidden md:block" style={{ position: "absolute", top: "14px", left: 0, right: 0, height: "1px", backgroundColor: "#D8D5CF" }} />
+          <motion.div
+            className="hidden md:block"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 1.8, ease: EASE }}
+            style={{ position: "absolute", top: "14px", left: 0, right: 0, height: "1px", backgroundColor: DARK, transformOrigin: "left center" }}
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-12">
+            {processSteps.map((step, i) => (
+              <motion.div
+                key={step.num}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.55, delay: 0.25 + i * 0.22 }}
+                style={{ position: "relative" }}
+              >
+                <div
+                  style={{
+                    width: "29px",
+                    height: "29px",
+                    borderRadius: "50%",
+                    border: `1px solid ${DARK}`,
+                    backgroundColor: CREAM,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: F,
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    color: DARK,
+                    letterSpacing: "0.04em",
+                    marginBottom: "26px",
+                  }}
+                >
+                  {step.num}
+                </div>
+                <h3 style={{ fontFamily: F, fontWeight: 700, fontSize: "20px", color: DARK, letterSpacing: "-0.02em", margin: "0 0 10px" }}>{step.title}</h3>
+                <p style={{ fontFamily: F, fontSize: "13.5px", color: TEXT2, lineHeight: 1.7, margin: "0 0 14px" }}>{step.desc}</p>
+                {step.tool && (
+                  <span style={{ fontFamily: F, fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: BG, background: SIGING_GRAD, padding: "5px 9px", display: "inline-block" }}>
+                    {step.tool}
+                  </span>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── SIGING PRODUCT ───────────────────────────────────────
+function SigingSection() {
+  return (
+    <section id="siging" style={{ backgroundColor: DARK, position: "relative", overflow: "hidden" }}>
+      <div className="px-8 md:px-16 lg:px-28 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+        <div>
+          <motion.div
+            className="flex items-center gap-3"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            style={{ marginBottom: "28px" }}
+          >
+            <img src={sigingMark} alt="siging" width={26} height={26} style={{ display: "block" }} />
+            <span style={{ fontFamily: F, fontSize: "11px", color: "#777", letterSpacing: "0.14em", textTransform: "uppercase" }}>Our product · siging.kr</span>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: EASE }}
+            style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(32px, 4.6vw, 62px)", color: BG, letterSpacing: "-0.04em", lineHeight: 1.0, margin: "0 0 24px" }}
+          >
+            규격을 넣으면<br />칼선과 3D 목업이<br />
+            <span style={{ background: SIGING_GRAD, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>바로 만들어집니다.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            style={{ fontFamily: F, fontSize: "15px", color: "#9A9A9A", lineHeight: 1.85, margin: "0 0 30px", maxWidth: "520px" }}
+          >
+            siging은 시그코퍼레이션이 직접 현장 감리에 쓰기 위해 만든 웹 패키지 스튜디오입니다. 샘플을 만들기 전에 화면에서
+            검증하고, 상세페이지 이미지·적재 계획·그라비아 인쇄 감리까지 한 곳에서 끝냅니다. 기본 기능은 무료입니다.
+          </motion.p>
+          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 36px", borderTop: "1px solid #262626" }}>
+            {sigingFeatures.slice(0, 4).map((f, i) => (
+              <motion.li
+                key={f.title}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: 0.2 + i * 0.07 }}
+                style={{ display: "flex", gap: "14px", alignItems: "baseline", padding: "13px 0", borderBottom: "1px solid #262626" }}
+              >
+                <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: SIGING_GRAD, flexShrink: 0, transform: "translateY(-2px)" }} />
+                <span style={{ fontFamily: F, fontSize: "14.5px", color: "#DADADA", lineHeight: 1.5 }}>{f.title}</span>
+              </motion.li>
+            ))}
+          </ul>
+          <motion.div
+            className="flex flex-wrap gap-3"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <Link to="/siging" data-cursor="hover-button">
+              <motion.span
+                style={{ display: "inline-block", fontFamily: F, fontWeight: 700, fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", padding: "16px 32px", color: DARK, background: BG, border: `1px solid ${BG}` }}
+                whileHover={{ background: "rgba(250,250,250,0)", color: BG }}
+                transition={{ duration: 0.25 }}
+              >
+                자세히 보기 →
+              </motion.span>
+            </Link>
+            <a href={SIGING_URL} target="_blank" rel="noopener noreferrer" data-cursor="hover-button">
+              <motion.span
+                style={{ display: "inline-block", fontFamily: F, fontWeight: 700, fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", padding: "16px 32px", color: BG, background: "transparent", border: "1px solid #444" }}
+                whileHover={{ borderColor: BG }}
+                transition={{ duration: 0.25 }}
+              >
+                siging.kr ↗
+              </motion.span>
+            </a>
+          </motion.div>
+        </div>
+
+        {/* 칼선 드로잉 */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, ease: EASE }}
+          style={{ position: "relative", maxWidth: "520px", width: "100%", justifySelf: "center" }}
+        >
+          <div style={{ border: "1px solid #262626", backgroundColor: "#111111", padding: "clamp(20px, 4vw, 44px)" }}>
+            <div className="flex items-center justify-between" style={{ marginBottom: "18px" }}>
+              <span style={{ fontFamily: F, fontSize: "10px", color: "#666", letterSpacing: "0.14em", textTransform: "uppercase" }}>Stand-up pouch · dieline</span>
+              <span style={{ fontFamily: F, fontSize: "10px", color: "#666", letterSpacing: "0.14em" }}>150 × 200 · G30</span>
+            </div>
+            <DielineArt color="#FAFAFA" muted="#5A5A5A" />
+          </div>
+          {/* 질소 충전 인디케이터 */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 2.2 }}
+            style={{ position: "absolute", top: "-14px", right: "-8px", background: "#0D0D0D", border: "1px solid #333", padding: "10px 14px", minWidth: "150px" }}
+          >
+            <div className="flex items-center justify-between" style={{ marginBottom: "8px" }}>
+              <span style={{ fontFamily: F, fontSize: "10px", color: "#888", letterSpacing: "0.12em", textTransform: "uppercase" }}>N₂ Fill</span>
+              <span style={{ fontFamily: F, fontSize: "11px", fontWeight: 700, color: BG }}>72%</span>
+            </div>
+            <div style={{ height: "3px", background: "#2A2A2A", overflow: "hidden" }}>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 0.72 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, delay: 2.4, ease: EASE }}
+                style={{ height: "100%", background: SIGING_GRAD, transformOrigin: "left center" }}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 // ─── SELECTED WORKS SECTION ───────────────────────────────
 function SelectedWorksSection() {
   const { getFeatured, items } = useAdmin();
@@ -533,22 +814,8 @@ function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [soundOn, setSoundOn] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [introVisible, setIntroVisible] = useState(true);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  // 최초 1회만 표시 후 자동으로 사라짐
-  useEffect(() => {
-    if (!isMobile) return;
-    const t = setTimeout(() => setIntroVisible(false), 2000);
-    return () => clearTimeout(t);
-  }, [isMobile]);
+  // 첫 방문 로고 인트로가 끝난 뒤 헤드라인이 등장하도록 지연
+  const introDelay = getIntroDelay();
 
   // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 완전 제거)
   useEffect(() => {
@@ -610,10 +877,54 @@ function HeroSection() {
         borderBottom: BORDER,
       }}
     >
-      {/* SEO: 화면에는 보이지 않는 메인 헤딩 (스크린리더·검색엔진용) */}
-      <h1 className="sr-only">
-        스튜디오 시그 Studio SIG — 디자인 구독 서비스 · 브랜딩·마케팅 에이전시 서울 (시그코퍼레이션)
-      </h1>
+      {/* 스크림 */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          pointerEvents: "none",
+          background: "linear-gradient(180deg, rgba(13,13,13,0.18) 0%, rgba(13,13,13,0) 30%, rgba(13,13,13,0.78) 100%)",
+        }}
+      />
+
+      {/* 헤드라인 */}
+      <div
+        className="px-8 md:px-16 lg:px-28"
+        style={{ position: "absolute", left: 0, right: 0, bottom: "clamp(44px, 9vh, 104px)", zIndex: 2 }}
+      >
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: introDelay + 0.1 }}
+          style={{ fontFamily: F, fontSize: "11px", color: "rgba(250,250,250,0.6)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "18px" }}
+        >
+          Brand · Package · Production · Global
+        </motion.p>
+        <h1 style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(34px, 6.4vw, 92px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.98, margin: 0 }}>
+          {["브랜드에서 생산까지,", "한 팀이 끝까지 책임집니다."].map((line, i) => (
+            <span key={i} style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}>
+              <motion.span
+                initial={{ y: "110%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.9, delay: introDelay + 0.15 + i * 0.1, ease: EASE }}
+                style={{ display: "block" }}
+              >
+                {line}
+              </motion.span>
+            </span>
+          ))}
+        </h1>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: introDelay + 0.55 }}
+          style={{ fontFamily: F, fontSize: "clamp(13px, 1.3vw, 16px)", color: "rgba(250,250,250,0.72)", lineHeight: 1.7, maxWidth: "560px", marginTop: "22px" }}
+        >
+          스튜디오 시그(시그코퍼레이션)는 브랜드·패키지 설계, 그라비아 인쇄 감리, 제조 파트너 생산, 해외 협력을
+          하나의 흐름으로 연결합니다. 자체 개발 패키지 스튜디오 <em style={{ fontStyle: "normal", color: "#FAFAFA" }}>siging</em>으로 시안이 실물이 되는 과정을 검증합니다.
+        </motion.p>
+      </div>
 
       {/* 배경 영상 */}
       {BG_VIDEO && (
@@ -641,75 +952,6 @@ function HeroSection() {
           <source src={BG_VIDEO} type="video/mp4" />
         </video>
       )}
-      {/* 모바일: 로딩 인트로 오버레이 */}
-      <AnimatePresence>
-        {isMobile && introVisible && (
-          <motion.div
-            key="mobile-intro"
-            style={{
-              position: "absolute",
-              inset: 0,
-              zIndex: 5,
-              background: "rgba(220,220,220,0.45)",
-              backdropFilter: "blur(28px)",
-              WebkitBackdropFilter: "blur(28px)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              pointerEvents: "none",
-              gap: "18px",
-            }}
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.6, ease: "easeInOut" } }}
-          >
-            {/* 스피너 */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              style={{ position: "relative", width: 56, height: 56 }}
-            >
-              <svg
-                width="56" height="56" viewBox="0 0 56 56"
-                style={{ position: "absolute", inset: 0 }}
-              >
-                {/* 배경 원 */}
-                <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
-                {/* 스피너 호 */}
-                <motion.circle
-                  cx="28" cy="28" r="24"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.85)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeDasharray="150.796"
-                  strokeDashoffset="113"
-                  style={{ transformOrigin: "28px 28px" }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
-                />
-              </svg>
-            </motion.div>
-            {/* 텍스트 */}
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-              style={{
-                fontFamily: F,
-                fontSize: "13px",
-                fontWeight: 400,
-                color: "#FFFFFF",
-                letterSpacing: "0.04em",
-                margin: 0,
-              }}
-            >
-              Standard of Innovation, Global Leader
-            </motion.p>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* 배경 음악 */}
       {BG_SOUND && (
@@ -769,7 +1011,7 @@ function HeroSection() {
 }
 
 // ─── MARQUEE ──────────────────────────────────────────────
-const marqueeItems = ["BRANDING", "WEB DESIGN", "CAMPAIGN", "STRATEGY", "UX/UI", "MOTION", "EDITORIAL", "IDENTITY"];
+const marqueeItems = ["BRAND", "PACKAGE", "DIELINE", "GRAVURE", "SUPERVISION", "PRODUCTION", "GLOBAL", "SIGING"];
 
 function MarqueeSection() {
   const [hovered, setHovered] = useState(false);
@@ -1073,7 +1315,7 @@ function CTASection() {
       </div>
       <div className="relative z-10 px-8 md:px-16 lg:px-28 py-28 md:py-40">
         <div className="max-w-[900px]">
-          {["READY TO", "START YOUR", "PROJECT?"].map((line, i) => (
+          {["READY TO", "MAKE IT", "REAL?"].map((line, i) => (
             <motion.h2
               key={i}
               initial={{ opacity: 0, y: 40 }}
@@ -1106,7 +1348,7 @@ function CTASection() {
         </div>
       </div>
       <div style={{ borderTop: "1px solid #1F1F1F" }} className="flex justify-between items-center px-8 md:px-16 lg:px-28 py-4">
-        <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>DESIGN AGENCY · SEOUL</span>
+        <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>BRAND · PACKAGE · PRODUCTION · SEOUL</span>
         <span style={{ fontFamily: F, fontSize: "12px", color: "#333333", letterSpacing: "0.06em" }}>duwhz1226@studiosig.com</span>
       </div>
     </section>
@@ -1116,8 +1358,8 @@ function CTASection() {
 // ─── HOME PAGE ────────────────────────────────────────────
 export function Home() {
   useSEO({
-    title: "스튜디오 시그 Studio SIG | 디자인 구독 서비스 · 브랜딩·마케팅 에이전시 서울",
-    description: "스튜디오 시그(Studio SIG, 시그코퍼레이션)는 월정액 디자인 구독 서비스를 제공하는 서울의 브랜딩 에이전시입니다. 디자이너 구독, 무제한 디자인 요청, 브랜드 아이덴티티, 퍼포먼스 마케팅까지 스타트업부터 대기업까지 함께합니다.",
+    title: "스튜디오 시그 Studio SIG | 브랜드·패키지 설계부터 인쇄 감리·생산·해외 협력까지",
+    description: "스튜디오 시그(Studio SIG, 시그코퍼레이션)는 브랜드·패키지 설계, 그라비아 인쇄 감리, 제조 파트너 생산, 해외 협력을 하나로 연결하는 서울의 패키지 솔루션 회사입니다. 자체 개발 패키지 스튜디오 siging으로 칼선·3D 목업·감리를 검증합니다.",
     canonical: "https://www.studiosig.com/",
   });
 
@@ -1125,6 +1367,9 @@ export function Home() {
     <div style={{ backgroundColor: BG }}>
       <HeroSection />
       <MarqueeSection />
+      <CapabilitiesSection />
+      <ProcessSection />
+      <SigingSection />
       <SelectedWorksSection />
       <ClientsSection />
       <GalleryPreviewSection />

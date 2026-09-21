@@ -55,6 +55,7 @@ function generateSitemap(items) {
   const staticRoutes = [
     { loc: "/", priority: "1.0", changefreq: "weekly" },
     { loc: "/work", priority: "0.9", changefreq: "weekly" },
+    { loc: "/siging", priority: "0.9", changefreq: "monthly" },
     { loc: "/about", priority: "0.85", changefreq: "monthly" },
     { loc: "/contact", priority: "0.8", changefreq: "monthly" },
     { loc: "/gallery", priority: "0.75", changefreq: "weekly" },
@@ -239,6 +240,7 @@ try {
   const routes = [
     "/",
     "/work",
+    "/siging",
     "/about",
     "/contact",
     "/gallery",
