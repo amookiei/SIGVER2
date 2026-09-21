@@ -11,7 +11,6 @@ import type { HomeClient } from "../context/HomeContentContext";
 import type { PortfolioItem } from "../data/portfolio";
 import { capabilities, processSteps, sigingHighlights, SIGING_URL } from "../data/capabilities";
 import { DielineArt } from "../components/DielineArt";
-import { getIntroDelay } from "../components/LogoIntro";
 import sigingMark from "../../assets/images/siging-mark.svg";
 
 // ─── Design tokens ───────────────────────────────────────
@@ -820,8 +819,6 @@ function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [soundOn, setSoundOn] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
-  // 첫 방문 로고 인트로가 끝난 뒤 헤드라인이 등장하도록 지연
-  const introDelay = getIntroDelay();
 
   // 비디오 강제 자동 재생 (iOS Safari 재생 버튼 완전 제거)
   useEffect(() => {
@@ -883,55 +880,10 @@ function HeroSection() {
         borderBottom: BORDER,
       }}
     >
-      {/* 스크림 */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 1,
-          pointerEvents: "none",
-          background: "linear-gradient(180deg, rgba(13,13,13,0.18) 0%, rgba(13,13,13,0) 30%, rgba(13,13,13,0.78) 100%)",
-        }}
-      />
-
-      {/* 헤드라인 */}
-      <div
-        className="px-8 md:px-16 lg:px-28"
-        style={{ position: "absolute", left: 0, right: 0, bottom: "clamp(44px, 9vh, 104px)", zIndex: 2 }}
-      >
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: introDelay + 0.1 }}
-          style={{ fontFamily: F, fontSize: "11px", color: "rgba(250,250,250,0.6)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "18px" }}
-        >
-          Brand · Package · Production · Global
-        </motion.p>
-        <h1 style={{ fontFamily: F, fontWeight: 700, fontSize: "clamp(34px, 6.4vw, 92px)", color: "#FAFAFA", letterSpacing: "-0.04em", lineHeight: 0.98, margin: 0 }}>
-          {["브랜드에서 생산까지,", "한 팀이 끝까지."].map((line, i) => (
-            <span key={i} style={{ display: "block", overflow: "hidden", paddingBottom: "0.06em" }}>
-              <motion.span
-                initial={{ y: "110%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 0.9, delay: introDelay + 0.15 + i * 0.1, ease: EASE }}
-                style={{ display: "block" }}
-              >
-                {line}
-              </motion.span>
-            </span>
-          ))}
-        </h1>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: introDelay + 0.55 }}
-          style={{ fontFamily: F, fontSize: "clamp(13px, 1.3vw, 16px)", color: "rgba(250,250,250,0.72)", lineHeight: 1.7, maxWidth: "560px", marginTop: "22px" }}
-        >
-          설계부터 감리, 생산, 해외 협력까지 한 흐름으로.
-          <br />
-          자체 개발 툴 <em style={{ fontStyle: "normal", color: "#FAFAFA" }}>siging</em>으로 실물이 되기 전에 검증합니다.
-        </motion.p>
-      </div>
+      {/* SEO: 화면에는 보이지 않는 메인 헤딩 (스크린리더·검색엔진용) */}
+      <h1 className="sr-only">
+        스튜디오 시그 Studio SIG — 브랜드·패키지 설계, 인쇄 감리, 생산 파트너, 해외 협력 (시그코퍼레이션)
+      </h1>
 
       {/* 배경 영상 */}
       {BG_VIDEO && (
