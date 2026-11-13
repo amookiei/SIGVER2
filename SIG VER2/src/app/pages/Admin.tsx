@@ -13,6 +13,7 @@ import { AdminSQL } from "./AdminSQL";
 import type { PortfolioItem, ContentBlock } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 import { useSEO } from "../hooks/useSEO";
+import { findSlugOwner, makeUniqueSlug } from "../../lib/portfolio/slug";
 
 // ─── Design tokens ────────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -607,6 +608,11 @@ function EditModal({
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  // 슬러그 중복 검사 — 수정 중인 항목 자신은 제외
+  const currentId = isAdding ? undefined : form.id;
+  const takenSlugs = allItems.filter((i) => i.id !== currentId).map((i) => i.slug);
+  const slugOwner = form.slug ? findSlugOwner(form.slug, allItems, currentId) : undefined;
+
   async function handleUpload(file: File, key: string, onSuccess: (url: string) => void) {
     if (!file.type.match(/jpeg|jpg/)) {
       setUploadError("JPG 파일만 업로드 가능합니다.");
@@ -827,21 +833,40 @@ function EditModal({
                   />
                 </Field>
                 <Field label="슬러그 (Slug)">
-                  <input
-                    style={inputStyle}
-                    value={form.slug}
-                    onChange={(e) =>
-                      set(
-                        "slug",
-                        e.target.value
-                          .toLowerCase()
-                          .replace(/\s+/g, "-")
-                          .replace(/[^a-z0-9-]/g, "")  // URL 안전: 영문·숫자·하이픈만
-                          .replace(/-+/g, "-")           // 연속 하이픈 제거
-                      )
-                    }
-                    placeholder="hyundai-rebrand (영문·숫자·하이픈만)"
-                  />
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input
+                      style={{ ...inputStyle, flex: 1, borderColor: slugOwner ? "#CC4422" : undefined }}
+                      value={form.slug}
+                      onChange={(e) =>
+                        set(
+                          "slug",
+                          e.target.value
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")
+                            .replace(/[^a-z0-9-]/g, "")  // URL 안전: 영문·숫자·하이픈만
+                            .replace(/-+/g, "-")           // 연속 하이픈 제거
+                        )
+                      }
+                      placeholder="my-project (영문·숫자·하이픈만)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => set("slug", makeUniqueSlug(form.title || form.slug, takenSlugs))}
+                      title="제목으로 중복되지 않는 슬러그를 만듭니다"
+                      style={{ background: "transparent", border: BORDER, color: TEXT2, fontFamily: F, fontSize: "11px", padding: "0 12px", cursor: "pointer", whiteSpace: "nowrap" }}
+                    >
+                      자동 생성
+                    </button>
+                  </div>
+                  {slugOwner ? (
+                    <p style={{ fontFamily: F, fontSize: "11px", color: "#FF8844", margin: "6px 0 0" }}>
+                      ⚠ "{slugOwner.title}" (ID {slugOwner.id}) 가 이미 이 슬러그를 쓰고 있습니다. 저장이 거부됩니다.
+                    </p>
+                  ) : (
+                    <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, margin: "6px 0 0" }}>
+                      공개 주소: /work/{form.slug || "…"}
+                    </p>
+                  )}
                 </Field>
               </div>
 
@@ -1201,7 +1226,7 @@ function EditModal({
 // ─── Main Admin Page ──────────────────────────────────────
 export function Admin() {
   const navigate = useNavigate();
-  const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault } = useAdmin();
+  const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault, refresh } = useAdmin();
 
   useSEO({ title: "SIG Admin", noindex: true });
 
@@ -1227,20 +1252,28 @@ export function Admin() {
 
   if (!isAdmin) return null;
 
-  const showToast = (msg: string) => {
+  const showToast = (msg: string, ms = 2500) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 2500);
+    setTimeout(() => setToast(null), ms);
   };
 
   const handleSaveEdit = async () => {
     if (!editForm) return;
-    await updateItem(editForm.id, fromForm(editForm));
+    const result = await updateItem(editForm.id, fromForm(editForm));
+    if (!result.ok) {
+      showToast(`⚠ ${result.error}`, 6000);
+      return; // 모달을 닫지 않고 수정할 수 있게 둔다
+    }
     setEditForm(null);
     showToast("저장되었습니다 ✓");
   };
 
   const handleSaveAdd = async () => {
-    await addItem(fromForm(addForm));
+    const result = await addItem(fromForm(addForm));
+    if (!result.ok) {
+      showToast(`⚠ ${result.error}`, 6000);
+      return;
+    }
     setIsAdding(false);
     setAddForm(blankForm());
     showToast("프로젝트가 추가되었습니다 ✓");
@@ -1344,7 +1377,7 @@ export function Admin() {
             </span>
           )}
           {toast && (
-            <span style={{ color: "#4CAF50", fontSize: "12px", letterSpacing: "0.04em" }}>
+            <span style={{ color: toast.startsWith("⚠") ? "#FF8844" : "#4CAF50", fontSize: "12px", letterSpacing: "0.04em" }}>
               {toast}
             </span>
           )}
@@ -1398,6 +1431,15 @@ export function Admin() {
             <p style={{ fontFamily: F, fontSize: "12px", color: "#CC6622", margin: "0 0 6px" }}>
               {dbError}
             </p>
+            {dbError.includes("슬러그") && (
+              <button
+                type="button"
+                onClick={() => refresh()}
+                style={{ background: "transparent", border: "1px solid #663300", color: "#FF8844", fontFamily: F, fontSize: "11px", padding: "4px 10px", cursor: "pointer", marginBottom: "6px" }}
+              >
+                DB 목록 새로고침
+              </button>
+            )}
             {dbError.includes("thumbnail_hover") && (
               <details>
                 <summary style={{ fontFamily: F, fontSize: "11px", color: TEXT3, cursor: "pointer", letterSpacing: "0.06em" }}>
