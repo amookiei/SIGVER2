@@ -59,6 +59,7 @@ import {
 import { logAudit } from "../../lib/security/auditLog";
 import { sanitizeErrorMessage } from "../../lib/security/sanitize";
 import { portfolioItemSchema } from "../../lib/security/validation";
+import { findSlugOwner, friendlyDbError } from "../../lib/portfolio/slug";
 
 // ─── Constants ────────────────────────────────────────────
 const ITEMS_CACHE_KEY = "sig_admin_items";
@@ -169,6 +170,8 @@ export interface LoginResult {
   error?: string;
 }
 
+export type SaveResult = { ok: true } | { ok: false; error: string };
+
 interface AdminContextType {
   isAdmin: boolean;
   login: (pw: string) => Promise<LoginResult>;
@@ -177,8 +180,11 @@ interface AdminContextType {
   loading: boolean;
   dbStatus: "none" | "synced" | "error";
   dbError: string | null;          // 마지막 DB 오류 메시지 (스키마 오류 진단용)
-  updateItem: (id: number, data: Partial<PortfolioItem>) => Promise<void>;
-  addItem: (data: Omit<PortfolioItem, "id">) => Promise<void>;
+  /** 저장 결과. ok=false 면 error 에 사용자에게 보여줄 메시지가 담긴다. */
+  updateItem: (id: number, data: Partial<PortfolioItem>) => Promise<SaveResult>;
+  addItem: (data: Omit<PortfolioItem, "id">) => Promise<SaveResult>;
+  /** DB 에서 목록을 다시 읽어 로컬 캐시와 동기화 */
+  refresh: () => Promise<void>;
   deleteItem: (id: number) => Promise<void>;
   resetToDefault: () => Promise<void>;
   getBySlug: (slug: string) => PortfolioItem | undefined;
@@ -301,49 +307,83 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   };
 
   // ── CRUD (최소권한: isAdmin 검증) ─────────────────────────
-  const updateItem = async (id: number, data: Partial<PortfolioItem>) => {
-    if (!isAdmin) return;
-    const next = items.map((i) => (i.id === id ? { ...i, ...data } : i));
-    setItems(next);
-
-    if (supabase) {
-      const updated = next.find((i) => i.id === id);
-      if (updated) {
-        const validation = portfolioItemSchema.safeParse(updated);
-        if (!validation.success) { setDbStatus("error"); return; }
-        const { error } = await supabase.from("portfolio_items").upsert(toDB(updated));
-        if (!error) {
-          setDbStatus("synced");
-          setDbError(null);
-          await logAudit({ action: "portfolio.update", resourceId: id });
-        } else {
-          setDbStatus("error");
-          setDbError(error.message ?? "알 수 없는 오류");
-        }
-      }
-    }
+  const fail = (error: string): SaveResult => {
+    setDbStatus("error");
+    setDbError(error);
+    return { ok: false, error };
   };
 
-  const addItem = async (data: Omit<PortfolioItem, "id">) => {
-    if (!isAdmin) return;
-    const id = items.length ? Math.max(...items.map((i) => i.id)) + 1 : 1;
-    const newItem: PortfolioItem = { id, ...data };
-    const validation = portfolioItemSchema.safeParse(newItem);
-    if (!validation.success) { setDbStatus("error"); return; }
-    const next = [...items, newItem];
+  /** 로컬 목록과 DB 양쪽에서 슬러그 충돌을 확인한다. 충돌 시 안내 문구를 돌려준다. */
+  const checkSlugConflict = async (slug: string, excludeId?: number): Promise<string | null> => {
+    const local = findSlugOwner(slug, items, excludeId);
+    if (local) return `슬러그 "${slug}" 는 이미 "${local.title}" 프로젝트가 사용 중입니다. 다른 슬러그를 입력해주세요.`;
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("portfolio_items")
+        .select("id, title")
+        .eq("slug", slug)
+        .limit(1);
+      if (!error && data && data.length > 0 && data[0].id !== excludeId) {
+        // 로컬 캐시에는 없는데 DB 에만 있는 항목 — 캐시가 오래된 상태이므로 다시 읽는다
+        void fetchFromDB();
+        return `슬러그 "${slug}" 는 DB 에 있는 "${data[0].title}" 프로젝트(ID ${data[0].id})가 이미 사용 중입니다. 목록을 새로고침했으니 확인 후 다른 슬러그를 입력해주세요.`;
+      }
+    }
+    return null;
+  };
+
+  const updateItem = async (id: number, data: Partial<PortfolioItem>): Promise<SaveResult> => {
+    if (!isAdmin) return { ok: false, error: "관리자 권한이 필요합니다." };
+    const prev = items;
+    const updated = { ...(items.find((i) => i.id === id) as PortfolioItem), ...data, id };
+    const validation = portfolioItemSchema.safeParse(updated);
+    if (!validation.success) return fail(validation.error.errors[0]?.message ?? "입력값이 올바르지 않습니다.");
+
+    const conflict = await checkSlugConflict(updated.slug, id);
+    if (conflict) return fail(conflict);
+
+    const next = prev.map((i) => (i.id === id ? updated : i));
     setItems(next);
 
     if (supabase) {
-      const { error } = await supabase.from("portfolio_items").insert(toDB(newItem));
-      if (!error) {
-        setDbStatus("synced");
-        setDbError(null);
-        await logAudit({ action: "portfolio.create", resourceId: id });
-      } else {
-        setDbStatus("error");
-        setDbError(error.message ?? "알 수 없는 오류");
+      const { error } = await supabase.from("portfolio_items").upsert(toDB(updated));
+      if (error) {
+        setItems(prev); // DB 와 어긋나지 않도록 되돌림
+        return fail(friendlyDbError(error.message));
       }
+      await logAudit({ action: "portfolio.update", resourceId: id });
     }
+    setDbStatus(supabase ? "synced" : "none");
+    setDbError(null);
+    return { ok: true };
+  };
+
+  const addItem = async (data: Omit<PortfolioItem, "id">): Promise<SaveResult> => {
+    if (!isAdmin) return { ok: false, error: "관리자 권한이 필요합니다." };
+
+    const conflict = await checkSlugConflict(data.slug);
+    if (conflict) return fail(conflict);
+
+    // ID 는 로컬 최대값과 DB 최대값 중 큰 쪽 + 1 (캐시가 오래됐을 때의 PK 충돌 방지)
+    let maxId = items.length ? Math.max(...items.map((i) => i.id)) : 0;
+    if (supabase) {
+      const { data: rows } = await supabase.from("portfolio_items").select("id").order("id", { ascending: false }).limit(1);
+      if (rows && rows.length > 0) maxId = Math.max(maxId, Number(rows[0].id));
+    }
+    const newItem: PortfolioItem = { id: maxId + 1, ...data };
+    const validation = portfolioItemSchema.safeParse(newItem);
+    if (!validation.success) return fail(validation.error.errors[0]?.message ?? "입력값이 올바르지 않습니다.");
+
+    if (supabase) {
+      // DB 에 먼저 넣고 성공했을 때만 화면에 반영 — 실패한 항목이 로컬에만 남는 일을 막는다
+      const { error } = await supabase.from("portfolio_items").insert(toDB(newItem));
+      if (error) return fail(friendlyDbError(error.message));
+      await logAudit({ action: "portfolio.create", resourceId: newItem.id });
+    }
+    setItems([...items, newItem]);
+    setDbStatus(supabase ? "synced" : "none");
+    setDbError(null);
+    return { ok: true };
   };
 
   const deleteItem = async (id: number) => {
@@ -359,7 +399,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         await logAudit({ action: "portfolio.delete", resourceId: id });
       } else {
         setDbStatus("error");
-        setDbError(error.message ?? "알 수 없는 오류");
+        setDbError(friendlyDbError(error.message));
       }
     }
   };
@@ -380,7 +420,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         await logAudit({ action: "portfolio.reset" });
       } else {
         setDbStatus("error");
-        setDbError(error.message ?? "알 수 없는 오류");
+        setDbError(friendlyDbError(error.message));
       }
     }
   };
@@ -407,6 +447,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         dbError,
         updateItem,
         addItem,
+        refresh: fetchFromDB,
         deleteItem,
         resetToDefault,
         getBySlug,
