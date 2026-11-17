@@ -60,6 +60,7 @@ import { logAudit } from "../../lib/security/auditLog";
 import { sanitizeErrorMessage } from "../../lib/security/sanitize";
 import { portfolioItemSchema } from "../../lib/security/validation";
 import { findSlugOwner, friendlyDbError } from "../../lib/portfolio/slug";
+import { sortByOrder, renumber } from "../../lib/portfolio/order";
 
 // ─── Constants ────────────────────────────────────────────
 const ITEMS_CACHE_KEY = "sig_admin_items";
@@ -185,6 +186,8 @@ interface AdminContextType {
   addItem: (data: Omit<PortfolioItem, "id">) => Promise<SaveResult>;
   /** DB 에서 목록을 다시 읽어 로컬 캐시와 동기화 */
   refresh: () => Promise<void>;
+  /** 전체 표시 순서를 id 배열 순서대로 다시 매겨 저장 (Work 목록·홈·관리자 공통) */
+  reorderItems: (orderedIds: number[]) => Promise<SaveResult>;
   deleteItem: (id: number) => Promise<void>;
   resetToDefault: () => Promise<void>;
   getBySlug: (slug: string) => PortfolioItem | undefined;
@@ -425,7 +428,27 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const visibleItems = items.filter((i) => !i.hidden);
+  const reorderItems = async (orderedIds: number[]): Promise<SaveResult> => {
+    if (!isAdmin) return { ok: false, error: "관리자 권한이 필요합니다." };
+    const prev = items;
+    const next = renumber(items, orderedIds);
+    setItems(next);
+    if (supabase) {
+      const { error } = await supabase.from("portfolio_items").upsert(next.map(toDB));
+      if (error) {
+        setItems(prev);
+        return fail(friendlyDbError(error.message));
+      }
+      await logAudit({ action: "portfolio.reorder" });
+    }
+    setDbStatus(supabase ? "synced" : "none");
+    setDbError(null);
+    return { ok: true };
+  };
+
+  // 모든 소비자(Work·홈·관리자)가 같은 표시 순서를 보도록 정렬된 목록을 노출
+  const orderedItems = sortByOrder(items);
+  const visibleItems = orderedItems.filter((i) => !i.hidden);
   const getBySlug = (slug: string) => items.find((i) => i.slug === slug);
   const getByCategory = (cat?: string) =>
     !cat || cat === "All" ? visibleItems : visibleItems.filter((i) => i.category === cat);
@@ -441,13 +464,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         isAdmin,
         login,
         logout,
-        items,
+        items: orderedItems,
         loading,
         dbStatus,
         dbError,
         updateItem,
         addItem,
         refresh: fetchFromDB,
+        reorderItems,
         deleteItem,
         resetToDefault,
         getBySlug,
