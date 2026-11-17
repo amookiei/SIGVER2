@@ -14,6 +14,7 @@ import type { PortfolioItem, ContentBlock } from "../data/portfolio";
 import { supabase } from "../../lib/supabase";
 import { useSEO } from "../hooks/useSEO";
 import { findSlugOwner, makeUniqueSlug } from "../../lib/portfolio/slug";
+import { moveItem } from "../../lib/portfolio/order";
 
 // ─── Design tokens ────────────────────────────────────────
 const F = "'Plus Jakarta Sans', 'Pretendard', sans-serif";
@@ -96,7 +97,7 @@ function fromForm(form: FormState): Omit<PortfolioItem, "id"> {
     category: form.category,
     year: Number(form.year),
     featured: form.featured,
-    order: form.featured && form.order ? Number(form.order) : undefined,
+    order: form.order ? Number(form.order) : undefined,
     hidden: form.hidden ?? false,
     thumbnail: form.thumbnail.trim(),
     thumbnailHover: form.thumbnailHover?.trim() || undefined,
@@ -1168,8 +1169,8 @@ function EditModal({
                 </label>
               </Field>
 
-              {form.featured && (
-                <Field label="노출 순서 (Order)">
+              {(
+                <Field label="표시 순서 (Order)">
                   <input
                     style={{ ...inputStyle, width: "120px" }}
                     type="number"
@@ -1179,7 +1180,7 @@ function EditModal({
                     placeholder="1"
                   />
                   <p style={{ fontFamily: F, fontSize: "11px", color: TEXT3, marginTop: "6px" }}>
-                    숫자가 낮을수록 먼저 표시됩니다.
+                    Work 목록·홈 모두 이 숫자가 낮을수록 먼저 표시됩니다. 비워 두면 맨 뒤(ID 순). 목록 화면에서 드래그로도 바꿀 수 있어요.
                   </p>
                 </Field>
               )}
@@ -1226,7 +1227,7 @@ function EditModal({
 // ─── Main Admin Page ──────────────────────────────────────
 export function Admin() {
   const navigate = useNavigate();
-  const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault, refresh } = useAdmin();
+  const { isAdmin, logout, items, loading, dbStatus, dbError, updateItem, addItem, deleteItem, resetToDefault, refresh, reorderItems } = useAdmin();
 
   useSEO({ title: "SIG Admin", noindex: true });
 
@@ -1238,6 +1239,26 @@ export function Admin() {
   const [addForm, setAddForm] = useState<FormState>(blankForm());
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [dragId, setDragId] = useState<number | null>(null);
+  const [dragOverId, setDragOverId] = useState<number | null>(null);
+
+  // ── 표시 순서 변경 (드래그 앤 드롭 / ▲▼ 버튼) ──
+  const persistOrder = async (ids: number[]) => {
+    const result = await reorderItems(ids);
+    showToast(result.ok ? "표시 순서가 저장되었습니다 ✓" : `⚠ ${result.error}`, result.ok ? 2000 : 6000);
+  };
+  const moveBy = (id: number, delta: number) => {
+    const ids = items.map((i) => i.id);
+    const from = ids.indexOf(id);
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= ids.length) return;
+    void persistOrder(moveItem(ids, from, to));
+  };
+  const dropOn = (targetId: number) => {
+    if (dragId === null || dragId === targetId) return;
+    const ids = items.map((i) => i.id);
+    void persistOrder(moveItem(ids, ids.indexOf(dragId), ids.indexOf(targetId)));
+  };
 
   // Redirect if not admin
   useEffect(() => {
@@ -1508,7 +1529,7 @@ export function Admin() {
           }}
         >
           <span style={{ color: TEXT3, fontSize: "11px", letterSpacing: "0.1em" }}>
-            총 {items.length}개 프로젝트
+            총 {items.length}개 프로젝트 · 드래그하거나 ▲▼ 로 표시 순서를 바꿀 수 있습니다 (Work 목록·홈 공통)
           </span>
           <div style={{ display: "flex", gap: "10px" }}>
             <button
@@ -1550,18 +1571,52 @@ export function Admin() {
 
         {/* ─── Project list ─────────────────────────── */}
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          {items.map((item) => (
+          {items.map((item, index) => (
             <div
               key={item.id}
+              draggable
+              onDragStart={(e) => { setDragId(item.id); e.dataTransfer.effectAllowed = "move"; }}
+              onDragOver={(e) => { e.preventDefault(); if (dragOverId !== item.id) setDragOverId(item.id); }}
+              onDragLeave={() => setDragOverId((cur) => (cur === item.id ? null : cur))}
+              onDrop={(e) => { e.preventDefault(); dropOn(item.id); setDragId(null); setDragOverId(null); }}
+              onDragEnd={() => { setDragId(null); setDragOverId(null); }}
               style={{
                 background: SURFACE,
-                border: BORDER,
+                border: dragOverId === item.id && dragId !== item.id ? `1px solid ${ACCENT}` : BORDER,
                 display: "flex",
                 alignItems: "center",
                 gap: "20px",
                 padding: "14px 20px",
+                opacity: dragId === item.id ? 0.45 : 1,
+                cursor: "grab",
+                transition: "border-color 0.15s, opacity 0.15s",
               }}
             >
+              {/* Order handle */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", flexShrink: 0, width: "34px" }} title="드래그해서 순서 변경">
+                <button
+                  type="button"
+                  onClick={() => moveBy(item.id, -1)}
+                  disabled={index === 0}
+                  aria-label="위로"
+                  style={{ background: "none", border: "none", color: index === 0 ? "#222" : TEXT2, cursor: index === 0 ? "default" : "pointer", fontSize: "11px", lineHeight: 1, padding: "2px 6px" }}
+                >
+                  ▲
+                </button>
+                <span style={{ color: TEXT3, fontSize: "11px", fontVariantNumeric: "tabular-nums", letterSpacing: "0.04em" }}>
+                  {index + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => moveBy(item.id, 1)}
+                  disabled={index === items.length - 1}
+                  aria-label="아래로"
+                  style={{ background: "none", border: "none", color: index === items.length - 1 ? "#222" : TEXT2, cursor: index === items.length - 1 ? "default" : "pointer", fontSize: "11px", lineHeight: 1, padding: "2px 6px" }}
+                >
+                  ▼
+                </button>
+              </div>
+
               {/* Thumbnail */}
               <div
                 style={{
@@ -1629,7 +1684,7 @@ export function Admin() {
                         textTransform: "uppercase",
                       }}
                     >
-                      Featured {item.order ? `#${item.order}` : ""}
+                      Featured
                     </span>
                   )}
                   {item.hidden && (
